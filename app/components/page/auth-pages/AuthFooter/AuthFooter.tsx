@@ -3,7 +3,7 @@ export default function AuthFooter() {
       <div className="flex flex-col items-center gap-2 text-sm text-gray-500">
          <p>
             No account?{' '}
-            <a href="#" className="text-orange-500 hover:underline">
+            <a href="/register" className="text-orange-500 hover:underline">
                Sign up
             </a>
          </p>
