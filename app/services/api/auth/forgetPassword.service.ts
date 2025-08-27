@@ -20,8 +20,8 @@ export async function requestOTP(
 
 export async function resetPasswordWithOTP(
   payload: ResetPasswordRequest
-): Promise<ApiResponse<ResetPasswordRequest>> {
-  const response = await axios.post<ApiResponse<ResetPasswordRequest>>(
+): Promise<ApiResponse<null>> {
+  const response = await axios.post<ApiResponse<null>>(
     `${API_BASE_URL}/${PREFIX_AUTH}/forgot-password/reset-password`,
     payload
   );

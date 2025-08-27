@@ -2,8 +2,10 @@ import * as React from 'react';
 import { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { requestOTP } from '~/services/api/auth/forgetPassword.service';
+import { useNavigate } from 'react-router-dom';
 
 export default function ForgetPasswordForm() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,17 +18,20 @@ export default function ForgetPasswordForm() {
     setSuccess(null);
 
     try {
-      const res = await requestOTP({ email }); // Gọi API gửi OTP
+      const res = await requestOTP({ email });
+
       if (res.success) {
-        setSuccess(res.message || 'OTP đã được gửi, vui lòng kiểm tra email');
+        setSuccess(res.message || 'OTP has been sent, please check your email');
+
+        navigate('/reset-password', { state: { email } });
       } else {
-        setError(res.message || 'Gửi OTP thất bại');
+        setError(res.message || 'Failed to send OTP');
       }
     } catch (err: any) {
-      console.error('Axios error full:', err);           // In ra toàn bộ error object
-      console.error('Response data:', err.response);    // In ra response từ server (nếu có)
+      console.error('Axios error full:', err);
+      console.error('Response data:', err.response);
       setError(
-          err.response?.data ? JSON.stringify(err.response.data) : err.message || 'Lỗi hệ thống'
+        err.response?.data ? JSON.stringify(err.response.data) : err.message || 'System error'
       );
     } finally {
       setLoading(false);
