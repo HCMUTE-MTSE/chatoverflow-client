@@ -1,4 +1,15 @@
+# Introduction
+
+Chatoverflow - Group 1 weeky project.
+
 # Installation
+
+You'll need to create your onw `.env` file add following variable:
+
+```
+VITE_API_BASE_URL=https://chatoverflow-server-side.vercel.app
+VITE_PREFIX_AUTH=auth
+```
 
 ```
 pnpm i
