@@ -17,6 +17,10 @@ export default function EmailLoginForm() {
 
       if (response.success && response.data?.token) {
         localStorage.setItem("token", response.data.token);
+        if (response.data.nickName)
+          localStorage.setItem("nickName", response.data.nickName);
+        if (typeof response.data.avatar === "string")
+          localStorage.setItem("avatar", response.data.avatar ?? "");
         window.location.href = "/"; // redirect
       } else {
         setError(response.message || "Login failed");
