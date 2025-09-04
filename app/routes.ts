@@ -1,7 +1,7 @@
 import {
    type RouteConfig,
-   index,
    layout,
+   index,
    route,
 } from '@react-router/dev/routes';
 
@@ -10,7 +10,10 @@ export default [
       index('routes/home.tsx'),
       route('shop', 'routes/shop.tsx'),
       route('invoice', 'routes/invoice.tsx'),
-      route('profile', 'routes/profile.tsx'),
+      route('profile', 'routes/protected/ProtectedRoute.tsx', [
+         index('routes/profile.tsx'),
+      ]),
+
       route('/question/:id', 'routes/question/question-detail.tsx'),
    ]),
 
