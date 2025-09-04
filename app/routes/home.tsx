@@ -10,10 +10,12 @@ export default function App() {
    const [questions, setQuestions] = useState<Question[]>([]);
    const [loading, setLoading] = useState(true);
    const type = 'newest';
+   console.log('Test');
 
    useEffect(() => {
       async function fetchQuestions() {
          setLoading(true);
+         console.log('Calling getQuestionsByType...');
          const data = await getQuestionsByType(type);
          setQuestions(data);
          setLoading(false);
@@ -21,7 +23,8 @@ export default function App() {
       fetchQuestions();
    }, [type]);
 
-   if (loading) return <div className="p-8 text-center">Loading...</div>;
+   if (loading)
+      return <div className="p-8 text-center">Loading Question...</div>;
 
    console.log('Questions: ', questions);
 

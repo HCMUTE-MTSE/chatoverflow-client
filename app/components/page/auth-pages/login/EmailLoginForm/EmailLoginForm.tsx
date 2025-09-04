@@ -22,7 +22,7 @@ export default function EmailLoginForm() {
                localStorage.setItem('nickName', response.data.nickName);
             if (typeof response.data.avatar === 'string')
                localStorage.setItem('avatar', response.data.avatar ?? '');
-            navigate('/'); // redirect
+            navigate('/profile');
          } else {
             setError(response.message || 'Login failed');
          }

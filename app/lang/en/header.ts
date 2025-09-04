@@ -3,7 +3,7 @@ const header = {
    profile: 'Profile',
    logout: 'Logout',
    defaultNickName: 'User',
-   defaultAvatar: '/assets/images/default-avatar.png',
+   defaultAvatar: '/assets/images/defaultavatar.png',
 };
 
 export default header;
