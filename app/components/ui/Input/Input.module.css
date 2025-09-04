@@ -1,0 +1,57 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.label {
+  color: #e5e7eb;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inputField {
+  width: 100%;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+
+.inputField:focus-within {
+  border-color: #9333ea;
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  border: none;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.hint {
+  color: #93c5fd;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.required .label::after {
+  content: " *";
+  color: #ef4444;
+}
