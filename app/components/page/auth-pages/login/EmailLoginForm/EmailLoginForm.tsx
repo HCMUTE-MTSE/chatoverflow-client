@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { login } from "~/services/api/auth/login.service";
 
 export default function EmailLoginForm() {
@@ -6,7 +7,7 @@ export default function EmailLoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -17,7 +18,11 @@ export default function EmailLoginForm() {
 
       if (response.success && response.data?.token) {
         localStorage.setItem("token", response.data.token);
-        window.location.href = "/"; // redirect
+        if (response.data.nickName)
+          localStorage.setItem("nickName", response.data.nickName);
+        if (typeof response.data.avatar === "string")
+          localStorage.setItem("avatar", response.data.avatar ?? "");
+        navigate("/"); // redirect
       } else {
         setError(response.message || "Login failed");
       }
