@@ -10,9 +10,7 @@ export default [
       index('routes/home.tsx'),
       route('shop', 'routes/shop.tsx'),
       route('invoice', 'routes/invoice.tsx'),
-      route('profile', 'routes/protected/ProtectedRoute.tsx', [
-         index('routes/profile.tsx'),
-      ]),
+      route('profile', 'routes/profile.tsx'),
    ]),
 
    layout('routes/auth/layout.tsx', [
