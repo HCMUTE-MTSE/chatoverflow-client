@@ -1,5 +1,5 @@
 export interface LoginResponse {
-  token: string;
-  avatar: string;
-  nickName: string;
+   token: string;
+   avatar: string;
+   nickName: string;
 }

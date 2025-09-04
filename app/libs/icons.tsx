@@ -1,138 +1,137 @@
 import React from 'react';
 
-export const HomeIcon = ({ size = 24, color = "currentColor", ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 16 16"
-    width={size}
-    height={size}
-    fill={color}
-    {...props}
-  >
-    <path d="M8 1.4L6 2.7V1H4v3L0 6.6l.6.8L8 2.6l7.4 4.8.6-.8z" />
-    <path d="M8 4L2 8v7h5v-3h2v3h5V8z" />
-  </svg>
+export const HomeIcon = ({ size = 24, color = 'currentColor', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 16 16"
+      width={size}
+      height={size}
+      fill={color}
+      {...props}
+   >
+      <path d="M8 1.4L6 2.7V1H4v3L0 6.6l.6.8L8 2.6l7.4 4.8.6-.8z" />
+      <path d="M8 4L2 8v7h5v-3h2v3h5V8z" />
+   </svg>
 );
 
 export const CollectionsIcon = ({
-  size = 24,
-  color = "currentColor",
-  ...props
+   size = 24,
+   color = 'currentColor',
+   ...props
 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 9 8.5 12 2" />
-  </svg>
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 9 8.5 12 2" />
+   </svg>
 );
 
-export const JobsIcon = ({ size = 24, color = "currentColor", ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-    <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-  </svg>
+export const JobsIcon = ({ size = 24, color = 'currentColor', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+      <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+   </svg>
 );
 
-export const TagsIcon = ({ size = 24, color = "currentColor", ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3H4a2 2 0 0 0-2 2v5.59A2 2 0 0 0 3 11l9.59 9.59a2 2 0 0 0 2.82 0l5.18-5.18a2 2 0 0 0 0-2.82z" />
-    <path d="M7 7h.01" />
-  </svg>
+export const TagsIcon = ({ size = 24, color = 'currentColor', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3H4a2 2 0 0 0-2 2v5.59A2 2 0 0 0 3 11l9.59 9.59a2 2 0 0 0 2.82 0l5.18-5.18a2 2 0 0 0 0-2.82z" />
+      <path d="M7 7h.01" />
+   </svg>
 );
 
 export const CommunitiesIcon = ({
-  size = 24,
-  color = "currentColor",
-  ...props
+   size = 24,
+   color = 'currentColor',
+   ...props
 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-    <circle cx="9" cy="7" r="4" />
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-  </svg>
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+   </svg>
 );
 
-export const AskIcon = ({ size = 24, color = "currentColor", ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-    <path d="M9.09 9a3 3 0 0 1 5.91 1c0 2-3 3-3 3" />
-    <line x1="12" y1="17" x2="12.01" y2="17" />
-  </svg>
+export const AskIcon = ({ size = 24, color = 'currentColor', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <path d="M9.09 9a3 3 0 0 1 5.91 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+   </svg>
 );
 
-export const LogoutIcon = ({ size = 24, color = "currentColor", ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    width={size}
-    height={size}
-    fill="none"
-    stroke={color}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16 17 21 12 16 7" />
-    <line x1="21" y1="12" x2="9" y2="12" />
-  </svg>
+export const LogoutIcon = ({ size = 24, color = 'currentColor', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+   >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+   </svg>
 );
-
 
 // export const HomeIcon = ({
 //    size = 24,
@@ -260,11 +259,7 @@ export const HeadphonesIcon = ({
    </svg>
 );
 
-export const ClockIcon = ({
-   size = 24,
-   color = 'currentColor',
-   ...props
-}) => (
+export const ClockIcon = ({ size = 24, color = 'currentColor', ...props }) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -307,11 +302,7 @@ export const MenuDotsIcon = ({
    </svg>
 );
 
-export const PauseIcon = ({
-   size = 24,
-   color = 'currentColor',
-   ...props
-}) => (
+export const PauseIcon = ({ size = 24, color = 'currentColor', ...props }) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 448 512"
@@ -328,11 +319,7 @@ export const PauseIcon = ({
    </svg>
 );
 
-export const PlayIcon = ({
-   size = 24,
-   color = 'currentColor',
-   ...props
-}) => (
+export const PlayIcon = ({ size = 24, color = 'currentColor', ...props }) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -377,11 +364,7 @@ export const ShuffleIcon = ({
    </svg>
 );
 
-export const RepeatIcon = ({
-   size = 24,
-   color = 'currentColor',
-   ...props
-}) => (
+export const RepeatIcon = ({ size = 24, color = 'currentColor', ...props }) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
@@ -499,9 +482,7 @@ type ShuffleLineDuotoneProps = {
    size: string;
 };
 
-export const ShuffleLineDuotone = ({
-   size,
-}: ShuffleLineDuotoneProps) => (
+export const ShuffleLineDuotone = ({ size }: ShuffleLineDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -522,9 +503,7 @@ type PlayerPreviousDuotoneProps = {
    size: string;
 };
 
-export const PlayerPreviousDuotone = ({
-   size,
-}: PlayerPreviousDuotoneProps) => (
+export const PlayerPreviousDuotone = ({ size }: PlayerPreviousDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -551,9 +530,7 @@ type PlayerNextDuotoneProps = {
    size: string;
 };
 
-export const PlayerNextDuotone = ({
-   size,
-}: PlayerNextDuotoneProps) => (
+export const PlayerNextDuotone = ({ size }: PlayerNextDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -621,9 +598,7 @@ type RepeatLineDuotoneProps = {
    size: string;
 };
 
-export const RepeatLineDuotone = ({
-   size,
-}: RepeatLineDuotoneProps) => (
+export const RepeatLineDuotone = ({ size }: RepeatLineDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -644,9 +619,7 @@ type SpeakerHighDuotoneProps = {
    size: string;
 };
 
-export const SpeakerHighDuotone = ({
-   size,
-}: SpeakerHighDuotoneProps) => (
+export const SpeakerHighDuotone = ({ size }: SpeakerHighDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -654,10 +627,7 @@ export const SpeakerHighDuotone = ({
       viewBox="0 0 256 256"
    >
       <g fill="currentColor">
-         <path
-            d="M80 88v80H32a8 8 0 0 1-8-8V96a8 8 0 0 1 8-8Z"
-            opacity=".2"
-         />
+         <path d="M80 88v80H32a8 8 0 0 1-8-8V96a8 8 0 0 1 8-8Z" opacity=".2" />
          <path d="M155.51 24.81a8 8 0 0 0-8.42.88L77.25 80H32a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h45.25l69.84 54.31A8 8 0 0 0 160 224V32a8 8 0 0 0-4.49-7.19ZM32 96h40v64H32Zm112 111.64l-56-43.55V91.91l56-43.55Zm54-106.08a40 40 0 0 1 0 52.88a8 8 0 0 1-12-10.58a24 24 0 0 0 0-31.72a8 8 0 0 1 12-10.58ZM248 128a79.9 79.9 0 0 1-20.37 53.34a8 8 0 0 1-11.92-10.67a64 64 0 0 0 0-85.33a8 8 0 1 1 11.92-10.67A79.83 79.83 0 0 1 248 128Z" />
       </g>
    </svg>
@@ -667,9 +637,7 @@ type SpeakerSlashDuotoneProps = {
    size: string;
 };
 
-export const SpeakerSlashDuotone = ({
-   size,
-}: SpeakerSlashDuotoneProps) => (
+export const SpeakerSlashDuotone = ({ size }: SpeakerSlashDuotoneProps) => (
    <svg
       xmlns="http://www.w3.org/2000/svg"
       width={size}
@@ -677,10 +645,7 @@ export const SpeakerSlashDuotone = ({
       viewBox="0 0 256 256"
    >
       <g fill="currentColor">
-         <path
-            d="M80 88v80H32a8 8 0 0 1-8-8V96a8 8 0 0 1 8-8Z"
-            opacity=".2"
-         />
+         <path d="M80 88v80H32a8 8 0 0 1-8-8V96a8 8 0 0 1 8-8Z" opacity=".2" />
          <path d="M53.92 34.62a8 8 0 1 0-11.84 10.76L73.55 80H32a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h45.25l69.84 54.31A8 8 0 0 0 160 224v-48.91l42.08 46.29a8 8 0 1 0 11.84-10.76ZM32 96h40v64H32Zm112 111.64l-56-43.55v-68.2l56 61.6Zm42-63.77a24 24 0 0 0 0-31.72a8 8 0 1 1 12-10.57a40 40 0 0 1 0 52.88a8 8 0 0 1-12-10.59Zm-80.16-76a8 8 0 0 1 1.4-11.23l39.85-31A8 8 0 0 1 160 32v74.83a8 8 0 0 1-16 0V48.36l-26.94 21a8 8 0 0 1-11.22-1.45ZM248 128a79.9 79.9 0 0 1-20.37 53.34a8 8 0 0 1-11.92-10.67a64 64 0 0 0 0-85.33a8 8 0 1 1 11.92-10.67A79.83 79.83 0 0 1 248 128Z" />
       </g>
    </svg>

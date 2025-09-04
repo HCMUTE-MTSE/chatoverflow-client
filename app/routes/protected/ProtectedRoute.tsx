@@ -1,13 +1,15 @@
-import * as React from "react";
-import { Navigate, Outlet } from "react-router";
+import * as React from 'react';
+import { Navigate, Outlet } from 'react-router';
 
 export default function ProtectedRoute() {
-  const token =
-    typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+   const token =
+      typeof window !== 'undefined'
+         ? window.localStorage.getItem('token')
+         : null;
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+   if (!token) {
+      return <Navigate to="/login" replace />;
+   }
 
-  return <Outlet />;
+   return <Outlet />;
 }
