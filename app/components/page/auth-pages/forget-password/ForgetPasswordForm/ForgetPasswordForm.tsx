@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa6';
-import { requestOTP } from '~/services/api/auth/forgetPassword.service';
-import { useNavigate } from 'react-router-dom';
+import * as React from "react";
+import { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa6";
+import { requestOTP } from "~/services/api/auth/forgetPassword.service";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgetPasswordForm() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -21,17 +21,19 @@ export default function ForgetPasswordForm() {
       const res = await requestOTP({ email });
 
       if (res.success) {
-        setSuccess(res.message || 'OTP has been sent, please check your email');
+        setSuccess("OTP has been sent, please check your email");
 
-        navigate('/reset-password', { state: { email } });
+        navigate("/reset-password", { state: { email } });
       } else {
-        setError(res.message || 'Failed to send OTP');
+        setError("Failed to send OTP");
       }
     } catch (err: any) {
-      console.error('Axios error full:', err);
-      console.error('Response data:', err.response);
+      console.error("Axios error full:", err);
+      console.error("Response data:", err.response);
       setError(
-        err.response?.data ? JSON.stringify(err.response.data) : err.message || 'System error'
+        err.response?.data
+          ? JSON.stringify(err.response.data)
+          : err.message || "System error"
       );
     } finally {
       setLoading(false);
@@ -62,7 +64,9 @@ export default function ForgetPasswordForm() {
         disabled={loading}
         className="w-full py-2 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition font-semibold disabled:opacity-50"
       >
-        <p className="text-center text-sm">{loading ? 'Sending...' : 'Continue'}</p>
+        <p className="text-center text-sm">
+          {loading ? "Sending..." : "Continue"}
+        </p>
       </button>
 
       <div className="flex items-center justify-center gap-2 text-gray-200">
