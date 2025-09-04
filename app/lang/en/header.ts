@@ -1,9 +1,9 @@
 const header = {
-  search: "Search for Questions here...",
-  profile: "Profile",
-  logout: "Logout",
-  defaultNickName: "User",
-  defaultAvatar: "/assets/images/default-avatar.png",
+   search: 'Search for Questions here...',
+   profile: 'Profile',
+   logout: 'Logout',
+   defaultNickName: 'User',
+   defaultAvatar: '/assets/images/defaultavatar.png',
 };
 
 export default header;

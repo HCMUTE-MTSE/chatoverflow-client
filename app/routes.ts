@@ -1,7 +1,7 @@
 import {
    type RouteConfig,
-   index,
    layout,
+   index,
    route,
 } from '@react-router/dev/routes';
 
@@ -13,13 +13,18 @@ export default [
       route('profile', 'routes/protected/ProtectedRoute.tsx', [
          index('routes/profile.tsx'),
       ]),
+
+      route('/question/:id', 'routes/question/question-detail.tsx'),
    ]),
 
    layout('routes/auth/layout.tsx', [
+      // Auth
       route('login', 'routes/auth/login.tsx'),
       route('register', 'routes/auth/register.tsx'),
       route('verify-register', 'routes/auth/verify-register.tsx'),
       route('forget-password', 'routes/auth/forget-password.tsx'),
       route('reset-password', 'routes/auth/reset-password.tsx'),
+
+      // Question
    ]),
 ] satisfies RouteConfig;
