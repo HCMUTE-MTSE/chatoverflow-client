@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "react-router";
 import header from "../../lang/en/header";
+import { logout as logoutService } from "~/services/api/auth/logout.service";
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
@@ -49,16 +50,21 @@ export default function Header() {
     }
   };
 
-  const logout = () => {
+  const handleLogout = async () => {
     setOpen(false);
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("nickName");
-      window.localStorage.removeItem("avatar");
+    try {
+      await logoutService();
+    } catch (err) {
+      console.error("Logout failed:", err);
+      //fallback
+      localStorage.removeItem("token");
+      localStorage.removeItem("nickName");
+      localStorage.removeItem("avatar");
+    } finally {
+      setNickName(header.defaultNickName);
+      setAvatar(header.defaultAvatar);
+      navigate("/login");
     }
-    setNickName(header.defaultNickName);
-    setAvatar(header.defaultAvatar);
-    navigate("/login");
   };
 
   if (!mounted) {
@@ -120,7 +126,7 @@ export default function Header() {
                 {header.profile}
               </button>
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="w-full text-left px-3 py-2 text-sm text-red-300 rounded-md hover:bg-gray-800"
               >
                 {header.logout}

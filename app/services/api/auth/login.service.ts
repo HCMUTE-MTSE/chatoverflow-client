@@ -10,7 +10,10 @@ export async function login(
 ): Promise<ApiResponse<LoginResponse>> {
   const response = await axios.post<ApiResponse<LoginResponse>>(
     `${API_BASE_URL}/${PREFIX_AUTH}/login`,
-    payload
+    payload,
+    {
+      withCredentials: true,
+    }
   );
   return response.data;
 }

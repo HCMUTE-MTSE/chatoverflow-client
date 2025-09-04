@@ -1,10 +1,14 @@
-import AuthLayout from '../../AuthLayout';
-import LoginCard from '../LoginCard';
+import AuthLayout from "../../AuthLayout";
+import LoginCard from "../LoginCard";
 
-export default function LoginPage() {
-   return (
-      <AuthLayout>
-         <LoginCard />
-      </AuthLayout>
-   );
+interface LoginPageProps {
+  from: string;
+}
+
+export default function LoginPage({ from }: LoginPageProps) {
+  return (
+    <AuthLayout>
+      <LoginCard from={from} />
+    </AuthLayout>
+  );
 }
