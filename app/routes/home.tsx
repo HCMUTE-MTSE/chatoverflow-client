@@ -5,12 +5,13 @@ import {
    getQuestionsByType,
    type Question,
 } from '../services/api/topic/question.service';
+import { useNavigate } from 'react-router-dom';
 
 export default function App() {
    const [questions, setQuestions] = useState<Question[]>([]);
    const [loading, setLoading] = useState(true);
    const type = 'newest';
-   console.log('Test');
+   const navigate = useNavigate();
 
    useEffect(() => {
       async function fetchQuestions() {
@@ -25,8 +26,6 @@ export default function App() {
 
    if (loading)
       return <div className="p-8 text-center">Loading Question...</div>;
-
-   console.log('Questions: ', questions);
 
    return (
       <div className="p-8 flex flex-col items-center gap-4">
@@ -45,7 +44,7 @@ export default function App() {
                votes={q.upvotedBy.length}
                answers={q.answerCount ?? 0}
                views={q.views}
-               onClick={() => alert(`Clicked: ${q.title}`)}
+               onClick={() => navigate(`/question/${q._id}`)}
             />
          ))}
       </div>

@@ -35,3 +35,21 @@ export async function getQuestionsByType(type: string): Promise<Question[]> {
       return [];
    }
 }
+
+export async function getQuestionDetail(
+   id: string | undefined
+): Promise<Question | null> {
+   console.log(`Fetching question detail (id=${id})`);
+   try {
+      const response = await axios.get<ApiResponse<Question>>(
+         `${API_BASE_URL}/question/detail/${id}`
+      );
+      return response.data.data || null;
+   } catch (error) {
+      console.error(
+         `Faliure raised while fetching question detail, in question.service (id=${id}):`,
+         error
+      );
+      return null;
+   }
+}
