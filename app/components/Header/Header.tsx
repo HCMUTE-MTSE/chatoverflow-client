@@ -1,6 +1,8 @@
-import * as React from 'react';
-import { useNavigate } from 'react-router';
-import header from '../../lang/en/header';
+import * as React from "react";
+import { useNavigate } from "react-router";
+import header from "../../lang/en/header";
+import { logout as logoutService } from "~/services/api/auth/logout.service";
+
 
 export default function Header() {
    const [open, setOpen] = React.useState(false);
@@ -49,17 +51,22 @@ export default function Header() {
       }
    };
 
-   const logout = () => {
-      setOpen(false);
-      if (typeof window !== 'undefined') {
-         window.localStorage.removeItem('token');
-         window.localStorage.removeItem('nickName');
-         window.localStorage.removeItem('avatar');
-      }
+  const handleLogout = async () => {
+    setOpen(false);
+    try {
+      await logoutService();
+    } catch (err) {
+      console.error("Logout failed:", err);
+      //fallback
+      localStorage.removeItem("token");
+      localStorage.removeItem("nickName");
+      localStorage.removeItem("avatar");
+    } finally {
       setNickName(header.defaultNickName);
       setAvatar(header.defaultAvatar);
-      navigate('/login');
-   };
+      navigate("/login");
+    }
+  };
 
    if (!mounted) {
       return (
@@ -107,28 +114,26 @@ export default function Header() {
                   )}
                </button>
 
-               {open && (
-                  <div className="absolute right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-2">
-                     <div className="px-3 py-2 text-sm text-gray-300">
-                        <p className="font-semibold text-white truncate">
-                           {nickName}
-                        </p>
-                     </div>
-                     <div className="h-px bg-gray-800 my-1" />
-                     <button
-                        onClick={goProfile}
-                        className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
-                     >
-                        {header.profile}
-                     </button>
-                     <button
-                        onClick={logout}
-                        className="w-full text-left px-3 py-2 text-sm text-red-300 rounded-md hover:bg-gray-800"
-                     >
-                        {header.logout}
-                     </button>
+              {open && (
+                <div className="absolute right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-2">
+                  <div className="px-3 py-2 text-sm text-gray-300">
+                    <p className="font-semibold text-white truncate">{nickName}</p>
                   </div>
-               )}
+                  <div className="h-px bg-gray-800 my-1" />
+                  <button
+                    onClick={goProfile}
+                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
+                  >
+                    {header.profile}
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-2 text-sm text-red-300 rounded-md hover:bg-gray-800"
+                  >
+                    {header.logout}
+                  </button>
+                </div>
+              )}
             </div>
          </div>
       </header>
