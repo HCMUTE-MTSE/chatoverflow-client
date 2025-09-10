@@ -1,32 +1,44 @@
 import React from 'react';
-
-import styles from './NavItem.module.css';
+import { useLocation } from 'react-router';
 
 interface NavItemProps {
-   to: string;
-   icon: React.ReactNode;
-   text: string;
-   className?: string;
-   style?: React.CSSProperties;
+  to: string;
+  icon: React.ReactNode;
+  text: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function NavItem({
-   to,
-   icon,
-   text,
-   className,
-   style,
+  to,
+  icon,
+  text,
+  className,
+  style,
 }: NavItemProps) {
-   return (
-      <li className={styles.navItem}>
-         <a
-            href={to}
-            className={`${styles.link} ${className}`}
-            style={style}
-         >
-            {icon}
-            {text}
-         </a>
-      </li>
-   );
+  const location = useLocation();
+  const isActive = location.pathname === to;
+
+  return (
+    <li className="relative">
+      <a
+        href={to}
+        className={`
+               flex items-center gap-4 px-4 py-4 mx-4 rounded-lg transition-all duration-300 text-lg font-medium
+               ${
+                 isActive
+                   ? 'text-white font-bold bg-gradient-to-r from-orange-500 to-orange-400' // All active states get gradient
+                   : 'text-white hover:text-white hover:bg-gray-800/50'
+               }
+               ${className || ''}
+            `}
+        style={style}
+      >
+        <div className={`w-6 h-6 ${isActive ? 'text-white' : 'text-gray-400'}`}>
+          {icon}
+        </div>
+        <span className={isActive ? 'font-bold' : ''}>{text}</span>
+      </a>
+    </li>
+  );
 }
