@@ -3,9 +3,19 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { parseJwt } from '~/utils/jwt';
 
 export default function ProtectedRoute() {
-  const token =
-    typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
+  const [hydrated, setHydrated] = React.useState(false);
   const location = useLocation();
+
+  React.useEffect(() => {
+    setHydrated(true); // Chỉ chạy logic sau khi client đã mount
+  }, []);
+
+  if (!hydrated) {
+    // Trong SSR: tạm render rỗng để tránh Navigate trên server
+    return null;
+  }
+
+  const token = localStorage.getItem('token');
 
   if (!token) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;

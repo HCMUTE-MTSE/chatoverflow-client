@@ -28,28 +28,36 @@ export default function BlogCard({
   const defaultCover = '/assets/images/default-blog-cover.jpg';
 
   return (
-    <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-      <Link to={`/blog/${slug}`} className="block">
-        <div className="relative h-48">
+    <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
+      <Link to={`/blog/${slug}`} className="block h-full flex flex-col">
+        <div className="relative h-48 flex-shrink-0">
           <img
             src={coverImage || defaultCover}
             alt={title}
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-2 text-white hover:text-blue-400 transition-colors">
+        <div className="p-6 flex-grow flex flex-col">
+          <h2 className="text-xl font-semibold mb-2 text-white hover:text-blue-400 transition-colors line-clamp-2">
             {title}
           </h2>
-          <p className="text-gray-400 mb-4 line-clamp-2">{summary}</p>
-          <div className="flex items-center">
+          <p className="text-gray-400 mb-4 flex-grow text-sm leading-relaxed line-clamp-2 overflow-hidden">
+            {summary}
+          </p>
+          <div className="flex items-center mt-auto">
             <img
               src={author.avatar || defaultAvatar}
               alt={author.nickName}
-              className="w-8 h-8 rounded-full mr-3"
+              className="w-8 h-8 rounded-full mr-3 flex-shrink-0"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = defaultAvatar;
+              }}
             />
-            <div>
-              <p className="text-sm text-white">{author.nickName}</p>
+            <div className="min-w-0 flex-grow">
+              <p className="text-sm text-white blog-card-truncate">
+                {author.nickName}
+              </p>
               <p className="text-xs text-gray-500">
                 {new Date(createdAt).toLocaleDateString()}
               </p>
