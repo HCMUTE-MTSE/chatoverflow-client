@@ -11,6 +11,7 @@ import {
 import type { UserRequest } from '~/models/req/user.request';
 import type { UserResponse } from '~/models/res/user.response';
 import type { Address, Province, Ward } from '~/models/constant/Address.dto';
+import profileLang from '~/lang/en/profile';
 
 // Interface cho form data (mapping với UserRequest)
 interface ProfileFormData {
@@ -55,7 +56,7 @@ const ProfileForm: React.FC = () => {
         const provincesData = await getProvinces();
         setProvinces(provincesData);
       } catch (err) {
-        console.error('Error loading provinces:', err);
+        console.error(profileLang.messages.errorLoadingProvinces, err);
       } finally {
         setLoadingProvinces(false);
       }
@@ -78,7 +79,7 @@ const ProfileForm: React.FC = () => {
         // Đảm bảo wardsData là array
         setWards(Array.isArray(wardsData) ? wardsData : []);
       } catch (err) {
-        console.error('Error loading wards:', err);
+        console.error(profileLang.messages.errorLoadingWards, err);
         setWards([]);
       } finally {
         setLoadingWards(false);
@@ -145,12 +146,12 @@ const ProfileForm: React.FC = () => {
                 }));
               }
             } catch (err) {
-              console.error('Error loading wards for user data:', err);
+              console.error(profileLang.messages.errorLoadingWardsForUser, err);
             }
           }
         }
       } catch (err: any) {
-        setError('Không thể tải thông tin người dùng');
+        setError(profileLang.messages.errorLoadingUser);
         console.error('Load user error:', err);
       } finally {
         setLoading(false);
@@ -160,12 +161,15 @@ const ProfileForm: React.FC = () => {
     loadUserData();
   }, [provinces]); // Thêm provinces vào dependency
 
-  // Options for select components
+  // Options for select components using internationalization
   const genderOptions = [
-    { value: 'male', label: 'Nam' },
-    { value: 'female', label: 'Nữ' },
-    { value: 'other', label: 'Khác' },
-    { value: 'prefer-not-to-say', label: 'Không muốn tiết lộ' },
+    { value: 'male', label: profileLang.genderOptions.male },
+    { value: 'female', label: profileLang.genderOptions.female },
+    { value: 'other', label: profileLang.genderOptions.other },
+    {
+      value: 'prefer-not-to-say',
+      label: profileLang.genderOptions.preferNotToSay,
+    },
   ];
 
   // Convert provinces to select options
@@ -236,12 +240,14 @@ const ProfileForm: React.FC = () => {
       const response = await updateUser(userRequest);
 
       if (response.success) {
-        setSuccess('Cập nhật thông tin thành công!');
+        setSuccess(profileLang.messages.success);
       } else {
-        setError(response.message || 'Cập nhật thất bại');
+        setError(response.message || profileLang.messages.updateFailed);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Có lỗi xảy ra khi cập nhật');
+      setError(
+        err.response?.data?.message || profileLang.messages.errorUpdating
+      );
       console.error('Update user error:', err);
     } finally {
       setSaving(false);
@@ -251,14 +257,16 @@ const ProfileForm: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-white text-lg">Đang tải thông tin...</div>
+        <div className="text-white text-lg">{profileLang.loading.userInfo}</div>
       </div>
     );
   }
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
-      <h1 className="text-white text-3xl font-bold mb-6">Edit Profile</h1>
+      <h1 className="text-white text-3xl font-bold mb-6">
+        {profileLang.title}
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Error/Success Messages */}
         {error && (
@@ -276,15 +284,15 @@ const ProfileForm: React.FC = () => {
         {/* Basic Information Section */}
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-white mb-2">
-            Thông tin cơ bản
+            {profileLang.basicInfo}
           </h3>
 
           <Input
-            label="Họ và tên"
+            label={profileLang.labels.fullName}
             value={formData.name}
             onChange={(value) => handleInputChange('name', value)}
-            placeholder="Nhập họ và tên đầy đủ"
-            hint="Nhập họ và tên đầy đủ của bạn."
+            placeholder={profileLang.placeholders.fullName}
+            hint={profileLang.hints.fullName}
             required
           />
         </div>
@@ -292,22 +300,22 @@ const ProfileForm: React.FC = () => {
         {/* Personal Information Section */}
         <div className="grid md:grid-cols-2 gap-3">
           <Input
-            label="Nickname"
+            label={profileLang.labels.nickname}
             value={formData.nickName}
             onChange={(value) => handleInputChange('nickName', value)}
-            placeholder="Nhập nickname của bạn"
-            hint="Nhập tên gọi ưa thích của bạn."
+            placeholder={profileLang.placeholders.nickname}
+            hint={profileLang.hints.nickname}
             required
           />
 
           <div className="relative">
             <Input
-              label="Email"
+              label={profileLang.labels.email}
               type="email"
               value={formData.email}
               onChange={(value) => handleInputChange('email', value)}
-              placeholder="example@email.com"
-              hint="🔒 Email không thể thay đổi sau khi tạo tài khoản."
+              placeholder={profileLang.placeholders.email}
+              hint={profileLang.hints.email}
               required
               disabled={true}
             />
@@ -331,63 +339,69 @@ const ProfileForm: React.FC = () => {
         {/* Personal Details Section */}
         <div className="grid md:grid-cols-2 gap-3">
           <DateTimePicker
-            label="Ngày sinh"
+            label={profileLang.labels.dateOfBirth}
             value={formData.dateOfBirth}
             onChange={(value) => handleInputChange('dateOfBirth', value)}
-            hint="Chọn ngày sinh của bạn."
+            hint={profileLang.hints.dateOfBirth}
             required
           />
 
           <Select
-            label="Giới tính"
+            label={profileLang.labels.gender}
             value={formData.gender}
             onChange={(value) => handleInputChange('gender', value)}
             options={genderOptions}
-            placeholder="Chọn giới tính"
-            hint="Chọn giới tính của bạn."
+            placeholder={profileLang.placeholders.gender}
+            hint={profileLang.hints.gender}
             required
           />
         </div>
 
         {/* Address Section */}
         <div className="border-t border-gray-700 pt-2">
-          <h3 className="text-lg font-semibold text-white mb-2">Địa chỉ</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            {profileLang.addressInfo}
+          </h3>
 
           {/* Province and Ward in Grid */}
           <div className="grid md:grid-cols-2 gap-3 mb-2">
             <Select
-              label="Tỉnh/Thành phố"
+              label={profileLang.labels.province}
               value={formData.province}
               onChange={(value) => handleInputChange('province', value)}
               options={provinceOptions}
               placeholder={
-                loadingProvinces ? 'Đang tải...' : 'Chọn tỉnh/thành phố'
+                loadingProvinces
+                  ? profileLang.loading.provinces
+                  : profileLang.placeholders.province
               }
-              hint="Chọn tỉnh hoặc thành phố nơi bạn sinh sống."
+              hint={profileLang.hints.province}
               disabled={loadingProvinces}
               required
             />
 
             <Select
-              label="Quận/Huyện/Phường"
+              label={profileLang.labels.ward}
               value={formData.ward}
               onChange={(value) => handleInputChange('ward', value)}
               options={wardOptions}
               placeholder={
-                loadingWards ? 'Đang tải...' : 'Chọn quận/huyện/phường'
+                loadingWards
+                  ? profileLang.loading.wards
+                  : profileLang.placeholders.ward
               }
-              hint="Chọn quận, huyện hoặc phường."
+              hint={profileLang.hints.ward}
               disabled={!formData.province || loadingWards}
               required
             />
           </div>
 
           <Textarea
-            label="Địa chỉ chi tiết"
+            label={profileLang.labels.street}
             value={formData.street}
             onChange={(value) => handleInputChange('street', value)}
-            placeholder="Nhập số nhà, tên đường, khu vực..."
-            hint="Nhập số nhà, tên đường và các thông tin địa chỉ chi tiết khác."
+            placeholder={profileLang.placeholders.street}
+            hint={profileLang.hints.street}
             rows={2}
             required
           />
@@ -400,7 +414,7 @@ const ProfileForm: React.FC = () => {
             disabled={saving}
             className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-purple-500/25"
           >
-            {saving ? '🔄 Đang lưu...' : '💾 Lưu thông tin'}
+            {saving ? profileLang.buttons.saving : profileLang.buttons.save}
           </button>
         </div>
       </form>

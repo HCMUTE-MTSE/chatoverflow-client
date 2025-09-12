@@ -51,14 +51,6 @@ export default function Select({
 
   const selectedOption = options.find((option) => option.value === value);
 
-  // Debug: Log để kiểm tra giá trị và options
-  console.log(`Select ${label}:`, {
-    value,
-    options: options.map((opt) => ({ value: opt.value, label: opt.label })),
-    selectedOption,
-    found: !!selectedOption,
-  });
-
   const displayText = selectedOption
     ? selectedOption.label
     : placeholder || 'Chọn...';
