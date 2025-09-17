@@ -2,7 +2,8 @@ import React from 'react';
 
 import MyQuestions from '~/components/page/collections/MyQuestions';
 import MyBlogs from '~/components/page/collections/MyBlogs';
-function AllCollections() {
+
+function MyCollections() {
   return (
     <div>
       <h1>Collections</h1>
@@ -12,4 +13,4 @@ function AllCollections() {
   );
 }
 
-export default AllCollections;
+export default MyCollections;

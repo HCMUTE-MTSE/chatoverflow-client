@@ -95,3 +95,34 @@ export async function uploadImage(file: File): Promise<string | null> {
     return null;
   }
 }
+
+export async function updateQuestion(
+  questionId: string,
+  updateData: {
+    title: string;
+    content: string;
+    tags: string[];
+  },
+  token: string
+): Promise<Question> {
+  console.log(`Updating question (id=${questionId})`);
+  try {
+    const response = await axios.put<ApiResponse<Question>>(
+      `${API_BASE_URL}/question/${questionId}/edit`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error(
+      `Failure raised while updating question, in question.service (id=${questionId}):`,
+      error
+    );
+    throw error;
+  }
+}

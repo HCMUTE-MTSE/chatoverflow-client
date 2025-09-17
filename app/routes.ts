@@ -18,7 +18,7 @@ export default [
     ]),
 
     route('ask', 'routes/ask.tsx'),
-    route('editQuestion', 'routes/editQuestion.tsx'),
+    route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
     route('/question/:id', 'routes/question/question-detail.tsx'),
 
     route('communities', 'routes/communities.tsx'),
@@ -26,9 +26,7 @@ export default [
     route('blog', 'routes/blog/blog.tsx'),
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
 
-    route('collections', 'routes/collections/allCollections.tsx'),
-    route('question-collections', 'routes/collections/questionCollections.tsx'),
-    route('blog-collections', 'routes/collections/blogCollections.tsx'),
+    route('collections', 'routes/collections/my-collections.tsx'),
   ]),
 
   layout('routes/auth/layout.tsx', [

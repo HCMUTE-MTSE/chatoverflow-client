@@ -53,7 +53,8 @@ function MyQuestions() {
             votes={q.upvotedBy.length}
             answers={q.answerCount ?? 0}
             views={q.views}
-            onClick={() => navigate(`/question/${q._id}`)}
+            // onClick={() => navigate(`/question/${q._id}`)}
+            onClick={() => navigate(`/question/${q._id}/edit`)}
           />
         ))}
       </div>
