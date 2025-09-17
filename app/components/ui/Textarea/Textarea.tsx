@@ -1,7 +1,5 @@
-import clsx from "clsx";
-import React from "react";
-
-import styles from "./Textarea.module.css";
+import clsx from 'clsx';
+import React from 'react';
 
 interface TextareaProps {
   label: string;
@@ -27,26 +25,29 @@ export default function Textarea({
   rows = 3,
 }: TextareaProps) {
   return (
-    <div
-      className={clsx(
-        styles.textareaContainer,
-        { [styles.required]: required },
-        className
-      )}
-    >
-      <label className={styles.label}>{label}</label>
-      <div className={styles.textareaWrapper}>
-        <div className={styles.textareaField}>
+    <div className={clsx('flex flex-col gap-3', className)}>
+      <label className="text-gray-200 font-semibold text-base flex items-center gap-2">
+        <span>
+          {label}
+          {required && <span className="text-red-400 ml-1">*</span>}
+        </span>
+        {hint && (
+          <span className="text-blue-300 text-sm font-normal leading-relaxed">
+            ({hint})
+          </span>
+        )}
+      </label>
+      <div className="flex flex-col gap-2">
+        <div className="w-full bg-gray-800 border border-gray-700 rounded-md p-4 transition-colors focus-within:border-purple-500">
           <textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             disabled={disabled}
             rows={rows}
-            className={styles.textarea}
+            className="w-full bg-transparent text-white text-base font-semibold outline-none border-none placeholder-gray-400 disabled:text-gray-400 disabled:cursor-not-allowed resize-none"
           />
         </div>
-        {hint && <p className={styles.hint}>{hint}</p>}
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
-import ProfileForm from "../ProfileForm";
+import ProfileForm from '../ProfileForm';
 
 export default function ProfilePage() {
-  return <ProfileForm />;
+  return (
+    <div className="h-full bg-black relative overflow-hidden">
+      <ProfileForm />
+    </div>
+  );
 }
