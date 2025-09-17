@@ -10,6 +10,7 @@ export default [
     index('routes/home.tsx'),
     route('shop', 'routes/shop.tsx'),
     route('invoice', 'routes/invoice.tsx'),
+
     route('', 'routes/protected/ProtectedRoute.tsx', [
       route('profile', 'routes/profile.tsx'),
       route('create-blog', 'routes/blog/create-blog.tsx'),
@@ -19,6 +20,7 @@ export default [
     route('/question/:id', 'routes/question/question-detail.tsx'),
     route('blog', 'routes/blog/blog.tsx'),
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
+
   ]),
 
   layout('routes/auth/layout.tsx', [

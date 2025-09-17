@@ -1,6 +1,5 @@
-import clsx from "clsx";
-import React, { useState, useRef, useEffect } from "react";
-import styles from "./Select.module.css";
+import clsx from 'clsx';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface SelectOption {
   value: string;
@@ -44,25 +43,17 @@ export default function Select({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
   const selectedOption = options.find((option) => option.value === value);
 
-  // Debug: Log để kiểm tra giá trị và options
-  console.log(`Select ${label}:`, {
-    value,
-    options: options.map((opt) => ({ value: opt.value, label: opt.label })),
-    selectedOption,
-    found: !!selectedOption,
-  });
-
   const displayText = selectedOption
     ? selectedOption.label
-    : placeholder || "Chọn...";
+    : placeholder || 'Chọn...';
 
   const handleOptionClick = (optionValue: string) => {
     onChange(optionValue);
@@ -70,15 +61,19 @@ export default function Select({
   };
 
   return (
-    <div
-      className={clsx(
-        styles.selectContainer,
-        { [styles.required]: required },
-        className
-      )}
-    >
-      <label className={styles.label}>{label}</label>
-      <div className={styles.selectWrapper}>
+    <div className={clsx('flex flex-col gap-3', className)}>
+      <label className="text-gray-200 font-semibold text-base flex items-center gap-2">
+        <span>
+          {label}
+          {required && <span className="text-red-400 ml-1">*</span>}
+        </span>
+        {hint && (
+          <span className="text-blue-300 text-sm font-normal leading-relaxed">
+            ({hint})
+          </span>
+        )}
+      </label>
+      <div className="flex flex-col gap-2">
         <div className="relative" ref={dropdownRef}>
           {/* Custom Dropdown Button */}
           <button
@@ -86,12 +81,12 @@ export default function Select({
             onClick={() => !disabled && setIsOpen(!isOpen)}
             disabled={disabled}
             className={clsx(
-              "inline-flex w-full justify-between gap-x-1.5 rounded-md px-6 py-4 text-base font-semibold transition-colors",
+              'inline-flex w-full justify-between gap-x-1.5 rounded-md px-6 py-4 text-base font-semibold transition-colors',
               disabled
-                ? "bg-gray-800 text-gray-500 cursor-not-allowed opacity-50"
-                : "bg-gray-800 text-white hover:bg-gray-700 focus:border-purple-500",
-              "border border-gray-700 focus:outline-none focus:ring-0",
-              !selectedOption && !disabled && "text-gray-400"
+                ? 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-gray-800 text-white hover:bg-gray-700 focus:border-purple-500',
+              'border border-gray-700 focus:outline-none focus:ring-0',
+              !selectedOption && !disabled && 'text-gray-400'
             )}
           >
             <span className="truncate">{displayText}</span>
@@ -100,8 +95,8 @@ export default function Select({
               fill="currentColor"
               aria-hidden="true"
               className={clsx(
-                "size-5 text-gray-400 transition-transform duration-200",
-                isOpen && "rotate-180"
+                'size-5 text-gray-400 transition-transform duration-200',
+                isOpen && 'rotate-180'
               )}
             >
               <path
@@ -122,10 +117,10 @@ export default function Select({
                     type="button"
                     onClick={() => handleOptionClick(option.value)}
                     className={clsx(
-                      "block w-full px-4 py-2 text-left text-sm transition-colors",
+                      'block w-full px-4 py-2 text-left text-sm transition-colors',
                       option.value === value
-                        ? "bg-purple-600 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                        ? 'bg-purple-600 text-white'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                     )}
                   >
                     {option.label}
@@ -135,7 +130,6 @@ export default function Select({
             </div>
           )}
         </div>
-        {hint && <p className={styles.hint}>{hint}</p>}
       </div>
     </div>
   );

@@ -30,7 +30,9 @@ const navItemsData = [
     icon: <CommunitiesIcon />,
     text: navbar.communities,
   },
+
   { id: 'blog', to: '/blog', icon: <BlogIcon />, text: navbar.blog },
+
   { id: 'ask', to: '/ask', icon: <AskIcon />, text: navbar.ask },
 ];
 export default function Navbar() {
