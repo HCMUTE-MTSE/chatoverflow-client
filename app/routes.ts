@@ -18,6 +18,9 @@ export default [
     ]),
 
     route('/question/:id', 'routes/question/question-detail.tsx'),
+    route('ask', 'routes/ask.tsx'),
+    route('communities', 'routes/communities.tsx'),
+    route('editQuestion', 'routes/editQuestion.tsx'),
     route('blog', 'routes/blog/blog.tsx'),
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
 
