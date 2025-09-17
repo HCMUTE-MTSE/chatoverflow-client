@@ -1,7 +1,5 @@
-import clsx from "clsx";
-import React from "react";
-
-import styles from "./DateTimePicker.module.css";
+import clsx from 'clsx';
+import React from 'react';
 
 interface DateTimePickerProps {
   label: string;
@@ -12,35 +10,39 @@ interface DateTimePickerProps {
   required?: boolean;
   className?: string;
   disabled?: boolean;
-  type?: "date" | "datetime-local" | "time";
+  type?: 'date' | 'datetime-local' | 'time';
 }
 
 export default function DateTimePicker({
   label,
   value,
   onChange,
-  placeholder = "Chọn ngày",
+  placeholder = 'Chọn ngày',
   hint,
   required = false,
   className,
   disabled = false,
-  type = "date",
+  type = 'date',
 }: DateTimePickerProps) {
   return (
-    <div
-      className={clsx(
-        styles.dateTimeContainer,
-        { [styles.required]: required },
-        className
-      )}
-    >
-      <label className={styles.label}>{label}</label>
-      <div className={styles.dateTimeWrapper}>
-        <div className={styles.dateTimeField}>
+    <div className={clsx('flex flex-col gap-3', className)}>
+      <label className="text-gray-200 font-semibold text-base flex items-center gap-2">
+        <span>
+          {label}
+          {required && <span className="text-red-400 ml-1">*</span>}
+        </span>
+        {hint && (
+          <span className="text-blue-300 text-sm font-normal leading-relaxed">
+            ({hint})
+          </span>
+        )}
+      </label>
+      <div className="flex flex-col gap-2">
+        <div className="w-full bg-gray-800 border border-gray-700 rounded-md p-4 flex items-center gap-3 transition-colors focus-within:border-purple-500">
           {/* Calendar Icon */}
-          <div className={styles.iconWrapper}>
+          <div className="flex-shrink-0">
             <svg
-              className={styles.icon}
+              className="w-5 h-5 text-gray-400"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -63,10 +65,9 @@ export default function DateTimePicker({
             }}
             placeholder={placeholder}
             disabled={disabled}
-            className={styles.input}
+            className="flex-1 bg-transparent text-white text-base font-semibold outline-none border-none placeholder-gray-400 disabled:text-gray-400 disabled:cursor-not-allowed"
           />
         </div>
-        {hint && <p className={styles.hint}>{hint}</p>}
       </div>
     </div>
   );
