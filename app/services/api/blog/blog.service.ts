@@ -81,3 +81,10 @@ export const updateBlog = async (slug: string, formData: FormData) => {
   });
   return response.data;
 };
+
+export const getUserBlogs = async (userId: string) => {
+  const response = await axios.get<BlogListResponse>(
+    `${API_URL}/user/${userId}`
+  );
+  return response.data;
+};

@@ -132,7 +132,10 @@ export default function CreateBlog() {
         throw new Error(response.message || 'Failed to create blog post');
       }
     } catch (error) {
-      console.error('Error creating blog post:', error);
+      console.error(
+        '================Error creating blog post================:',
+        error
+      );
       showToast('error', 'Failed to create blog post. Please try again.');
     } finally {
       setIsSubmitting(false);

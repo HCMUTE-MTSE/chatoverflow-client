@@ -17,13 +17,18 @@ export default [
       route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
     ]),
 
-    route('/question/:id', 'routes/question/question-detail.tsx'),
     route('ask', 'routes/ask.tsx'),
-    route('communities', 'routes/communities.tsx'),
     route('editQuestion', 'routes/editQuestion.tsx'),
+    route('/question/:id', 'routes/question/question-detail.tsx'),
+
+    route('communities', 'routes/communities.tsx'),
+
     route('blog', 'routes/blog/blog.tsx'),
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
 
+    route('collections', 'routes/collections/allCollections.tsx'),
+    route('question-collections', 'routes/collections/questionCollections.tsx'),
+    route('blog-collections', 'routes/collections/blogCollections.tsx'),
   ]),
 
   layout('routes/auth/layout.tsx', [
@@ -33,7 +38,5 @@ export default [
     route('verify-register', 'routes/auth/verify-register.tsx'),
     route('forget-password', 'routes/auth/forget-password.tsx'),
     route('reset-password', 'routes/auth/reset-password.tsx'),
-
-    // Question
   ]),
 ] satisfies RouteConfig;
