@@ -10,16 +10,17 @@ export default [
     index('routes/home.tsx'),
     route('shop', 'routes/shop.tsx'),
     route('invoice', 'routes/invoice.tsx'),
-    route('tags', 'routes/tags.tsx'),
-    route('jobs', 'routes/jobs.tsx'),
-    route('collections', 'routes/collections.tsx'),
-    route('communities', 'routes/communities.tsx'),
-    route('ask', 'routes/ask.tsx'),
-    route('profile', 'routes/protected/ProtectedRoute.tsx', [
-      index('routes/profile.tsx'),
+
+    route('', 'routes/protected/ProtectedRoute.tsx', [
+      route('profile', 'routes/profile.tsx'),
+      route('create-blog', 'routes/blog/create-blog.tsx'),
+      route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
     ]),
 
     route('/question/:id', 'routes/question/question-detail.tsx'),
+    route('blog', 'routes/blog/blog.tsx'),
+    route('blog/:slug', 'routes/blog/view-blog.tsx'),
+
   ]),
 
   layout('routes/auth/layout.tsx', [
