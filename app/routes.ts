@@ -10,16 +10,23 @@ export default [
     index('routes/home.tsx'),
     route('shop', 'routes/shop.tsx'),
     route('invoice', 'routes/invoice.tsx'),
-    route('tags', 'routes/tags.tsx'),
-    route('jobs', 'routes/jobs.tsx'),
-    route('collections', 'routes/collections.tsx'),
-    route('communities', 'routes/communities.tsx'),
-    route('ask', 'routes/ask.tsx'),
-    route('profile', 'routes/protected/ProtectedRoute.tsx', [
-      index('routes/profile.tsx'),
+
+    route('', 'routes/protected/ProtectedRoute.tsx', [
+      route('profile', 'routes/profile.tsx'),
+      route('create-blog', 'routes/blog/create-blog.tsx'),
+      route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
     ]),
 
+    route('ask', 'routes/ask.tsx'),
+    route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
     route('/question/:id', 'routes/question/question-detail.tsx'),
+
+    route('communities', 'routes/communities.tsx'),
+
+    route('blog', 'routes/blog/blog.tsx'),
+    route('blog/:slug', 'routes/blog/view-blog.tsx'),
+
+    route('collections', 'routes/collections/my-collections.tsx'),
   ]),
 
   layout('routes/auth/layout.tsx', [
@@ -29,7 +36,5 @@ export default [
     route('verify-register', 'routes/auth/verify-register.tsx'),
     route('forget-password', 'routes/auth/forget-password.tsx'),
     route('reset-password', 'routes/auth/reset-password.tsx'),
-
-    // Question
   ]),
 ] satisfies RouteConfig;
