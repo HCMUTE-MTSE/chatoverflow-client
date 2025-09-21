@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import BlogCard from '../../components/ui/BlogCard/BlogCard';
 import blog from '../../lang/en/blog';
-import {
-  getBlogList,
-  type BlogListResponse,
-} from '../../services/api/blog/blog.service';
+import { getBlogList } from '../../services/api/blog/blog.service';
+import type { BlogListResponse } from '../../models/res/blog.response';
 
 type BlogPost = BlogListResponse['data'][0];
 
