@@ -13,9 +13,12 @@ export default [
 
     route('', 'routes/protected/ProtectedRoute.tsx', [
       route('profile', 'routes/profile.tsx'),
+      route('profile-view', 'routes/profile-view.tsx'),
       route('create-blog', 'routes/blog/create-blog.tsx'),
       route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
     ]),
+
+    route('tags', 'routes/tags.tsx'),
 
     route('ask', 'routes/ask.tsx'),
     route('/question/:id/edit', 'routes/question/editQuestion.tsx'),

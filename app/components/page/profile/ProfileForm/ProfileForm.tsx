@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useLocation } from 'react-router';
 import Input from '../../../ui/Input/Input';
 import Select from '../../../ui/Select/Select';
 import Textarea from '../../../ui/Textarea/Textarea';
@@ -18,6 +19,7 @@ interface ProfileFormData {
   name: string;
   nickName: string;
   email: string;
+  bio: string;
   dateOfBirth: string;
   gender: string;
   province: string;
@@ -25,11 +27,20 @@ interface ProfileFormData {
   street: string;
 }
 
+// Interface cho router state
+interface RouterState {
+  userData?: UserResponse;
+}
+
 const ProfileForm: React.FC = () => {
+  const location = useLocation();
+  const routerState = location.state as RouterState | null;
+
   const [formData, setFormData] = React.useState<ProfileFormData>({
     name: '',
     nickName: '',
     email: '',
+    bio: '',
     dateOfBirth: '',
     gender: '',
     province: '',
@@ -76,7 +87,6 @@ const ProfileForm: React.FC = () => {
       setLoadingWards(true);
       try {
         const wardsData = await getWards(formData.province);
-        // Đảm bảo wardsData là array
         setWards(Array.isArray(wardsData) ? wardsData : []);
       } catch (err) {
         console.error(profileLang.messages.errorLoadingWards, err);
@@ -89,65 +99,72 @@ const ProfileForm: React.FC = () => {
     loadWards();
   }, [formData.province]);
 
-  // Load user data khi component mount và khi provinces đã load xong
+  // Load user data - Ưu tiên router state, fallback API
   React.useEffect(() => {
     const loadUserData = async () => {
-      // Chỉ load user data khi provinces đã có
       if (provinces.length === 0) return;
 
       setLoading(true);
       setError(null);
 
       try {
-        const response = await getUser();
-        if (response.success && response.data) {
-          const userData: UserResponse = response.data;
+        let userData: UserResponse;
 
-          // Convert ISO date string to YYYY-MM-DD format for HTML input date
-          let formattedDate = '';
-          if (userData.dateOfBirth) {
-            const date = new Date(userData.dateOfBirth);
-            if (!isNaN(date.getTime())) {
-              formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-            }
+        if (routerState?.userData) {
+          userData = routerState.userData;
+        } else {
+          const response = await getUser();
+          if (response.success && response.data) {
+            userData = response.data;
+          } else {
+            throw new Error('Failed to fetch user data');
           }
+        }
 
-          // Tìm province code từ name để hiển thị trong select
-          const selectedProvince = provinces.find(
-            (p) => p.name === userData.address?.province
-          );
-          const provinceCode = selectedProvince?.code.toString() || '';
+        // Format date cho HTML input
+        let formattedDate = '';
+        if (userData.dateOfBirth) {
+          const date = new Date(userData.dateOfBirth);
+          if (!isNaN(date.getTime())) {
+            formattedDate = date.toISOString().split('T')[0];
+          }
+        }
 
-          setFormData({
-            name: userData.name || '',
-            nickName: userData.nickName || '',
-            email: userData.email || '',
-            dateOfBirth: formattedDate,
-            gender: userData.gender || '',
-            province: provinceCode, // Lưu code để hiển thị trong select
-            ward: '', // Sẽ được cập nhật sau khi load wards
-            street: userData.address?.street || '',
-          });
+        // Tìm province code
+        const selectedProvince = provinces.find(
+          (p) => p.name === userData.address?.province
+        );
+        const provinceCode = selectedProvince?.code.toString() || '';
 
-          // Load wards sau khi có province để tìm ward code
-          if (provinceCode && userData.address?.ward) {
-            try {
-              const wardsData = await getWards(provinceCode);
-              // Đảm bảo wardsData là array trước khi gọi find
-              if (Array.isArray(wardsData)) {
-                const selectedWard = wardsData.find(
-                  (w) => w.name === userData.address?.ward
-                );
-                const wardCode = selectedWard?.code.toString() || '';
+        setFormData({
+          name: userData.name || '',
+          nickName: userData.nickName || '',
+          email: userData.email || '',
+          bio: userData.bio || '',
+          dateOfBirth: formattedDate,
+          gender: userData.gender || '',
+          province: provinceCode,
+          ward: '',
+          street: userData.address?.street || '',
+        });
 
-                setFormData((prev) => ({
-                  ...prev,
-                  ward: wardCode, // Lưu code để hiển thị trong select
-                }));
-              }
-            } catch (err) {
-              console.error(profileLang.messages.errorLoadingWardsForUser, err);
+        // Load wards và set ward nếu có
+        if (provinceCode && userData.address?.ward) {
+          try {
+            const wardsData = await getWards(provinceCode);
+            if (Array.isArray(wardsData)) {
+              const selectedWard = wardsData.find(
+                (w) => w.name === userData.address?.ward
+              );
+              const wardCode = selectedWard?.code.toString() || '';
+
+              setFormData((prev) => ({
+                ...prev,
+                ward: wardCode,
+              }));
             }
+          } catch (err) {
+            console.error(profileLang.messages.errorLoadingWardsForUser, err);
           }
         }
       } catch (err: any) {
@@ -159,9 +176,9 @@ const ProfileForm: React.FC = () => {
     };
 
     loadUserData();
-  }, [provinces]); // Thêm provinces vào dependency
+  }, [provinces, routerState]);
 
-  // Options for select components using internationalization
+  // Options for select components
   const genderOptions = [
     { value: 'male', label: profileLang.genderOptions.male },
     { value: 'female', label: profileLang.genderOptions.female },
@@ -172,13 +189,11 @@ const ProfileForm: React.FC = () => {
     },
   ];
 
-  // Convert provinces to select options
   const provinceOptions = provinces.map((province) => ({
     value: province.code.toString(),
     label: province.name,
   }));
 
-  // Convert wards to select options
   const wardOptions = Array.isArray(wards)
     ? wards.map((ward) => ({
         value: ward.code.toString(),
@@ -188,12 +203,11 @@ const ProfileForm: React.FC = () => {
 
   const handleInputChange = (field: keyof ProfileFormData, value: string) => {
     setFormData((prev) => {
-      // Reset ward when province changes
       if (field === 'province') {
         return {
           ...prev,
           [field]: value,
-          ward: '', // Reset ward when province changes
+          ward: '',
         };
       }
       return {
@@ -202,7 +216,6 @@ const ProfileForm: React.FC = () => {
       };
     });
 
-    // Clear success/error messages when user starts editing
     if (success) setSuccess(null);
     if (error) setError(null);
   };
@@ -214,7 +227,6 @@ const ProfileForm: React.FC = () => {
     setSuccess(null);
 
     try {
-      // Tìm tên province và ward từ code để lưu vào database
       const selectedProvince = provinces.find(
         (p) => p.code.toString() === formData.province
       );
@@ -222,16 +234,16 @@ const ProfileForm: React.FC = () => {
         (w) => w.code.toString() === formData.ward
       );
 
-      // Convert form data to UserRequest format
       const address: Address = {
-        province: selectedProvince?.name || formData.province, // Lưu name thay vì code
-        ward: selectedWard?.name || formData.ward, // Lưu name thay vì code
+        province: selectedProvince?.name || formData.province,
+        ward: selectedWard?.name || formData.ward,
         street: formData.street,
       };
 
       const userRequest: UserRequest = {
         name: formData.name,
         nickName: formData.nickName,
+        bio: formData.bio,
         dateOfBirth: formData.dateOfBirth,
         gender: formData.gender,
         address: address,
@@ -267,6 +279,7 @@ const ProfileForm: React.FC = () => {
       <h1 className="text-white text-3xl font-bold mb-6">
         {profileLang.title}
       </h1>
+
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Error/Success Messages */}
         {error && (
@@ -295,6 +308,15 @@ const ProfileForm: React.FC = () => {
             hint={profileLang.hints.fullName}
             required
           />
+
+          <Textarea
+            label={profileLang.labels.bio}
+            value={formData.bio}
+            onChange={(value) => handleInputChange('bio', value)}
+            placeholder={profileLang.placeholders.bio}
+            hint={profileLang.hints.bio}
+            rows={3}
+          />
         </div>
 
         {/* Personal Information Section */}
@@ -319,7 +341,6 @@ const ProfileForm: React.FC = () => {
               required
               disabled={true}
             />
-            {/* Lock icon overlay */}
             <div className="absolute top-8 right-3 pointer-events-none">
               <svg
                 className="w-5 h-5 text-gray-500"
@@ -363,7 +384,6 @@ const ProfileForm: React.FC = () => {
             {profileLang.addressInfo}
           </h3>
 
-          {/* Province and Ward in Grid */}
           <div className="grid md:grid-cols-2 gap-3 mb-2">
             <Select
               label={profileLang.labels.province}
