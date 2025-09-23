@@ -58,8 +58,8 @@ export default function Header({
     if (result) {
       setUpvoted(!upvoted);
       setDownvoted(false);
-      setUpvoteCount(result.userUpvotedLength);
-      setDownvoteCount(result.userDownvotedLength);
+      setUpvoteCount(result.upvotes);
+      setDownvoteCount(result.downvotes);
     }
   };
 
@@ -73,8 +73,8 @@ export default function Header({
     if (result) {
       setDownvoted(!downvoted);
       setUpvoted(false);
-      setUpvoteCount(result.userUpvotedLength);
-      setDownvoteCount(result.userDownvotedLength);
+      setUpvoteCount(result.upvotes);
+      setDownvoteCount(result.downvotes);
     }
   };
 
