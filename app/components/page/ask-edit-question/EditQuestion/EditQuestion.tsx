@@ -106,7 +106,8 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
           setTags(questionData.tags || []);
 
           // Convert plain text content to JSONContent format for the editor
-          const jsonContent = convertTextToJSONContent(questionData.content);
+          // const jsonContent = convertTextToJSONContent(questionData.content);
+          const jsonContent = JSON.parse(questionData.content);
           setContent(jsonContent);
         } else {
           showToast('Question not found', 'error');
@@ -234,6 +235,7 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
 
         {typeof window !== 'undefined' && (
           <QuestionEditor
+            title="Detailed explanation of your problem?"
             content={content}
             onChange={setContent}
             editorRef={setEditor}

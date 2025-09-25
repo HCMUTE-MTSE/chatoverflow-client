@@ -1,21 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { generateHTML } from '@tiptap/html';
 import { extensions } from '~/libs/tiptap/extensions';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 
-interface QuestionContentProps {
-  content: any;
+interface AnswerContentProps {
+  content: any; // JSON content from TipTap
 }
 
-export default function QuestionContent({ content }: QuestionContentProps) {
+const AnswerContent: React.FC<AnswerContentProps> = ({ content }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [htmlContent, setHtmlContent] = useState<string>('');
   const [zoomedImg, setZoomedImg] = useState<string | null>(null);
 
-  // Generate HTML from TipTap JSON
+  // Convert TipTap JSON to HTML
   useEffect(() => {
     if (!content) return;
+
     try {
       const tiptapContent =
         typeof content === 'string' ? JSON.parse(content) : content;
@@ -31,13 +32,12 @@ export default function QuestionContent({ content }: QuestionContentProps) {
     }
   }, [content]);
 
-  // Highlight code & attach image using MutationObserver
+  // Highlight code & attach image zoom
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const applyEnhancements = () => {
-      // Highlight code blocks
       container.querySelectorAll<HTMLElement>('pre > code').forEach((block) => {
         hljs.highlightElement(block);
 
@@ -57,12 +57,10 @@ export default function QuestionContent({ content }: QuestionContentProps) {
               setTimeout(() => (btn.innerText = 'Copy'), 2000);
             } catch {}
           };
-
           wrapper.appendChild(btn);
         }
       });
 
-      // Attach zoom for images
       container.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
         img.style.cursor = 'zoom-in';
         img.onclick = (e) => {
@@ -73,11 +71,7 @@ export default function QuestionContent({ content }: QuestionContentProps) {
     };
 
     applyEnhancements();
-
-    const observer = new MutationObserver(() => {
-      applyEnhancements();
-    });
-
+    const observer = new MutationObserver(() => applyEnhancements());
     observer.observe(container, { childList: true, subtree: true });
 
     return () => observer.disconnect();
@@ -89,12 +83,11 @@ export default function QuestionContent({ content }: QuestionContentProps) {
     <>
       <div
         ref={containerRef}
-        className={`rich-content prose prose-invert max-w-none transition-all duration-200 ${
+        className={`px-5 pb-2 pt-1 rich-content prose prose-invert max-w-none transition-all duration-200 ${
           zoomedImg ? 'filter blur-sm pointer-events-none' : ''
         }`}
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
-
       {zoomedImg && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
@@ -110,4 +103,6 @@ export default function QuestionContent({ content }: QuestionContentProps) {
       )}
     </>
   );
-}
+};
+
+export default AnswerContent;
