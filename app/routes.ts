@@ -15,10 +15,10 @@ export default [
       route('profile', 'routes/profile.tsx'),
       route('create-blog', 'routes/blog/create-blog.tsx'),
       route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
+      route('ask', 'routes/ask.tsx'),
+      route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
     ]),
 
-    route('ask', 'routes/ask.tsx'),
-    route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
     route('/question/:id', 'routes/question/question-detail.tsx'),
 
     route('communities', 'routes/communities.tsx'),

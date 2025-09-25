@@ -6,24 +6,7 @@ import QuestionTags from '../../../ui/AskEditQuestion/QuestionTags';
 import SubmitButton from '../../../ui/AskEditQuestion/SubmitButton';
 import { createQuestion } from '~/services/api/topic/question.service';
 import type { JSONContent } from '@tiptap/react';
-
-const TAG_SUGGESTIONS = [
-  'javascript',
-  'react',
-  'nodejs',
-  'css',
-  'html',
-  'typescript',
-  'python',
-  'java',
-  'csharp',
-  'php',
-  'sql',
-  'docker',
-  'linux',
-  'git',
-  'api',
-];
+import { getTagList } from '~/services/api/tags/tag.service';
 
 const EMPTY_CONTENT: JSONContent = { type: 'doc', content: [] };
 
@@ -33,6 +16,22 @@ const CreateQuestionContent: React.FC = () => {
   const [content, setContent] = useState<JSONContent>(EMPTY_CONTENT);
   const [editor, setEditor] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await getTagList(1, 100);
+        if (res.success && res.data) {
+          setTagSuggestions(res.data.map((tag) => tag.name));
+        }
+      } catch (err) {
+        console.error('Failed to fetch tag list', err);
+      }
+    };
+
+    fetchTags();
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -72,7 +71,7 @@ const CreateQuestionContent: React.FC = () => {
       const payload = {
         title,
         tags,
-        content: JSON.stringify(content), // backend nhận string
+        content: JSON.stringify(content),
       };
 
       const newQuestion = await createQuestion(payload, token);
@@ -81,7 +80,7 @@ const CreateQuestionContent: React.FC = () => {
         setTitle('');
         setTags([]);
         setContent(EMPTY_CONTENT);
-        editor?.commands.setContent(EMPTY_CONTENT); // reset editor UI
+        editor?.commands.setContent(EMPTY_CONTENT);
       } else {
         showToast('Failed to create question', 'error');
       }
@@ -101,6 +100,7 @@ const CreateQuestionContent: React.FC = () => {
         <QuestionTitle title={title} onChange={setTitle} />
         {typeof window !== 'undefined' && (
           <QuestionEditor
+            title="Detailed explanation of your problem?"
             content={content}
             onChange={setContent}
             editorRef={setEditor}
@@ -109,7 +109,7 @@ const CreateQuestionContent: React.FC = () => {
         <QuestionTags
           tags={tags}
           onChange={setTags}
-          suggestions={TAG_SUGGESTIONS}
+          suggestions={tagSuggestions}
           maxTags={5}
         />
         <SubmitButton />

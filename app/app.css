@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@import 'highlight.js/styles/github-dark.css';
+/* Ensure highlight.js code block colors are visible */
+/* Basic editor styles */
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif,
@@ -6,52 +9,104 @@
 }
 
 @layer base {
-  .ProseMirror {
-    @apply text-white bg-[#23272F] p-4 rounded-md min-h-[160px] focus:outline-none;
+  /* === Shared styles for Editor & Viewer === */
+  .ProseMirror,
+  .rich-content {
+    @apply text-white leading-relaxed;
   }
 
-  .ProseMirror h1 {
+  .ProseMirror h1,
+  .rich-content h1 {
     @apply text-2xl font-bold mb-2;
   }
 
-  .ProseMirror h2 {
+  .ProseMirror h2,
+  .rich-content h2 {
     @apply text-xl font-semibold mb-2;
   }
 
-  .ProseMirror blockquote {
+  .ProseMirror blockquote,
+  .rich-content blockquote {
     @apply border-l-4 border-orange-500 pl-4 italic text-gray-300 mb-2;
   }
 
-  .ProseMirror ul {
+  .ProseMirror ul,
+  .rich-content ul {
     @apply list-disc ml-6 mb-2;
   }
 
-  .ProseMirror ol {
+  .ProseMirror ol,
+  .rich-content ol {
     @apply list-decimal ml-6 mb-2;
   }
 
-  .ProseMirror a {
-    @apply text-blue-400 underline cursor-default transition-colors;
+  .ProseMirror a,
+  .rich-content a {
+    @apply text-blue-400 underline cursor-pointer transition-colors;
   }
 
-  .ProseMirror a.ctrl-hover {
-    @apply cursor-pointer;
-  }
-
-  .ProseMirror img {
+  .ProseMirror img,
+  .rich-content img {
     @apply max-h-48 my-2 rounded;
   }
 
-  .ProseMirror p {
+  /* Reply system animations */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .ProseMirror p,
+  .rich-content p {
     @apply mb-2;
   }
 
-  .ProseMirror pre {
-    @apply bg-gray-800 text-sm p-2 rounded mb-2 overflow-x-auto;
+  /* === Code blocks === */
+  .ProseMirror pre,
+  .rich-content pre {
+    @apply bg-gray-900 text-sm p-3 rounded-md overflow-x-auto font-mono mb-3;
   }
 
-  .ProseMirror code {
-    @apply bg-gray-700 text-sm px-1 rounded;
+  .ProseMirror code,
+  .rich-content code {
+    @apply bg-gray-700 text-sm px-1 py-0.5 rounded font-mono;
+    color: inherit;
+  }
+
+  .ProseMirror pre code,
+  .rich-content pre code {
+    @apply bg-transparent p-0 font-mono;
+    color: inherit;
+  }
+
+  /* === Editor-only === */
+  .ProseMirror {
+    @apply bg-[#23272F] p-4 rounded-md min-h-[160px] focus:outline-none;
   }
 
   .ProseMirror ::selection {
