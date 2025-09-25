@@ -1,10 +1,8 @@
 import * as React from 'react';
 
 import blog from '~/lang/en/blog';
-import {
-  getUserBlogs,
-  type BlogListResponse,
-} from '~/services/api/blog/blog.service';
+import { getUserBlogs } from '~/services/api/blog/blog.service';
+import type { BlogListResponse } from '~/models/res/blog.response';
 import { getUser } from '~/services/api/user/user.service';
 
 import BlogCard from '~/components/ui/BlogCard/BlogCard';
