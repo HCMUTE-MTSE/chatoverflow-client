@@ -23,7 +23,7 @@ export default function ImageUploadingIndicator() {
           d="M4 12a8 8 0 018-8v8z"
         ></path>
       </svg>
-      <span className="text-orange-500 font-semibold">Đang tải ảnh lên...</span>
+      <span className="text-orange-500 font-semibold">Uploading Image</span>
     </div>
   );
 }

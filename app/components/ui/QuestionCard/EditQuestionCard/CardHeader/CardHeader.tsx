@@ -1,7 +1,7 @@
 import {
   QuestionCardEditIcon,
   QuestionCardDeleteIcon,
-} from "../../../../../libs/icons";
+} from '../../../../../libs/icons';
 
 interface CardHeaderProps {
   title: string;
@@ -16,7 +16,7 @@ export default function CardHeader({
 }: CardHeaderProps) {
   return (
     <div className="flex justify-between items-start mb-3">
-      <h2 className="text-lg font-semibold flex-1">{title}</h2>
+      <h2 className="text-lg font-semibold flex-1 text-white">{title}</h2>
       <div className="flex gap-2">
         {onEdit && (
           <button

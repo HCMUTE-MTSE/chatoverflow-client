@@ -45,7 +45,7 @@ export default function Header() {
     if (typeof window !== 'undefined') {
       const token = window.localStorage.getItem('token');
       if (token) {
-        navigate('/profile');
+        navigate('/profile-view');
       } else {
         navigate('/login');
       }

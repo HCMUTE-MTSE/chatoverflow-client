@@ -6,13 +6,13 @@ import {
   type Question,
 } from '../services/api/topic/question.service';
 import { useNavigate } from 'react-router-dom';
+import AnswerCard from '../components/ui/AnswerCard/Card';
 
 export default function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const type = 'newest';
-
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -23,10 +23,8 @@ export default function App() {
     }
     fetchQuestions();
   }, [type]);
-
   if (loading)
     return <div className="p-8 text-center">Loading Question...</div>;
-
   return (
     <div className="p-8 flex flex-col items-center gap-4">
       {questions.map((q) => (
