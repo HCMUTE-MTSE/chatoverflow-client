@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import header from '../../lang/en/header';
+import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
+
+import { SearchPage } from '../page/global-search/SearchPage';
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
@@ -86,12 +88,8 @@ export default function Header() {
     <header className="w-full sticky top-0 z-10 bg-gray-950/70 backdrop-blur border-b border-gray-800">
       <div className="px-6 py-4 flex items-center gap-4">
         {/* Search */}
-        <div className="flex-1 flex justify-center">
-          <input
-            placeholder={header.search}
-            className="w-full max-w-md h-10 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-200 px-4 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-        </div>
+
+        <SearchPage></SearchPage>
 
         {/* Avatar + Dropdown */}
         <div className="relative" ref={ref}>
@@ -115,7 +113,6 @@ export default function Header() {
 
           {open && (
             <div className="absolute right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-2">
-
               <div className="px-3 py-2 text-sm text-gray-300">
                 <p className="font-semibold text-white truncate">{nickName}</p>
               </div>
@@ -137,7 +134,6 @@ export default function Header() {
               </button>
               <div className="h-px bg-gray-800 my-1" />
               <button
-
                 onClick={handleLogout}
                 className="w-full text-left px-3 py-2 text-sm text-red-300 rounded-md hover:bg-gray-800"
               >
