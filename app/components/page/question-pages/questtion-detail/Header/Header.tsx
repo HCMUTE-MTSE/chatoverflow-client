@@ -1,46 +1,118 @@
 import {
-   BiUpvote,
-   BiSolidUpvote,
-   BiDownvote,
-   BiSolidDownvote,
+  BiUpvote,
+  BiSolidUpvote,
+  BiDownvote,
+  BiSolidDownvote,
 } from 'react-icons/bi';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  upvoteQuestion,
+  downvoteQuestion,
+  voteStatus,
+} from '~/services/api/topic/question.service';
 
 interface HeaderProps {
-   ownerAvatar: string;
-   ownerName: string;
-   totalUpvote: number;
-   totalDownvote: number;
+  questionId: string;
+  ownerAvatar: string;
+  ownerName: string;
+  totalUpvote: number;
+  totalDownvote: number;
 }
+
 export default function Header({
-   ownerAvatar,
-   ownerName,
-   totalUpvote,
-   totalDownvote,
+  questionId,
+  ownerAvatar,
+  ownerName,
+  totalUpvote,
+  totalDownvote,
 }: HeaderProps) {
-   return (
-      <div className="flex items-center justify-between mb-4">
-         <div className="flex items-center gap-3">
-            <img
-               src={ownerAvatar}
-               alt={ownerName}
-               className="w-8 h-8 rounded-full object-cover"
-            />
-            <span className="font-medium">{ownerName}</span>
-         </div>
-         <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-1 text-[#6DFF8D]">
-               <BiSolidUpvote size={16} />
-               <span className="px-1 bg-[#212734] rounded-sm">
-                  {totalUpvote}
-               </span>
-            </div>
-            <div className="flex items-center gap-1 text-[#FF6D6D]">
-               <BiDownvote size={16} />{' '}
-               <span className="px-1 bg-[#212734] rounded-sm">
-                  -{totalDownvote}
-               </span>
-            </div>
-         </div>
+  const navigate = useNavigate();
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
+  const [upvoteCount, setUpvoteCount] = useState(totalUpvote);
+  const [downvoteCount, setDownvoteCount] = useState(totalDownvote);
+
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (token) {
+      const fetchVoteStatus = async () => {
+        const status = await voteStatus(questionId, token);
+        if (status) {
+          setUpvoted(status.upvoted);
+          setDownvoted(status.downvoted);
+        }
+      };
+      fetchVoteStatus();
+    }
+  }, [token]);
+
+  const handleUpvote = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    const result = await upvoteQuestion(questionId, token);
+    if (result) {
+      setUpvoted(!upvoted);
+      setDownvoted(false);
+      setUpvoteCount(result.upvotes);
+      setDownvoteCount(result.downvotes);
+    }
+  };
+
+  const handleDownvote = async () => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    const result = await downvoteQuestion(questionId, token);
+    if (result) {
+      setDownvoted(!downvoted);
+      setUpvoted(false);
+      setUpvoteCount(result.upvotes);
+      setDownvoteCount(result.downvotes);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center gap-3">
+        <img
+          src={ownerAvatar}
+          alt={ownerName}
+          className="w-8 h-8 rounded-full object-cover"
+        />
+        <span className="font-medium">{ownerName}</span>
       </div>
-   );
+      <div className="flex items-center gap-4 text-sm">
+        <button
+          onClick={handleUpvote}
+          className={`flex items-center gap-1 px-2 py-1 rounded-sm ${
+            upvoted
+              ? 'text-[#6DFF8D] bg-[#212734]'
+              : 'text-[#6DFF8D] hover:bg-[#212734]'
+          } transition-colors`}
+        >
+          {upvoted ? <BiSolidUpvote size={16} /> : <BiUpvote size={16} />}
+          <span>{upvoteCount}</span>
+        </button>
+
+        <button
+          onClick={handleDownvote}
+          className={`flex items-center gap-1 px-2 py-1 rounded-sm ${
+            downvoted
+              ? 'text-[#FF6D6D] bg-[#212734]'
+              : 'text-[#FF6D6D] hover:bg-[#212734]'
+          } transition-colors`}
+        >
+          {downvoted ? <BiSolidDownvote size={16} /> : <BiDownvote size={16} />}
+          <span>{downvoteCount}</span>
+        </button>
+      </div>
+    </div>
+  );
 }

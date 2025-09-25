@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { ApiResponse } from '~/models/res/api.response';
 import type { CreateQuestionRequest } from '~/models/req/createQuestion.request';
+import type { VoteQuestionResponse } from '~/models/res/voteQuestion.response';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,6 +22,11 @@ export interface Question {
   createdAt: string;
   updatedAt: string;
   answerCount?: number;
+}
+
+export interface VoteStatus {
+  upvoted: boolean;
+  downvoted: boolean;
 }
 
 export async function createQuestion(
@@ -124,5 +130,57 @@ export async function updateQuestion(
       error
     );
     throw error;
+  }
+}
+
+export async function upvoteQuestion(
+  questionId: string,
+  token: string
+): Promise<VoteQuestionResponse | null> {
+  try {
+    const response = await axios.post<ApiResponse<VoteQuestionResponse>>(
+      `${API_BASE_URL}/question/${questionId}/upvote`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data.data || null;
+  } catch (err) {
+    console.error(`Failed to upvote question (id=${questionId}):`, err);
+    return null;
+  }
+}
+
+export async function downvoteQuestion(
+  questionId: string,
+  token: string
+): Promise<VoteQuestionResponse | null> {
+  try {
+    const response = await axios.post<ApiResponse<VoteQuestionResponse>>(
+      `${API_BASE_URL}/question/${questionId}/downvote`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data.data || null;
+  } catch (err) {
+    console.error(`Failed to downvote question (id=${questionId}):`, err);
+    return null;
+  }
+}
+
+export async function voteStatus(
+  questionId: string,
+  token: string
+): Promise<VoteStatus | null> {
+  try {
+    const response = await axios.get<ApiResponse<VoteStatus>>(
+      `${API_BASE_URL}/question/${questionId}/vote-status`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data.data || null;
+  } catch (error) {
+    console.error(`Failed to fetch vote status (id=${questionId}):`, error);
+    return null;
   }
 }
