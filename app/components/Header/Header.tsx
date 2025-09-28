@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import header from '../../lang/en/header';
+import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
+
+import { SearchPage } from '../page/global-search/SearchPage';
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
@@ -54,7 +56,7 @@ export default function Header() {
     if (typeof window !== 'undefined') {
       const token = window.localStorage.getItem('token');
       if (token) {
-        navigate('/profile');
+        navigate('/profile-view');
       } else {
         navigate('/login');
       }
@@ -97,12 +99,8 @@ export default function Header() {
     <header className="w-full sticky top-0 z-10 bg-gray-950/70 backdrop-blur border-b border-gray-800">
       <div className="px-6 py-4 flex items-center gap-4">
         {/* Search */}
-        <div className="flex-1 flex justify-center">
-          <input
-            placeholder={header.search}
-            className="w-full max-w-md h-10 rounded-lg bg-gray-800 border border-gray-700 text-sm text-gray-200 px-4 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-        </div>
+
+        <SearchPage></SearchPage>
 
         {/* Avatar + Dropdown */}
         <div className="relative" ref={ref}>

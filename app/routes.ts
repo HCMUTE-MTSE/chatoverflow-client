@@ -10,15 +10,23 @@ export default [
     index('routes/home.tsx'),
     route('shop', 'routes/shop.tsx'),
     route('invoice', 'routes/invoice.tsx'),
+    route('tags', 'routes/tags.tsx'),
 
     route('', 'routes/protected/ProtectedRoute.tsx', [
       route('profile', 'routes/profile.tsx'),
+      route('profile-view', 'routes/profile-view.tsx'),
       route('create-blog', 'routes/blog/create-blog.tsx'),
       route('blog/:slug/edit', 'routes/blog/edit-blog.tsx'),
       route('ask', 'routes/ask.tsx'),
       route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
       route('statistics', 'routes/statistics/statistics.tsx'),
+      /* route('/question/:id/edit', 'routes/question/editQuestion.tsx'), */
     ]),
+
+    /* route('tags', 'routes/tags.tsx'),
+
+    route('ask', 'routes/ask.tsx'),
+    route('/question/:id/edit', 'routes/question/editQuestion.tsx'), */
 
     route('/question/:id', 'routes/question/question-detail.tsx'),
 

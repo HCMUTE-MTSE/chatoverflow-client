@@ -1,4 +1,4 @@
-import { QuestionCardSavedIcon } from "../../../../../libs/icons";
+import { QuestionCardSavedIcon } from '../../../../../libs/icons';
 
 interface CardHeaderProps {
   title: string;
@@ -8,7 +8,7 @@ interface CardHeaderProps {
 export default function CardHeader({ title, onSave }: CardHeaderProps) {
   return (
     <div className="flex justify-between items-start mb-3">
-      <h2 className="text-lg font-semibold flex-1">{title}</h2>
+      <h2 className="text-lg font-semibold flex-1 text-white">{title}</h2>
       {onSave && (
         <button
           onClick={(e) => {

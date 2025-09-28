@@ -1,48 +1,16 @@
 import axios from 'axios';
+import type {
+  BlogListResponse,
+  BlogDetailResponse,
+  BlogVoteResponse,
+  CommentListResponse,
+  CreateCommentResponse,
+  CommentVoteResponse,
+  Comment,
+} from '../../../models/res/blog.response';
 
-const API_URL = 'http://localhost:3000/blog';
-
-export interface BlogListResponse {
-  success: boolean;
-  message: string;
-  data: Array<{
-    id: string;
-    coverImage: string;
-    title: string;
-    slug: string;
-    summary: string;
-    author: {
-      avatar: string;
-      nickName: string;
-    };
-    createdAt: string;
-  }>;
-  pagination: {
-    page: number;
-    limit: number;
-    nextUrl: string | null;
-  };
-}
-
-export interface BlogDetailResponse {
-  success: boolean;
-  message: string;
-  data: {
-    id: string;
-    coverImage: string;
-    title: string;
-    contentHtml: string;
-    summary: string;
-    author: {
-      avatar: string;
-      nickName: string;
-    };
-    createdAt: string;
-    tags: string[];
-    upvotes: number;
-    downvotes: number;
-  };
-}
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL = `${API_BASE_URL}/blog`;
 
 export const getBlogList = async (page: number = 1) => {
   const response = await axios.get<BlogListResponse>(`${API_URL}?page=${page}`);
@@ -85,6 +53,73 @@ export const updateBlog = async (slug: string, formData: FormData) => {
 export const getUserBlogs = async (userId: string) => {
   const response = await axios.get<BlogListResponse>(
     `${API_URL}/user/${userId}`
+  );
+  return response.data;
+};
+
+export const voteBlog = async (
+  blogSlug: string,
+  voteType: 'upvote' | 'downvote'
+) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.post<BlogVoteResponse>(
+    `${API_URL}/${blogSlug}/vote`,
+    { voteType },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const getBlogComments = async (blogSlug: string, page: number = 1) => {
+  const response = await axios.get<CommentListResponse>(
+    `${API_URL}/${blogSlug}/comments?page=${page}`
+  );
+  return response.data;
+};
+
+export const createBlogComment = async (blogSlug: string, content: string) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.post<CreateCommentResponse>(
+    `${API_URL}/${blogSlug}/comments`,
+    { content },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const voteComment = async (
+  commentId: string,
+  voteType: 'upvote' | 'downvote'
+) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.post<CommentVoteResponse>(
+    `${API_BASE_URL}/blog/comments/${commentId}/vote`,
+    { voteType },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   return response.data;
 };

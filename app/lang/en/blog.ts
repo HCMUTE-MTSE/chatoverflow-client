@@ -25,6 +25,19 @@ const blog = {
     contentRequired: 'Content is required',
     summaryRequired: 'Summary is required',
   },
+  comments: {
+    title: 'Comments',
+    addComment: 'Add a Comment',
+    placeholder: 'Write your comment here...',
+    postComment: 'Post Comment',
+    posting: 'Posting...',
+    loadMore: 'Load More Comments',
+    loading: 'Loading...',
+    noComments: 'No comments yet. Be the first to comment!',
+    failedToLoad: 'Failed to load comments',
+    contentRequired: 'Comment content cannot be empty',
+    failedToPost: 'Failed to post comment',
+  },
 };
 
 export default blog;

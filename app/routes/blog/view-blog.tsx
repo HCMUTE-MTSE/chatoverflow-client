@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SafeHTML from '../../components/ui/SafeHTML/SafeHTML';
+import BlogComments from '../../components/ui/BlogComments';
+import { getBlogDetail, voteBlog } from '../../services/api/blog/blog.service';
+import type { BlogDetailResponse } from '../../models/res/blog.response';
 import {
-  getBlogDetail,
-  type BlogDetailResponse,
-} from '../../services/api/blog/blog.service';
+  BiUpvote,
+  BiSolidUpvote,
+  BiDownvote,
+  BiSolidDownvote,
+} from 'react-icons/bi';
 
 type BlogPost = BlogDetailResponse['data'];
 
@@ -13,6 +18,7 @@ export default function ViewBlog() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [votingLoading, setVotingLoading] = useState(false);
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -31,6 +37,25 @@ export default function ViewBlog() {
 
     fetchBlogPost();
   }, [slug]);
+
+  const handleVote = async (voteType: 'upvote' | 'downvote') => {
+    if (!slug || !post || votingLoading) return;
+
+    setVotingLoading(true);
+    try {
+      const response = await voteBlog(slug, voteType);
+      setPost({
+        ...post,
+        upvotes: response.data.upvotes,
+        downvotes: response.data.downvotes,
+      });
+    } catch (err) {
+      console.error('Failed to vote:', err);
+      // You could add a toast notification here
+    } finally {
+      setVotingLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -68,17 +93,40 @@ export default function ViewBlog() {
 
       <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
 
-      <div className="flex items-center mb-6">
-        <img
-          src={post.author.avatar || '/assets/images/defaultavatar.png'}
-          alt={post.author.nickName}
-          className="w-12 h-12 rounded-full mr-4"
-        />
-        <div>
-          <p className="text-white font-medium">{post.author.nickName}</p>
-          <p className="text-gray-400 text-sm">
-            {new Date(post.createdAt).toLocaleDateString()}
-          </p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <img
+            src={post.author.avatar || '/assets/images/defaultavatar.png'}
+            alt={post.author.nickName}
+            className="w-12 h-12 rounded-full mr-4"
+          />
+          <div>
+            <p className="text-white font-medium">{post.author.nickName}</p>
+            <p className="text-gray-400 text-sm">
+              {new Date(post.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 text-sm">
+          <button
+            onClick={() => handleVote('upvote')}
+            disabled={votingLoading}
+            className="flex items-center gap-1 text-[#6DFF8D] hover:text-[#5EE67E] transition-colors disabled:opacity-50"
+          >
+            <BiSolidUpvote size={16} />
+            <span className="px-1 bg-[#212734] rounded-sm">{post.upvotes}</span>
+          </button>
+          <button
+            onClick={() => handleVote('downvote')}
+            disabled={votingLoading}
+            className="flex items-center gap-1 text-[#FF6D6D] hover:text-[#FF5A5A] transition-colors disabled:opacity-50"
+          >
+            <BiSolidDownvote size={16} />
+            <span className="px-1 bg-[#212734] rounded-sm">
+              {post.downvotes}
+            </span>
+          </button>
         </div>
       </div>
 
@@ -98,6 +146,8 @@ export default function ViewBlog() {
       <div className="prose prose-invert max-w-none">
         <SafeHTML html={post.contentHtml} className="blog-content" />
       </div>
+
+      {slug && <BlogComments blogSlug={slug} />}
     </div>
   );
 }
