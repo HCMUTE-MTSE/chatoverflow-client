@@ -37,6 +37,17 @@ export default function Header() {
 
   const initials =
     nickName?.trim()?.[0]?.toUpperCase() || header.defaultNickName[0];
+  const goStatistics = () => {
+    setOpen(false);
+    if (typeof window !== 'undefined') {
+      const token = window.localStorage.getItem('token');
+      if (token) {
+        navigate('/statistics');
+      } else {
+        navigate('/login');
+      }
+    }
+  };
 
   const goProfile = () => {
     setOpen(false);
@@ -115,7 +126,6 @@ export default function Header() {
 
           {open && (
             <div className="absolute right-0 mt-2 w-44 bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-2">
-
               <div className="px-3 py-2 text-sm text-gray-300">
                 <p className="font-semibold text-white truncate">{nickName}</p>
               </div>
@@ -135,9 +145,14 @@ export default function Header() {
               >
                 {header.createBlog}
               </button>
+              <button
+                onClick={goStatistics}
+                className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
+              >
+                {header.statistics}
+              </button>
               <div className="h-px bg-gray-800 my-1" />
               <button
-
                 onClick={handleLogout}
                 className="w-full text-left px-3 py-2 text-sm text-red-300 rounded-md hover:bg-gray-800"
               >
