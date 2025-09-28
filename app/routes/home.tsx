@@ -7,6 +7,7 @@ import {
 } from '../services/api/topic/question.service';
 import { useNavigate } from 'react-router-dom';
 import AnswerCard from '../components/ui/AnswerCard/Card';
+import Inbox from '~/components/page/inbox/Inbox';
 
 export default function App() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -25,7 +26,7 @@ export default function App() {
   }, [type]);
   if (loading)
     return <div className="p-8 text-center">Loading Question...</div>;
-  return (
+  /*   return (
     <div className="p-8 flex flex-col items-center gap-4">
       {questions.map((q) => (
         <DefaultQuestionCard
@@ -46,5 +47,6 @@ export default function App() {
         />
       ))}
     </div>
-  );
+  ); */
+  return <Inbox></Inbox>;
 }
