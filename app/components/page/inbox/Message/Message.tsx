@@ -1,19 +1,19 @@
 import React from 'react';
 
 interface MessageProps {
-  content: string;
-  sender: string;
-  reciver: string;
+  senderId: string;
+  senderName: string;
   isSentByUser: boolean;
-  timestamp: Date;
+  content: string;
+  createdAt: Date;
 }
 
 const Message: React.FC<MessageProps> = ({
-  content,
-  sender,
-  reciver,
+  senderId,
+  senderName,
   isSentByUser,
-  timestamp,
+  content,
+  createdAt,
 }) => {
   return (
     <div
@@ -27,7 +27,7 @@ const Message: React.FC<MessageProps> = ({
         }`}
       >
         {!isSentByUser && (
-          <p className="text-xs font-medium mb-1 text-gray-600">{sender}</p>
+          <p className="text-xs font-medium mb-1 text-gray-600">{senderName}</p>
         )}
         <p className="text-sm">{content}</p>
         <p
@@ -35,7 +35,7 @@ const Message: React.FC<MessageProps> = ({
             isSentByUser ? 'text-blue-100' : 'text-gray-500'
           }`}
         >
-          {timestamp.toLocaleTimeString([], {
+          {createdAt.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           })}
@@ -44,5 +44,4 @@ const Message: React.FC<MessageProps> = ({
     </div>
   );
 };
-
 export default Message;

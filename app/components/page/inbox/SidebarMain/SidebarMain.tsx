@@ -1,25 +1,25 @@
 import React from 'react';
-import ConversationOverview from '../ConversationOverview';
 
-interface Conversation {
-  id: string;
-  targetName: string;
-  targetAvatar?: string;
-}
+import type { Conversation } from '../type';
+
+import ConversationOverview from '../ConversationOverview';
 
 interface SidebarMainProps {
   conversations: Conversation[];
+  handleSelectConversation: (conversation: Conversation) => void;
 }
 
-const SidebarMain: React.FC<SidebarMainProps> = ({ conversations }) => {
+const SidebarMain: React.FC<SidebarMainProps> = ({
+  conversations,
+  handleSelectConversation,
+}) => {
   return (
     <div className="flex flex-col flex-1 overflow-y-auto">
       {conversations.map((conversation) => (
         <ConversationOverview
           key={conversation.id}
-          targetName={conversation.targetName}
-          targetAvatar={conversation.targetAvatar}
-          /* onClick={() => handleConversationClick(conversation.id)} */
+          conversation={conversation}
+          handleSelectConversation={handleSelectConversation}
         />
       ))}
     </div>

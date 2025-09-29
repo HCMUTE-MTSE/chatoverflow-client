@@ -1,40 +1,46 @@
 import React from 'react';
 
+import type { Conversation } from '../type';
+
 import { HiOutlineChevronRight } from 'react-icons/hi2';
 
-/* Include userID later  */
 interface ConversationOverviewProps {
-  targetName: string;
-  targetAvatar?: string;
+  conversation: Conversation;
+  handleSelectConversation: (conversation: Conversation) => void;
 }
 
 const ConversationOverview: React.FC<ConversationOverviewProps> = ({
-  targetName,
-  targetAvatar,
+  conversation,
+  handleSelectConversation,
 }) => {
   return (
-    <div className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100">
+    <button
+      className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+      onClick={() => handleSelectConversation(conversation)}
+    >
       {/* Avatar and name */}
       <div className="flex items-center space-x-3">
         <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-          {targetAvatar ? (
+          {conversation.targetAvatar ? (
             <img
-              src={targetAvatar}
-              alt={targetName}
+              src={conversation.targetAvatar}
+              alt={conversation.targetName}
               className="w-8 h-8 rounded-full"
             />
           ) : (
             <span className="text-white text-sm font-medium">
-              {targetName.charAt(0).toUpperCase()}
+              {conversation.targetName.charAt(0).toUpperCase()}
             </span>
           )}
         </div>
-        <span className="text-gray-900 font-medium">{targetName}</span>
+        <span className="text-gray-900 font-medium">
+          {conversation.targetName}
+        </span>
       </div>
 
       {/* Open conversation icon */}
       <HiOutlineChevronRight size={16} className="text-gray-400" />
-    </div>
+    </button>
   );
 };
 

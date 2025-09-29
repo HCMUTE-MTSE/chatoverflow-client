@@ -7,7 +7,6 @@ export interface ConversationResponse {
   targetName: string;
   targetAvatar?: string;
 }
-
 export interface GetConversationsResponse {
   success: boolean;
   data: ConversationResponse[];

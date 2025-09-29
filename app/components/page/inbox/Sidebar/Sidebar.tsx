@@ -1,22 +1,26 @@
 import React from 'react';
+
+import type { Conversation } from '../type';
+
 import SidebarHeader from '../SidebarHeader';
 import SidebarMain from '../SidebarMain';
 
-interface Conversation {
-  id: string;
-  targetName: string;
-  targetAvatar?: string;
-}
-
 interface SidebarProps {
   conversations: Conversation[];
+  handleSelectConversation: (conversation: Conversation) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ conversations }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  conversations,
+  handleSelectConversation,
+}) => {
   return (
     <div className="flex flex-col bg-white border-r border-gray-200 h-full">
       <SidebarHeader />
-      <SidebarMain conversations={conversations} />
+      <SidebarMain
+        conversations={conversations}
+        handleSelectConversation={handleSelectConversation}
+      />
     </div>
   );
 };

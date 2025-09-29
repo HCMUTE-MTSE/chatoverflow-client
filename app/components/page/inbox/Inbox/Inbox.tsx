@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { getConversationsByUserId } from '~/services/api/chat/chat.service';
+import { getConversationsByUserId } from '~/services/api/chat/conversation.service';
 import { getUser } from '~/services/api/user/user.service';
 
-import type { ConversationResponse } from '~/services/api/chat/chat.service';
+import type { ConversationResponse } from '~/services/api/chat/conversation.service';
 import type { Conversation } from '../type';
 
 import Sidebar from '../Sidebar';
@@ -13,6 +13,10 @@ import ConversationError from '../ConversationError';
 
 function Inbox() {
   const [conversations, setConversations] = React.useState<Conversation[]>([]);
+  const [currentConversation, setCurrentConversation] =
+    React.useState<Conversation | null>(null);
+
+  /* Mouting conversations */
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -22,7 +26,7 @@ function Inbox() {
       setError(null);
 
       const userData = await getUser();
-      const currentUserId = userData.data.userId || '';
+      const currentUserId = userData.data?.userId || null;
       const conversationData = await getConversationsByUserId(currentUserId);
 
       setConversations(conversationData);
@@ -37,6 +41,10 @@ function Inbox() {
     fetchConversations();
   }, []);
 
+  function handleSelectConversation(conversation: Conversation) {
+    setCurrentConversation(conversation);
+  }
+
   if (loading) {
     return <ConversationSkeleton />;
   }
@@ -50,10 +58,14 @@ function Inbox() {
     );
   }
 
+  console.log('Current conversation: ', currentConversation);
   return (
-    <div className="grid grid-cols-[2fr_3fr] w-196 h-96 bg-red-500">
-      <Sidebar conversations={conversations} />
-      <Chatbox conversationId={null} onStartNewChat={() => {}} />
+    <div className="grid grid-cols-[2fr_3fr] w-196 bg-red-500">
+      <Sidebar
+        conversations={conversations}
+        handleSelectConversation={handleSelectConversation}
+      />
+      <Chatbox conversation={currentConversation} onStartNewChat={() => {}} />
     </div>
   );
 }
