@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useSocket, useChatSocket } from '~/hooks/chat';
+
 import type { Conversation } from '../type';
 
 import MessageContainer from '../MessageContainer';
@@ -15,15 +17,26 @@ const ChatboxMain: React.FC<ChatboxMainProps> = ({
   conversation = null,
   onStartNewChat,
 }) => {
-  const handleSendMessage = (message: string) => {
-    /* TODO: Implement send message logic */
+  const socket = useSocket();
+
+  const { newMessage, sendMessage } = useChatSocket({
+    socket,
+    conversationId: conversation?.id || null,
+  });
+
+  const handleSendMessage = async (content: string, senderId: string) => {
+    await sendMessage(senderId, content);
+    console.log('Message sent:', content, 'from:', senderId);
   };
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1">
       {conversation ? (
-        <div>
-          <MessageContainer conversation={conversation} />
+        <div className="h-96 flex flex-col flex-1">
+          <MessageContainer
+            conversation={conversation}
+            newMessage={newMessage}
+          />
           <MessageInputForm onSendMessage={handleSendMessage} />
         </div>
       ) : (

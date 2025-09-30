@@ -3,13 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
-interface Message {
-  id: string;
-  senderId: string;
-  senderName: string;
-  content: string;
-  createdAt: string;
-}
+import type { MessageType } from '~/components/page/inbox/type';
 
 interface UseChatSocketProps {
   socket: Socket | null;
@@ -17,7 +11,7 @@ interface UseChatSocketProps {
 }
 
 export function useChatSocket({ socket, conversationId }: UseChatSocketProps) {
-  const [newMessage, setNewMessage] = useState<Message | null>(null);
+  const [newMessage, setNewMessage] = useState<MessageType | null>(null);
 
   useEffect(() => {
     if (!socket || !conversationId) return;
@@ -27,7 +21,7 @@ export function useChatSocket({ socket, conversationId }: UseChatSocketProps) {
     console.log('Joined conversation:', conversationId);
 
     // Listen for new messages
-    const handleNewMessage = (message: Message) => {
+    const handleNewMessage = (message: MessageType) => {
       console.log('New message received:', message);
       setNewMessage(message);
     };

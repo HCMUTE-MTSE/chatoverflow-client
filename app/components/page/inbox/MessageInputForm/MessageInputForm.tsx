@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import { IoSend } from 'react-icons/io5';
 
+import { getUser } from '~/services/api/user/user.service';
+
 interface MessageInputFormProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (content: string, senderId: string) => void;
 }
 
 const MessageInputForm: React.FC<MessageInputFormProps> = ({
   onSendMessage,
 }) => {
+  const [senderId, setSenderId] = useState<string | null>(null);
   const [message, setMessage] = useState('');
+
+  React.useEffect(() => {
+    const fetchUserId = async () => {
+      const userData = await getUser();
+      setSenderId(userData.data?.userId || null);
+    };
+    fetchUserId();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim()) {
-      onSendMessage(message.trim());
+
+    if (message.trim() && senderId) {
+      onSendMessage(message.trim(), senderId);
       setMessage('');
     }
   };

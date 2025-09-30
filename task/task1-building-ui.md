@@ -39,3 +39,46 @@
 10. `Message`:
 
 - A div holding a message.
+
+But when i try to login as another user.
+
+Here is related data:
+
+User4 `conversations`:
+GET `http://localhost:3000/chat/conversations/68cacc5509bc97efbb83ac04`:
+
+```json
+{
+  "success": true,
+  "data": [
+      {
+        "id": "68d94fb760c579690b25e693",
+        "targetName": "User 10",
+        "targetAvatar": "https://i.pravatar.cc/150?img=10"
+      }
+    {
+      /* Other conversations.... */
+    },
+  ]
+}
+```
+
+User10 `conversations`:
+GET `http://localhost:3000/chat/conversations/68cacc5509bc97efbb83ac0a`:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+    "id": "68d94fb760c579690b25e693",
+    "targetName": "User 4",
+    "targetAvatar": "https://i.pravatar.cc/150?img=4"
+    }
+    {
+      /* Other conversations.... */
+    },
+
+  ]
+}
+```

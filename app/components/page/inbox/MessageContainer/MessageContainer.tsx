@@ -10,15 +10,15 @@ import Message from '../Message';
 
 interface MessageContainerProps {
   conversation: Conversation;
+  newMessage: MessageType | null;
 }
 
 const MessageContainer: React.FC<MessageContainerProps> = ({
   conversation,
+  newMessage,
 }) => {
   const [messages, setMessages] = React.useState<MessageType[]>([]);
   const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
-
-  /* Mouting messages */
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -44,13 +44,25 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
     fetchMessages();
   }, [conversation]);
 
+  React.useEffect(() => {
+    if (newMessage) {
+      setMessages((prev) => {
+        // Check if message already exists
+        const exists = prev.some((msg) => msg.id === newMessage.id);
+        if (exists) return prev;
+
+        return [...prev, newMessage];
+      });
+    }
+  }, [newMessage]);
+
   /* Using placeholder component latter */
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   console.log(messages);
   return (
-    <div className="flex flex-col flex-1 overflow-y-auto p-4 space-y-2">
+    <div className="h-96 flex flex-col overflow-y-scroll p-4 space-y-2 no-scrollbar">
       {messages.map((message) => (
         <Message
           key={message.id}

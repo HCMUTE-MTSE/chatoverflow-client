@@ -27,8 +27,8 @@ function Inbox() {
 
       const userData = await getUser();
       const currentUserId = userData.data?.userId || null;
+      console.log('===========Current User ID: ', currentUserId);
       const conversationData = await getConversationsByUserId(currentUserId);
-
       setConversations(conversationData);
     } catch (err) {
       console.error('Error fetching conversations:', err);
@@ -60,7 +60,7 @@ function Inbox() {
 
   console.log('Current conversation: ', currentConversation);
   return (
-    <div className="grid grid-cols-[2fr_3fr] w-196 bg-red-500">
+    <div className="h-96 grid grid-cols-[2fr_3fr] w-196 bg-red-500">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}
