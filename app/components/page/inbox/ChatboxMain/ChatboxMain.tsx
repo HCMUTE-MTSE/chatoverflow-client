@@ -16,7 +16,6 @@ const ChatboxMain: React.FC<ChatboxMainProps> = ({
   onStartNewChat,
 }) => {
   const handleSendMessage = (message: string) => {
-    console.log('Sending message:', message);
     /* TODO: Implement send message logic */
   };
 
