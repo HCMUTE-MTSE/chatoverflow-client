@@ -2,6 +2,7 @@ import * as React from 'react';
 import header from '../../lang/en/header';
 import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
+import NotificationIcon from '../ui/NotificationIcon';
 
 import { SearchPage } from '../page/global-search/SearchPage';
 
@@ -101,6 +102,9 @@ export default function Header() {
         {/* Search */}
 
         <SearchPage></SearchPage>
+
+        {/* Notifications */}
+        <NotificationIcon />
 
         {/* Avatar + Dropdown */}
         <div className="relative" ref={ref}>
