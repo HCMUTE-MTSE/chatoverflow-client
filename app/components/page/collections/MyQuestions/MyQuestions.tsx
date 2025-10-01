@@ -20,8 +20,8 @@ function MyQuestions() {
     async function fetchQuestions() {
       setLoading(true);
 
-      const { data: user } = await getUser();
-      const questions = await getUserQuestions(user.userId);
+      const userData = await getUser();
+      const questions = await getUserQuestions(userData.data.user.userId);
 
       setQuestions(questions);
       setLoading(false);

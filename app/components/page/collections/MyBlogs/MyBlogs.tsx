@@ -15,8 +15,8 @@ function MyBlogs() {
   React.useEffect(() => {
     async function fetchBlog() {
       try {
-        const { data: user } = await getUser();
-        const blogData = await getUserBlogs(user.userId);
+        const userData = await getUser();
+        const blogData = await getUserBlogs(userData.data.user.userId);
 
         const mappedBlogs = blogData.data.map((blog: any) => ({
           id: blog._id,

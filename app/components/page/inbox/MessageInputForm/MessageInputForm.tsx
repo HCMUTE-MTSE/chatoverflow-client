@@ -16,7 +16,7 @@ const MessageInputForm: React.FC<MessageInputFormProps> = ({
   React.useEffect(() => {
     const fetchUserId = async () => {
       const userData = await getUser();
-      setSenderId(userData.data?.userId || null);
+      setSenderId(userData.data.user?.userId || null);
     };
     fetchUserId();
   }, []);

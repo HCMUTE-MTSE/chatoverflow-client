@@ -17,17 +17,17 @@ function Inbox() {
   const [currentConversation, setCurrentConversation] =
     React.useState<Conversation | null>(null);
   const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
-  /* Mouting conversations */
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 
+  /* Mouting conversations */
   const fetchConversations = async () => {
     try {
       setLoading(true);
       setError(null);
 
       const userData = await getUser();
-      const currentUserId = userData.data?.userId || null;
+      const currentUserId = userData.data.user?.userId || null;
       setCurrentUserId(currentUserId);
 
       const conversationData = await getConversationsByUserId(currentUserId);
