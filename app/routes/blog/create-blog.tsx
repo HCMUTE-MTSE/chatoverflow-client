@@ -3,15 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react';
 import blog from '../../lang/en/blog';
 import { createBlog } from '../../services/api/blog/blog.service';
-
-// Demo tags - replace with API call later
-const DEMO_TAGS = [
-  { id: '1', name: 'JavaScript' },
-  { id: '2', name: 'React' },
-  { id: '3', name: 'Node.js' },
-  { id: '4', name: 'TypeScript' },
-  { id: '5', name: 'Web Development' },
-];
+import TagSelector from '../../components/ui/TagSelector';
 
 interface ToastState {
   show: boolean;
@@ -78,13 +70,8 @@ export default function CreateBlog() {
     }
   };
 
-  const handleTagChange = (tagName: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.includes(tagName)
-        ? prev.tags.filter((name) => name !== tagName)
-        : [...prev.tags, tagName],
-    }));
+  const handleTagsChange = (tags: string[]) => {
+    setFormData((prev) => ({ ...prev, tags }));
   };
 
   const validateForm = () => {
@@ -269,22 +256,11 @@ export default function CreateBlog() {
           <label className="block text-sm font-medium text-gray-300 mb-2">
             {blog.form.tags}
           </label>
-          <div className="flex flex-wrap gap-2">
-            {DEMO_TAGS.map((tag) => (
-              <button
-                key={tag.name}
-                type="button"
-                onClick={() => handleTagChange(tag.name)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  formData.tags.includes(tag.name)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                {tag.name}
-              </button>
-            ))}
-          </div>
+          <TagSelector
+            selectedTags={formData.tags}
+            onTagsChange={handleTagsChange}
+            placeholder="Search and select tags..."
+          />
         </div>
 
         <div className="flex justify-end space-x-4">
