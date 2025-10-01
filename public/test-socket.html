@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO Test Client</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+      }
+      .log {
+        background: #f4f4f4;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 10px 0;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .log-entry {
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 5px;
+        font-size: 14px;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+      .info {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Socket.IO Test Client</h1>
+
+    <div>
+      <h3>Connection Status: <span id="status">Disconnected</span></h3>
+      <button onclick="connectSocket()">Connect</button>
+      <button onclick="disconnectSocket()">Disconnect</button>
+    </div>
+
+    <hr />
+
+    <div>
+      <h3>Test Conversation Join</h3>
+      <input
+        type="text"
+        id="conversationId"
+        placeholder="Conversation ID"
+        value="68d94fb760c579690b25e68d"
+      />
+      <button onclick="joinConversation()">Join Conversation</button>
+      <button onclick="leaveConversation()">Leave Conversation</button>
+    </div>
+
+    <hr />
+
+    <div>
+      <h3>Test Send Message</h3>
+      <input
+        type="text"
+        id="senderId"
+        placeholder="Sender ID"
+        value="68cacc5509bc97efbb83ac06"
+      />
+      <input
+        type="text"
+        id="messageContent"
+        placeholder="Message content"
+        value="Hello from test client!"
+      />
+      <button onclick="sendMessage()">Send Message</button>
+    </div>
+
+    <hr />
+
+    <div>
+      <h3>Event Log</h3>
+      <button onclick="clearLog()">Clear Log</button>
+      <div class="log" id="log"></div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+      let socket = null;
+      let currentConversationId = null;
+
+      function log(message, type = 'info') {
+        const logDiv = document.getElementById('log');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${type}`;
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logDiv.appendChild(entry);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+
+      function updateStatus(status) {
+        document.getElementById('status').textContent = status;
+      }
+
+      function connectSocket() {
+        if (socket) {
+          log('Already connected', 'info');
+          return;
+        }
+
+        socket = io('http://localhost:3000');
+
+        socket.on('connect', () => {
+          log(`Connected with socket ID: ${socket.id}`, 'success');
+          updateStatus('Connected');
+        });
+
+        socket.on('disconnect', () => {
+          log('Disconnected from server', 'error');
+          updateStatus('Disconnected');
+          socket = null;
+        });
+
+        socket.on('new_message', (message) => {
+          log(`NEW MESSAGE received: ${JSON.stringify(message)}`, 'success');
+        });
+
+        socket.on('message_error', (error) => {
+          log(`ERROR: ${error.error}`, 'error');
+        });
+      }
+
+      function disconnectSocket() {
+        if (socket) {
+          socket.disconnect();
+          socket = null;
+          updateStatus('Disconnected');
+          log('Manually disconnected', 'info');
+        }
+      }
+
+      function joinConversation() {
+        if (!socket) {
+          log('Not connected! Click Connect first.', 'error');
+          return;
+        }
+
+        currentConversationId = document.getElementById('conversationId').value;
+        socket.emit('join_conversation', currentConversationId);
+        log(`Joining conversation: ${currentConversationId}`, 'info');
+      }
+
+      function leaveConversation() {
+        if (!socket || !currentConversationId) {
+          log('Not in a conversation', 'error');
+          return;
+        }
+
+        socket.emit('leave_conversation', currentConversationId);
+        log(`Left conversation: ${currentConversationId}`, 'info');
+        currentConversationId = null;
+      }
+
+      function sendMessage() {
+        if (!socket) {
+          log('Not connected! Click Connect first.', 'error');
+          return;
+        }
+
+        const conversationId = document.getElementById('conversationId').value;
+        const senderId = document.getElementById('senderId').value;
+        const content = document.getElementById('messageContent').value;
+
+        if (!conversationId || !senderId || !content) {
+          log('Please fill all fields', 'error');
+          return;
+        }
+
+        socket.emit('send_message', {
+          conversationId,
+          senderId,
+          content,
+        });
+
+        log(`Sent message to conversation ${conversationId}`, 'info');
+      }
+
+      function clearLog() {
+        document.getElementById('log').innerHTML = '';
+      }
+
+      // Auto-connect on page load
+      window.onload = () => {
+        connectSocket();
+      };
+    </script>
+  </body>
+</html>

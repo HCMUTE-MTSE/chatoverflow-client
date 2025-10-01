@@ -10,6 +10,7 @@ import {
   CommunitiesIcon,
   AskIcon,
   BlogIcon,
+  ChatIcon,
 } from '../../libs/icons';
 
 import navbar from '../../lang/en/navbar';
@@ -34,6 +35,8 @@ const navItemsData = [
   { id: 'blog', to: '/blog', icon: <BlogIcon />, text: navbar.blog },
 
   { id: 'ask', to: '/ask', icon: <AskIcon />, text: navbar.ask },
+
+  { id: 'chat', to: '/chat', icon: <ChatIcon />, text: navbar.chat },
 ];
 export default function Navbar() {
   return (

@@ -54,24 +54,26 @@ export function SearchResults({
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-8">
-        <div className="text-gray-400 text-lg">{emptyMessage}</div>
+      <div className="text-center">
+        <div className="text-gray-400 text-sm">{emptyMessage}</div>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-gray-400 mb-4">
+      <p className="text-sm text-gray-400 mb-4">
         Found {results.length} result{results.length !== 1 ? 's' : ''}
+      </p>
+      <div className="overflow-y-scroll max-h-96">
+        {results.map((result) => (
+          <SearchResultItem
+            key={result.id}
+            result={result}
+            onClick={onResultClick}
+          />
+        ))}
       </div>
-      {results.map((result) => (
-        <SearchResultItem
-          key={result.id}
-          result={result}
-          onClick={onResultClick}
-        />
-      ))}
     </div>
   );
 }
