@@ -17,7 +17,7 @@ const Chatbox: React.FC<ChatboxProps> = ({
   currentUserId,
 }) => {
   return (
-    <div className="flex flex-col bg-white border border-gray-200 shadow-lg">
+    <div className="flex flex-col bg-white border border-gray-200 rounded-tr-lg rounded-br-lg">
       <ChatboxHeader />
       <ChatboxMain
         conversation={conversation}

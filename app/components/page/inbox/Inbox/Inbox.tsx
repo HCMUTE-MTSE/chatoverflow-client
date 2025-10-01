@@ -79,9 +79,8 @@ function Inbox() {
     );
   }
 
-  console.log('Current conversation: ', currentConversation);
   return (
-    <div className="h-full grid grid-cols-[2fr_3fr] w-196 bg-red-500">
+    <div className="h-120 grid grid-cols-[2fr_3fr] w-196 bg-red-500 rounded-lg">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}

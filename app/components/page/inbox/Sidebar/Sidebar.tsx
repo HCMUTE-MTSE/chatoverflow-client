@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   handleSelectConversation,
 }) => {
   return (
-    <div className="flex flex-col bg-white border-r border-gray-200 h-full">
+    <div className="flex flex-col bg-white border-r border-gray-200 h-full rounded-tl-lg rounded-bl-lg">
       <SidebarHeader />
       <SidebarMain
         conversations={conversations}
