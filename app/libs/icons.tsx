@@ -1118,3 +1118,17 @@ export const ChevronDownIcon = ({
     />
   </svg>
 );
+
+export const ChatIcon = ({ size = '24' }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="#858EAD"
+      d="M1.5 2h21v16H6.876L1.5 22.704V2Zm2 2v14.296L6.124 16H20.5V4h-17Z"
+    />
+  </svg>
+);

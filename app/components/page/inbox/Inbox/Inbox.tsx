@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { getConversationsByUserId } from '~/services/api/chat/conversation.service';
 import { getUser } from '~/services/api/user/user.service';
+import { getConversationsByUserId } from '~/services/api/chat/conversation.service';
+import { createConversation } from '~/services/api/chat/conversation.service';
 
 import type { ConversationResponse } from '~/services/api/chat/conversation.service';
 import type { Conversation } from '../type';
@@ -15,7 +16,7 @@ function Inbox() {
   const [conversations, setConversations] = React.useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] =
     React.useState<Conversation | null>(null);
-
+  const [currentUserId, setCurrentUserId] = React.useState<string | null>(null);
   /* Mouting conversations */
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -27,7 +28,8 @@ function Inbox() {
 
       const userData = await getUser();
       const currentUserId = userData.data?.userId || null;
-      console.log('===========Current User ID: ', currentUserId);
+      setCurrentUserId(currentUserId);
+
       const conversationData = await getConversationsByUserId(currentUserId);
       setConversations(conversationData);
     } catch (err) {
@@ -43,6 +45,25 @@ function Inbox() {
 
   function handleSelectConversation(conversation: Conversation) {
     setCurrentConversation(conversation);
+  }
+  async function handleStartNewConversation(targetUserId: string) {
+    console.log('Target user ID: ', targetUserId);
+    if (!currentUserId) {
+      console.error('Please login to start a new conversation.');
+      return;
+    }
+
+    try {
+      const newConversation = await createConversation(
+        currentUserId,
+        targetUserId
+      );
+      setConversations((prev) => [...prev, newConversation]);
+      setCurrentConversation(newConversation);
+      console.log('New conversation created: ', newConversation);
+    } catch (err) {
+      console.error('Error creating conversation:', err);
+    }
   }
 
   if (loading) {
@@ -60,12 +81,16 @@ function Inbox() {
 
   console.log('Current conversation: ', currentConversation);
   return (
-    <div className="h-96 grid grid-cols-[2fr_3fr] w-196 bg-red-500">
+    <div className="h-full grid grid-cols-[2fr_3fr] w-196 bg-red-500">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}
       />
-      <Chatbox conversation={currentConversation} onStartNewChat={() => {}} />
+      <Chatbox
+        conversation={currentConversation}
+        currentUserId={currentUserId}
+        onStartNewChat={handleStartNewConversation}
+      />
     </div>
   );
 }

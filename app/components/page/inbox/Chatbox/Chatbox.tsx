@@ -7,12 +7,14 @@ import ChatboxMain from '../ChatboxMain';
 
 interface ChatboxProps {
   conversation: Conversation | null;
-  onStartNewChat: () => void;
+  onStartNewChat: (targetUserId: string) => void | Promise<void>;
+  currentUserId: string | null;
 }
 
 const Chatbox: React.FC<ChatboxProps> = ({
   conversation = null,
   onStartNewChat,
+  currentUserId,
 }) => {
   return (
     <div className="flex flex-col bg-white border border-gray-200 shadow-lg">
@@ -20,6 +22,7 @@ const Chatbox: React.FC<ChatboxProps> = ({
       <ChatboxMain
         conversation={conversation}
         onStartNewChat={onStartNewChat}
+        currentUserId={currentUserId}
       />
     </div>
   );

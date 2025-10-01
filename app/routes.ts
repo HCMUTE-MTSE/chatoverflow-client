@@ -34,6 +34,7 @@ export default [
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
 
     route('collections', 'routes/collections/my-collections.tsx'),
+    route('chat', 'routes/chat/chat.tsx'),
   ]),
 
   layout('routes/auth/layout.tsx', [

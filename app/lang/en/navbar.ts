@@ -7,6 +7,7 @@ const navbar = {
   ask: 'Ask a Question',
   blog: 'Blog',
   logout: 'Logout',
+  chat: 'Chat',
 };
 
 export default navbar;

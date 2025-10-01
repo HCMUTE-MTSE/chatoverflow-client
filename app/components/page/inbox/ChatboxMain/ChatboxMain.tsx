@@ -10,12 +10,15 @@ import MessageInputForm from '../MessageInputForm';
 
 interface ChatboxMainProps {
   conversation?: Conversation | null;
-  onStartNewChat: () => void;
+  onStartNewChat: (targetUserId: string) => void | Promise<void>;
+
+  currentUserId: string | null;
 }
 
 const ChatboxMain: React.FC<ChatboxMainProps> = ({
   conversation = null,
   onStartNewChat,
+  currentUserId,
 }) => {
   const socket = useSocket();
 
@@ -23,10 +26,8 @@ const ChatboxMain: React.FC<ChatboxMainProps> = ({
     socket,
     conversationId: conversation?.id || null,
   });
-
   const handleSendMessage = async (content: string, senderId: string) => {
     await sendMessage(senderId, content);
-    console.log('Message sent:', content, 'from:', senderId);
   };
 
   return (
@@ -40,7 +41,10 @@ const ChatboxMain: React.FC<ChatboxMainProps> = ({
           <MessageInputForm onSendMessage={handleSendMessage} />
         </div>
       ) : (
-        <EmptyConversation onStartNewChat={onStartNewChat} />
+        <EmptyConversation
+          onStartNewChat={onStartNewChat}
+          currentUserId={currentUserId}
+        />
       )}
     </div>
   );
