@@ -2,6 +2,7 @@ import * as React from 'react';
 import header from '../../lang/en/header';
 import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
+import NotificationIcon from '../ui/NotificationIcon';
 
 import { SearchPage } from '../page/global-search/SearchPage';
 
@@ -39,6 +40,17 @@ export default function Header() {
 
   const initials =
     nickName?.trim()?.[0]?.toUpperCase() || header.defaultNickName[0];
+  const goStatistics = () => {
+    setOpen(false);
+    if (typeof window !== 'undefined') {
+      const token = window.localStorage.getItem('token');
+      if (token) {
+        navigate('/statistics');
+      } else {
+        navigate('/login');
+      }
+    }
+  };
 
   const goProfile = () => {
     setOpen(false);
@@ -91,6 +103,9 @@ export default function Header() {
 
         <SearchPage></SearchPage>
 
+        {/* Notifications */}
+        <NotificationIcon />
+
         {/* Avatar + Dropdown */}
         <div className="relative" ref={ref}>
           <button
@@ -131,6 +146,12 @@ export default function Header() {
                 className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
               >
                 {header.createBlog}
+              </button>
+              <button
+                onClick={goStatistics}
+                className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
+              >
+                {header.statistics}
               </button>
               <div className="h-px bg-gray-800 my-1" />
               <button

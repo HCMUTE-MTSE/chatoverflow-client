@@ -20,8 +20,8 @@ function MyQuestions() {
     async function fetchQuestions() {
       setLoading(true);
 
-      const { data: user } = await getUser();
-      const questions = await getUserQuestions(user.userId);
+      const userData = await getUser();
+      const questions = await getUserQuestions(userData.data.user.userId);
 
       setQuestions(questions);
       setLoading(false);
@@ -37,7 +37,7 @@ function MyQuestions() {
   return (
     <div>
       <h2>My Questions</h2>
-      <div className="p-8 flex flex-col items-center gap-4">
+      <div className="p-8 grid grid-cols-2 items-center gap-4">
         {questions.map((q) => (
           <DefaultQuestionCard
             key={q._id}

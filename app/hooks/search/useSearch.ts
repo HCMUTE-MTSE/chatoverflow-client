@@ -100,6 +100,7 @@ export function useSearch(): UseSearchReturn {
     setTotalResults(0);
     setCurrentQuery('');
     setCurrentFilters({});
+    console.log('Cleared search results');
   }, []);
 
   return {

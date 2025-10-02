@@ -68,7 +68,7 @@ export function GlobalSearch({
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Search Header */}
-      <div className="space-y-4 mb-6">
+      <div className="space-y-4 mb-2">
         <SearchInput
           value={query}
           onChange={setQuery}
@@ -108,11 +108,7 @@ export function GlobalSearch({
       </div>
 
       {/* Filters */}
-      {showFilters && (
-        <div className="mb-6">
-          <SearchFilters filters={filters} onChange={setFilters} />
-        </div>
-      )}
+      {showFilters && <SearchFilters filters={filters} onChange={setFilters} />}
 
       {/* Results */}
       <SearchResults

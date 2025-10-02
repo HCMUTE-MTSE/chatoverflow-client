@@ -136,6 +136,10 @@
   }
 }
 
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
 .animate-toast-up {
   animation: toast-up 0.3s forwards;
 }
