@@ -12,8 +12,32 @@ import type {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${API_BASE_URL}/blog`;
 
-export const getBlogList = async (page: number = 1) => {
-  const response = await axios.get<BlogListResponse>(`${API_URL}?page=${page}`);
+export interface BlogListParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  tags?: string[];
+}
+
+export const getBlogList = async (params: BlogListParams = {}) => {
+  const { page = 1, limit = 4, sortBy, tags } = params;
+
+  // Build query string
+  const queryParams = new URLSearchParams();
+  queryParams.append('page', page.toString());
+  queryParams.append('limit', limit.toString());
+
+  if (sortBy) {
+    queryParams.append('sortBy', sortBy);
+  }
+
+  if (tags && tags.length > 0) {
+    tags.forEach((tag) => queryParams.append('tags', tag));
+  }
+
+  const response = await axios.get<BlogListResponse>(
+    `${API_URL}?${queryParams.toString()}`
+  );
   return response.data;
 };
 
