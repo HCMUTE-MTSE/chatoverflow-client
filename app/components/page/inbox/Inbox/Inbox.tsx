@@ -27,10 +27,12 @@ function Inbox() {
       setError(null);
 
       const userData = await getUser();
-      const currentUserId = userData.data.user?.userId || null;
+      const currentUserId = userData.data.user.userId;
+
       setCurrentUserId(currentUserId);
 
       const conversationData = await getConversationsByUserId(currentUserId);
+
       setConversations(conversationData);
     } catch (err) {
       console.error('Error fetching conversations:', err);
