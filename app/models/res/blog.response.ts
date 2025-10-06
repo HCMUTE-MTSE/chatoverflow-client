@@ -12,6 +12,9 @@ export interface BlogListResponse {
       avatar: string;
       nickName: string;
     };
+    tags: string[];
+    upvotes: number;
+    downvotes: number;
     createdAt: string;
   }>;
   pagination: {

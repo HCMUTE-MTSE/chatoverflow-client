@@ -1,5 +1,6 @@
 import React from 'react';
 import DOMPurify from 'dompurify';
+import styles from './SafeHTML.module.css';
 
 interface SafeHTMLProps {
   html: string;
@@ -57,7 +58,7 @@ export default function SafeHTML({ html, className = '' }: SafeHTMLProps) {
 
   return (
     <div
-      className={className}
+      className={`prose prose-slate dark:prose-invert max-w-none ${styles.safeHtml} ${className}`}
       dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
     />
   );
