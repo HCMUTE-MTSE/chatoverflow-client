@@ -155,49 +155,11 @@ export default function QuestionAnswer({
     }
   };
 
-  // Upvote/downvote
-  const handleUpvote = async (answerId: string, idx: number) => {
-    if (!token) return alert('You must login to vote');
-    try {
-      const res = await upvoteAnswer(answerId, token);
-      if (res.success && res.data) {
-        const newAnswers = [...answers];
-        newAnswers[idx] = {
-          ...newAnswers[idx],
-          upvotedBy: res.data.userUpvoted
-            ? [...newAnswers[idx].upvotedBy, token]
-            : newAnswers[idx].upvotedBy.filter((u) => u !== token),
-          downvotedBy: res.data.userDownvoted
-            ? newAnswers[idx].downvotedBy.filter((u) => u !== token)
-            : newAnswers[idx].downvotedBy,
-        };
-        setAnswers(newAnswers);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDownvote = async (answerId: string, idx: number) => {
-    if (!token) return alert('You must login to vote');
-    try {
-      const res = await downvoteAnswer(answerId, token);
-      if (res.success && res.data) {
-        const newAnswers = [...answers];
-        newAnswers[idx] = {
-          ...newAnswers[idx],
-          downvotedBy: res.data.userDownvoted
-            ? [...newAnswers[idx].downvotedBy, token]
-            : newAnswers[idx].downvotedBy.filter((u) => u !== token),
-          upvotedBy: res.data.userUpvoted
-            ? newAnswers[idx].upvotedBy.filter((u) => u !== token)
-            : newAnswers[idx].upvotedBy,
-        };
-        setAnswers(newAnswers);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+  // 🚀 Handle answer update from AnswerCard (upvote/downvote)
+  const handleAnswerUpdate = (updatedAnswer: Answer) => {
+    setAnswers((prev) =>
+      prev.map((ans) => (ans._id === updatedAnswer._id ? updatedAnswer : ans))
+    );
   };
 
   // Delete answer
@@ -451,13 +413,13 @@ export default function QuestionAnswer({
               ) : (
                 <AnswerCard
                   answer={ans}
-                  onReply={() => {}}
+                  isOwner={owners[ans._id]}
+                  onAnswerUpdate={handleAnswerUpdate}
                   onEdit={owners[ans._id] ? () => handleEdit(ans) : undefined}
                   onDelete={
                     owners[ans._id] ? () => handleDelete(ans._id) : undefined
                   }
-                  onUpvote={() => handleUpvote(ans._id, idx)}
-                  onDownvote={() => handleDownvote(ans._id, idx)}
+                  onClick={undefined}
                 />
               )}
             </div>

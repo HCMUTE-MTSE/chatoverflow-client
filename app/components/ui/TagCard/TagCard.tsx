@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface TagCardProps {
   name: string;
@@ -13,9 +14,11 @@ export default function TagCard({
   questionCount,
   className,
 }: TagCardProps) {
+  const navigate = useNavigate();
   return (
     <div
       className={`flex flex-col gap-4 p-8 bg-gray-900/90 backdrop-blur-[150px] border border-gray-800/50 rounded-xl hover:border-gray-700/50 transition-all duration-300 cursor-pointer min-w-[260px] ${className || ''}`}
+      onClick={() => navigate(`/tags/${name}/questions`)}
     >
       {/* Profile section */}
       <div className="flex flex-col gap-4">

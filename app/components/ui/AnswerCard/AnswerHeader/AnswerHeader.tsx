@@ -14,8 +14,8 @@ interface AnswerHeaderProps {
   askedTime: string;
   upvotes: number;
   downvotes: number;
-  onUpvote: () => void;
-  onDownvote: () => void;
+  onUpvote?: () => void;
+  onDownvote?: () => void;
   userUpvoted?: boolean;
   userDownvoted?: boolean;
 }
@@ -52,25 +52,37 @@ const AnswerHeader: React.FC<AnswerHeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-2 select-none">
-        <button
-          onClick={onUpvote}
-          className={`w-5 h-5 flex items-center justify-center hover:bg-[#23263a] transition cursor-pointer`}
-        >
-          {userUpvoted ? <BiSolidUpvote color="green" /> : <UpVoteIcon />}
-        </button>
-        <span className="w-5 h-5 flex items-center justify-center rounded-xs bg-[#23263a] text-white text-xs">
-          {upvotes}
-        </span>
+        {onUpvote && (
+          <>
+            <button
+              onClick={onUpvote}
+              className={`w-5 h-5 flex items-center justify-center hover:bg-[#23263a] transition cursor-pointer`}
+            >
+              {userUpvoted ? <BiSolidUpvote color="green" /> : <UpVoteIcon />}
+            </button>
+            <span className="w-5 h-5 flex items-center justify-center rounded-xs bg-[#23263a] text-white text-xs">
+              {upvotes}
+            </span>
+          </>
+        )}
 
-        <button
-          onClick={onDownvote}
-          className="w-5 h-5 flex items-center justify-center hover:bg-[#23263a] transition cursor-pointer"
-        >
-          {userDownvoted ? <BiSolidDownvote color="red" /> : <DownVoteIcon />}
-        </button>
-        <span className="w-5 h-5 flex items-center justify-center rounded-xs bg-[#23263a] text-white text-xs">
-          {downvotes}
-        </span>
+        {onDownvote && (
+          <>
+            <button
+              onClick={onDownvote}
+              className="w-5 h-5 flex items-center justify-center hover:bg-[#23263a] transition cursor-pointer"
+            >
+              {userDownvoted ? (
+                <BiSolidDownvote color="red" />
+              ) : (
+                <DownVoteIcon />
+              )}
+            </button>
+            <span className="w-5 h-5 flex items-center justify-center rounded-xs bg-[#23263a] text-white text-xs">
+              {downvotes}
+            </span>
+          </>
+        )}
       </div>
     </div>
   );
