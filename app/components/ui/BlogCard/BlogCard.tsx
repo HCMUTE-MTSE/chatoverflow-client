@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getUserProfileLink } from '../../../utils/userUtils';
 
 interface Author {
+  userId: string;
   avatar: string;
   nickName: string;
 }
@@ -26,10 +28,22 @@ export default function BlogCard({
 }: BlogCardProps) {
   const defaultAvatar = '/assets/images/defaultavatar.png';
   const defaultCover = '/assets/images/default-blog-cover.jpg';
+  const [userProfileLink, setUserProfileLink] = useState(
+    `/user/${author.userId}`
+  );
+
+  // Load user profile link
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      const link = await getUserProfileLink(author.userId);
+      setUserProfileLink(link);
+    };
+    loadProfileLink();
+  }, [author.userId]);
 
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
-      <Link to={`/blog/${slug}`} className="block h-full flex flex-col">
+      <Link to={`/blog/${slug}`} className="h-full flex flex-col">
         <div className="relative h-48 flex-shrink-0">
           <img
             src={coverImage || defaultCover}
@@ -55,9 +69,13 @@ export default function BlogCard({
               }}
             />
             <div className="min-w-0 flex-grow">
-              <p className="text-sm text-white blog-card-truncate">
+              <Link
+                to={userProfileLink}
+                className="text-sm text-white hover:text-orange-500 transition-colors blog-card-truncate"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {author.nickName}
-              </p>
+              </Link>
               <p className="text-xs text-gray-500">
                 {new Date(createdAt).toLocaleDateString()}
               </p>

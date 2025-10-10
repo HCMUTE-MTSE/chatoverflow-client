@@ -99,7 +99,7 @@ const CommunitiesLayout: React.FC = () => {
         />
       </div>
 
-      <UserGrid users={users} onUserClick={handleUserClick} />
+      <UserGrid users={users} />
       {loading && <Loading />}
     </div>
   );

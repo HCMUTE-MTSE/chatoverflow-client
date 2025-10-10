@@ -31,7 +31,7 @@ interface SuggestionItem {
   url: string;
 }
 
-interface PopularTag {
+export interface PopularTag {
   tag: string;
   count: number;
 }

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BiUpvote,
   BiSolidUpvote,
   BiDownvote,
   BiSolidDownvote,
 } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 import { voteComment } from '../../../services/api/blog/blog.service';
+import { getUserProfileLink } from '../../../utils/userUtils';
 import type { Comment } from '../../../models/res/blog.response';
 
 interface BlogCommentProps {
@@ -22,6 +24,18 @@ export default function BlogComment({
   onCommentUpdate,
 }: BlogCommentProps) {
   const [votingLoading, setVotingLoading] = useState(false);
+  const [userProfileLink, setUserProfileLink] = useState(
+    `/user/${comment.author.userId}`
+  );
+
+  // Load user profile link
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      const link = await getUserProfileLink(comment.author.userId);
+      setUserProfileLink(link);
+    };
+    loadProfileLink();
+  }, [comment.author.userId]);
 
   const handleVote = async (voteType: 'upvote' | 'downvote') => {
     if (votingLoading) return;
@@ -52,9 +66,13 @@ export default function BlogComment({
             className="w-8 h-8 rounded-full object-cover"
           />
           <div>
-            <span className="font-medium text-white">
+            <Link
+              to={userProfileLink}
+              className="font-medium text-white hover:text-orange-500 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
               {comment.author.nickName}
-            </span>
+            </Link>
             <p className="text-gray-400 text-sm">
               {new Date(comment.createdAt).toLocaleDateString()}
             </p>

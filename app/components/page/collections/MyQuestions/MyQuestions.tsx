@@ -46,7 +46,7 @@ function MyQuestions() {
             user={
               {
                 name: q.user.name,
-                avatar: q.user.avatar || '/avatar.jpg',
+                avatar: q.user.avatar || '/assets/images/defaultavatar.png',
               } as User
             }
             time={new Date(q.askedTime).toLocaleString()}

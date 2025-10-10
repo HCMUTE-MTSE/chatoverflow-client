@@ -39,17 +39,26 @@ export async function createQuestion(
   return response.data.data;
 }
 
-export async function getQuestionsByType(type: string): Promise<Question[]> {
-  console.log(`Fetching questions (${type}): `);
-  console.log(`API_BASE_URL: `, API_BASE_URL);
+export async function getQuestionsByType(
+  type: string,
+  page = 1,
+  limit = 20
+): Promise<ApiResponse<Question[]>> {
   try {
     const response = await axios.get<ApiResponse<Question[]>>(
-      `${API_BASE_URL}/question/${type}`
+      `${API_BASE_URL}/question/${type}?page=${page}&limit=${limit}`
     );
-    return response.data.data || [];
+
+    return response.data;
   } catch (error) {
-    console.error(`Failed to fetch questions (${type}):`, error);
-    return [];
+    console.error(` Failed to fetch questions (${type}):`, error);
+
+    return {
+      success: false,
+      message: 'Failed to fetch questions',
+      data: [],
+      pagination: { page, limit, nextUrl: undefined },
+    };
   }
 }
 
@@ -184,3 +193,18 @@ export async function voteStatus(
     return null;
   }
 }
+export const increaseQuestionView = async (
+  questionId: string
+): Promise<void> => {
+  const url = `${API_BASE_URL}/question/${questionId}/view`;
+  try {
+    await axios.post(url);
+    console.log(`Successfully increased view count for question ${questionId}`);
+  } catch (error) {
+    console.error(
+      `Failed to increase view count for question (${questionId}):`,
+      error
+    );
+    throw error; // Re-throw để component có thể handle error
+  }
+};

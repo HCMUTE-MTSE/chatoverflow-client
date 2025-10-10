@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { getUser } from '~/services/api/user/user.service';
 import { getConversationsByUserId } from '~/services/api/chat/conversation.service';
@@ -39,9 +40,24 @@ function Inbox() {
       setLoading(false);
     }
   };
+  const location = useLocation();
+  const initialConversationId = location.state?.conversationId;
+
   React.useEffect(() => {
     fetchConversations();
   }, []);
+
+  // Effect để chọn conversation khi có conversationId từ state
+  React.useEffect(() => {
+    if (initialConversationId && conversations.length > 0) {
+      const conversation = conversations.find(
+        (c) => c.id === initialConversationId
+      );
+      if (conversation) {
+        setCurrentConversation(conversation);
+      }
+    }
+  }, [initialConversationId, conversations]);
 
   function handleSelectConversation(conversation: Conversation) {
     setCurrentConversation(conversation);

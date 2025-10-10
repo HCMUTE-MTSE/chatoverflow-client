@@ -23,6 +23,8 @@ export default [
       /* route('/question/:id/edit', 'routes/question/editQuestion.tsx'), */
     ]),
 
+    route('user/:userId', 'routes/user/user-profile.tsx'),
+
     /* route('tags', 'routes/tags.tsx'),
 
     route('ask', 'routes/ask.tsx'),

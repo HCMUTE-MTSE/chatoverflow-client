@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router';
+import { getUserProfileLink } from '~/utils/userUtils';
 
 interface UserCardProps {
   userId: string;
   name: string;
   username: string;
   avatarUrl?: string;
-  onClick?: (userId: string) => void;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -13,16 +14,25 @@ const UserCard: React.FC<UserCardProps> = ({
   name,
   username,
   avatarUrl,
-  onClick,
 }) => {
+  const [profileLink, setProfileLink] = useState(`/user/${userId}`);
+
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      const link = await getUserProfileLink(userId);
+      setProfileLink(link);
+    };
+    loadProfileLink();
+  }, [userId]);
+
   return (
-    <div
+    <Link
+      to={profileLink}
       className="w-64 h-58 bg-[#181A20] rounded-md flex flex-col items-center py-8 px-4 shadow-lg transition-transform duration-200 hover:-translate-y-1 hover:shadow-2xl cursor-pointer"
-      onClick={() => onClick?.(userId)}
     >
       <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#23262F] mb-4">
         <img
-          src={avatarUrl || '/avatar.jpg'}
+          src={avatarUrl || '/assets/images/defaultavatar.png'}
           alt={name}
           className="w-full h-full object-cover"
         />
@@ -31,7 +41,7 @@ const UserCard: React.FC<UserCardProps> = ({
         {name}
       </div>
       <div className="text-[#6e7fb2] text-sm text-center">@{username}</div>
-    </div>
+    </Link>
   );
 };
 
