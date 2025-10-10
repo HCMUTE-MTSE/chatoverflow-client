@@ -8,14 +8,29 @@ export interface NotificationUser {
 }
 
 export interface NotificationPayload {
+  // Blog related
   blogId?: string;
   blogTitle?: string;
   blogSlug?: string;
   blogUrl?: string;
-  totalUpvotes?: number;
-  voterUserId?: string;
   commentContent?: string;
   commenterId?: string;
+
+  // Question related
+  questionId?: string;
+  questionTitle?: string;
+  questionUrl?: string;
+
+  // Answer related
+  answerId?: string;
+  answerContent?: string;
+  answererId?: string;
+  answerUrl?: string;
+
+  // Common
+  totalUpvotes?: number;
+  totalDownvotes?: number;
+  voterUserId?: string;
 }
 
 export interface Notification {
