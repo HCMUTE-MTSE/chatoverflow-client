@@ -28,7 +28,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       setError(null);
 
       const userData = await getUser();
-      setCurrentUserId(userData.data.user?.userId || null);
+      setCurrentUserId(userData.data.user.userId || null);
 
       const messageData = await getMessageByConversationId(conversation.id);
       setMessages(messageData);

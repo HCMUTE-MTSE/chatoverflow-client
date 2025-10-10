@@ -36,7 +36,7 @@ function MyQuestions() {
 
   return (
     <div>
-      <h2>My Questions</h2>
+      <h2 className="text-3xl font-bold text-white">My Questions</h2>
       <div className="p-8 grid grid-cols-2 items-center gap-4">
         {questions.map((q) => (
           <DefaultQuestionCard
