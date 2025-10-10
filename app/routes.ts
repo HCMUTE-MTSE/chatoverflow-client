@@ -11,7 +11,7 @@ export default [
     route('shop', 'routes/shop.tsx'),
     route('invoice', 'routes/invoice.tsx'),
     route('tags', 'routes/tags.tsx'),
-
+    route('tags/:name/questions', 'routes/tags-questions.tsx'),
     route('', 'routes/protected/ProtectedRoute.tsx', [
       route('profile', 'routes/profile.tsx'),
       route('profile-view', 'routes/profile-view.tsx'),
