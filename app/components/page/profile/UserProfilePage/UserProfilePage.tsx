@@ -6,8 +6,13 @@ import { getCurrentUserId } from '~/utils/userUtils';
 import { getUserById } from '~/services/api/user/user.service';
 import type { UserResponse } from '~/models/res/user.response';
 import EditQuestionCard from '~/components/ui/QuestionCard/EditQuestionCard/QuestionCard';
+import type { Answer } from '../../question-pages/questtion-detail/QuestionAnswer/QuestionAnswer';
 import StatCard from '~/components/ui/StatCard';
-
+import AnswerCard from '~/components/ui/AnswerCard/Card';
+import {
+  getPopularTags,
+  type PopularTag,
+} from '~/services/api/search/search.service';
 // Interface for API response
 interface ProfileApiResponse {
   user: UserResponse;
@@ -23,12 +28,15 @@ interface ProfileApiResponse {
       _id: string;
       name: string;
       nickName: string;
+      avatar: string | null;
     };
     askedTime: string;
     upvotes: number;
     downvotes: number;
     score: number;
+    answerCount?: number;
   }>;
+  answers: Array<Answer>;
   statistics: {
     totalPosts: number;
     totalAnswers: number;
@@ -44,16 +52,6 @@ interface ProfileApiResponse {
   };
 }
 
-// Mock data for top tags
-const mockTopTags = [
-  { name: 'Javascript', count: 20152, icon: '🟨' },
-  { name: 'Typescript', count: 18493, icon: '🔵' },
-  { name: 'Threejs', count: 18493, icon: '🟪' },
-  { name: 'Tailwind CSS', count: 18493, icon: '🟦' },
-  { name: 'React.js', count: 18493, icon: '⚛️' },
-  { name: 'Git & GitHub', count: 18493, icon: '🔶' },
-];
-
 interface UserProfilePageProps {
   userId: string;
 }
@@ -67,6 +65,32 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
   const navigate = useNavigate();
   const [sending, setSending] = useState(false);
 
+  const [popularTags, setPopularTags] = useState<
+    { name: string; count: string }[]
+  >([]);
+  const [tagLoading, setTagLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchPopularTags() {
+      try {
+        setTagLoading(true);
+        const data = await getPopularTags(5);
+
+        const formatted = data.map((t: PopularTag) => ({
+          name: t.tag.toUpperCase(),
+          count: `${t.count}+`,
+        }));
+
+        setPopularTags(formatted);
+      } catch (err) {
+        console.error('Failed to load popular tags:', err);
+      } finally {
+        setTagLoading(false);
+      }
+    }
+
+    fetchPopularTags();
+  }, []);
   const handleSendMessage = async () => {
     setSending(true);
     try {
@@ -129,6 +153,8 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
   }
 
   const displayName = profileData?.user?.name || 'JavaScript Pro';
+  const avatarUrl =
+    profileData?.user?.avatar || '/assets/images/defaultavatar.png';
   const displayHandle = profileData?.user?.nickName
     ? `@${profileData.user.nickName}`
     : '@javascriptpro';
@@ -146,7 +172,7 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-orange-500">
                 <img
-                  src="/assets/images/defaultavatar.png"
+                  src={avatarUrl}
                   alt={displayName}
                   className="w-full h-full object-cover"
                 />
@@ -159,9 +185,6 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
                   <h1 className="text-white text-3xl font-bold">
                     {displayName}
                   </h1>
-                  <p className="text-gray-300 text-base mt-1">
-                    {displayHandle}
-                  </p>
 
                   <div className="flex items-center gap-4 mt-4 text-gray-400">
                     <a
@@ -181,7 +204,9 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
                           d="M13.828 10.172a4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.102 1.101"
                         />
                       </svg>
-                      javascript.pro
+                      <p className="text-blue-300 text-base mt-1">
+                        {displayHandle}
+                      </p>
                     </a>
                     <span className="flex items-center gap-1">
                       <svg
@@ -222,9 +247,9 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
                   </div>
                 </div>
 
-                {/* Nút Send Message */}
+                {/* Send Message Button */}
                 <button
-                  className="px-4 py-2 bg-orange-500 text-white rounded font-medium hover:bg-orange-600 transition-colors disabled:opacity-60"
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors disabled:opacity-60"
                   onClick={handleSendMessage}
                   disabled={sending}
                 >
@@ -310,36 +335,64 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
               </div>
 
               {/* Posts List */}
-              <div className="space-y-4">
-                {profileData?.posts?.map((post) => (
-                  <EditQuestionCard
-                    key={post._id}
-                    title={post.title}
-                    tags={post.tags.map((tag) => tag.toUpperCase())}
-                    user={{
-                      _id: post.user._id,
-                      name: post.user.name,
-                      avatar: '/assets/images/defaultavatar.png',
-                    }}
-                    time={new Date(post.askedTime).toLocaleDateString()}
-                    votes={post.upvotes}
-                    answers={0} // Sẽ cần API riêng để lấy số answers
-                    views={post.views}
-                    onClick={() => console.log('Click:', post._id)}
-                    // Không truyền onEdit và onDelete để ẩn các nút này
-                  />
-                )) || (
-                  <div className="text-gray-400 text-center py-8">
-                    No posts yet
-                  </div>
-                )}
+              {activeTab === 'posts' && (
+                <div className="space-y-4">
+                  {profileData?.posts && profileData.posts.length > 0 ? (
+                    profileData.posts.map((post) => (
+                      <EditQuestionCard
+                        key={post._id}
+                        title={post.title}
+                        tags={post.tags.map((tag) => tag.toUpperCase())}
+                        user={{
+                          name: post.user.name,
+                          avatar: avatarUrl,
+                        }}
+                        time={new Date(post.askedTime).toLocaleDateString()}
+                        votes={post.upvotes}
+                        answers={0}
+                        views={post.views}
+                        onClick={() => navigate(`/question/${post._id}`)}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-gray-400 text-center py-8">
+                      No posts yet
+                    </div>
+                  )}
 
-                <div className="flex justify-center pt-6">
-                  <button className="px-6 py-3 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition-colors">
-                    Load More
-                  </button>
+                  <div className="flex justify-center pt-6">
+                    <button className="px-6 py-3 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition-colors">
+                      Load More
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Answers List */}
+              {activeTab === 'answers' && (
+                <div className="space-y-4">
+                  {profileData?.answers && profileData.answers.length > 0 ? (
+                    profileData.answers.map((answer) => (
+                      <div key={answer._id} className="mb-6">
+                        <AnswerCard
+                          answer={answer}
+                          isOwner={true}
+                          showUpvoteButton={false}
+                          showDownvoteButton={false}
+                          showReplyButton={false}
+                          onClick={() =>
+                            navigate(`/question/${answer.question}`)
+                          }
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-400 text-center py-8">
+                      No answers yet
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Top Tags Sidebar */}
@@ -348,24 +401,30 @@ export default function UserProfilePage({ userId }: UserProfilePageProps) {
                 Top Tags
               </h2>
               <div className="space-y-3">
-                {mockTopTags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded flex items-center justify-center text-xs">
-                        {tag.icon}
+                {tagLoading ? (
+                  <div className="text-gray-400 text-center py-8">
+                    Loading tags...
+                  </div>
+                ) : (
+                  popularTags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between hover:underline px-3 py-2 rounded cursor-pointer transition-colors"
+                      onClick={() =>
+                        navigate(`/tags/${tag.name.toLowerCase()}/questions`)
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-gray-200 text-sm font-medium">
+                          {tag.name}
+                        </span>
                       </div>
-                      <span className="text-gray-200 text-sm font-medium">
-                        {tag.name}
+                      <span className="text-gray-400 text-xs">
+                        {tag.count.toLocaleString()}+
                       </span>
                     </div>
-                    <span className="text-gray-400 text-xs">
-                      {tag.count.toLocaleString()}+
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>

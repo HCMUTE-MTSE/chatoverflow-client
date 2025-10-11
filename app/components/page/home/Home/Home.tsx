@@ -124,43 +124,48 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex justify-center bg-black min-h-screen text-white font-sans">
-      <div className="flex max-w-8xl w-full">
-        {/* Main Content */}
-        <div className="flex-1 p-5 max-w-4xl mx-auto">
-          <Header title="All Questions" onAskQuestion={askQuestion} />
-          <FilterTabs
-            filters={filters}
-            activeFilter={activeFilter}
-            onChange={setActiveFilter}
-          />
+    <div className="min-h-screen relative text-white font-sans">
+      {/* Main Content Container */}
+      <div className="relative z-0 flex justify-center">
+        <div className="flex max-w-8xl w-full">
+          {/* Main Content */}
+          <div className="flex-1 p-5 max-w-4xl mx-auto">
+            <Header title="All Questions" onAskQuestion={askQuestion} />
+            <FilterTabs
+              filters={filters}
+              activeFilter={activeFilter}
+              onChange={setActiveFilter}
+            />
 
-          {/* Questions */}
-          {questions.length > 0 && <QuestionList questions={questions} />}
+            {/* Questions */}
+            {questions.length > 0 && <QuestionList questions={questions} />}
 
-          {/* Loading & Error */}
-          {loading && (
-            <p className="text-gray-400 text-center py-5">
-              Loading questions...
-            </p>
-          )}
-          {error && <p className="text-red-500 text-center py-5">{error}</p>}
+            {/* Loading & Error */}
+            {loading && (
+              <p className="text-gray-400 text-center py-5">
+                Loading questions...
+              </p>
+            )}
+            {error && <p className="text-red-500 text-center py-5">{error}</p>}
 
-          {/* Lazy load trigger */}
-          <div ref={observerRef} className="h-10"></div>
+            {/* Lazy load trigger */}
+            <div ref={observerRef} className="h-10"></div>
 
-          {!hasMore && !loading && (
-            <p className="text-gray-500 text-center py-5">No more questions</p>
-          )}
-        </div>
+            {!hasMore && !loading && (
+              <p className="text-gray-500 text-center py-5">
+                No more questions
+              </p>
+            )}
+          </div>
 
-        {/* Sidebar */}
-        <div className="w-75 p-5 bg-gray-950 border-l border-gray-700">
-          {tagLoading ? (
-            <p className="text-gray-400 text-center">Loading tags...</p>
-          ) : (
-            <PopularTags tags={popularTags} />
-          )}
+          {/* Sidebar */}
+          <div className="w-75 p-5 bg-gray-950 border-l border-gray-700">
+            {tagLoading ? (
+              <p className="text-gray-400 text-center">Loading tags...</p>
+            ) : (
+              <PopularTags tags={popularTags} />
+            )}
+          </div>
         </div>
       </div>
     </div>
