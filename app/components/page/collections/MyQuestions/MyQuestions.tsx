@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   getUserQuestions,
+  getUserVotedQuestions,
   type Question,
 } from '~/services/api/topic/question.service';
 import { getUser } from '~/services/api/user/user.service';
 
 import type { User } from '~/components/ui/QuestionCard/DefaultQuestionCard/type';
 
-import DefaultQuestionCard from '~/components/ui/QuestionCard/DefaultQuestionCard/QuestionCard';
+import EditQuestionCard from '~/components/ui/QuestionCard/EditQuestionCard/QuestionCard';
 
 function MyQuestions() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function MyQuestions() {
       setLoading(true);
 
       const userData = await getUser();
-      const questions = await getUserQuestions(userData.data.user.userId);
+      const questions = await getUserVotedQuestions(userData.data.user.userId);
 
       setQuestions(questions);
       setLoading(false);
@@ -36,10 +37,10 @@ function MyQuestions() {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold text-white">My Questions</h2>
-      <div className="p-8 grid grid-cols-2 items-center gap-4">
+      <h2 className="text-3xl font-bold text-white">Voted Questions</h2>
+      <div className="p-x-8 grid grid-cols-2 items-center gap-x-4">
         {questions.map((q) => (
-          <DefaultQuestionCard
+          <EditQuestionCard
             key={q._id}
             title={q.title}
             tags={q.tags}
@@ -53,7 +54,6 @@ function MyQuestions() {
             votes={q.upvotedBy.length}
             answers={q.answerCount ?? 0}
             views={q.views}
-            // onClick={() => navigate(`/question/${q._id}`)}
             onClick={() => navigate(`/question/${q._id}/edit`)}
           />
         ))}
