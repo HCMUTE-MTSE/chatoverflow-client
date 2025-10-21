@@ -101,7 +101,7 @@ function Inbox() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 h-120 grid grid-cols-[2fr_3fr] w-196 bg-red-500 rounded-lg shadow-lg border border-gray-300">
+    <div className="fixed bottom-4 right-4 h-120 grid grid-cols-[2fr_3fr] w-156 bg-red-500 rounded-lg shadow-lg border border-gray-300 my-2">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}

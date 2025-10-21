@@ -6,7 +6,6 @@ import NotificationIcon from '../ui/NotificationIcon';
 import { IsOpenChatContext } from '~/root';
 
 import { SearchPage } from '../page/global-search/SearchPage';
-import OpenChat from '../ui/OpenChat';
 import { ChatIcon } from '~/libs/icons';
 
 export default function Header() {
@@ -110,7 +109,6 @@ export default function Header() {
         <button
           onClick={() => {
             setIsOpenChat(!isOpenChat);
-            console.log('Chat Opening ?', isOpenChat);
           }}
         >
           <ChatIcon />

@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import type { Route } from './+types/root';
 import './app.css';
+import OpenChat from './components/ui/OpenChat';
 import Inbox from './components/page/inbox/Inbox';
 
 export const links: Route.LinksFunction = () => [

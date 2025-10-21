@@ -62,7 +62,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
   console.log(messages);
   return (
-    <div className="h-96 flex flex-col overflow-y-scroll p-4 space-y-2 no-scrollbar">
+    <div className="h-80 flex flex-col overflow-y-scroll p-4 space-y-2 no-scrollbar">
       {messages.map((message) => (
         <Message
           key={message.id}
