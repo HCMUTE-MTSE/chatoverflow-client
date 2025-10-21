@@ -139,15 +139,6 @@ export default function Header() {
                 {header.profile}
               </button>
               <button
-                onClick={() => {
-                  setOpen(false);
-                  navigate('/create-blog');
-                }}
-                className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
-              >
-                {header.createBlog}
-              </button>
-              <button
                 onClick={goStatistics}
                 className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
               >
