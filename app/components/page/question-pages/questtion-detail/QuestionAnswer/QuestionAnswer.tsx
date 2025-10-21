@@ -47,7 +47,7 @@ export interface Answer {
   user: {
     _id: string;
     name: string;
-    avatarUrl: string;
+    avatar: string;
   };
   upvotedBy: string[];
   downvotedBy: string[];

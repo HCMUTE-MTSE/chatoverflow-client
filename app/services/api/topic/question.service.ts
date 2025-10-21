@@ -38,6 +38,20 @@ export async function createQuestion(
   });
   return response.data.data;
 }
+export async function deleteQuestion(questionId: string, token: string) {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/question/${questionId}/delete`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to delete question (id=${questionId}):`, error);
+    return false;
+  }
+}
 
 export async function getQuestionsByType(
   type: string,
