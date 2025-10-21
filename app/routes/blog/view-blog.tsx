@@ -4,6 +4,7 @@ import SafeHTML from '../../components/ui/SafeHTML/SafeHTML';
 import BlogComments from '../../components/ui/BlogComments';
 import { getBlogDetail, voteBlog } from '../../services/api/blog/blog.service';
 import { getUserProfileLink } from '../../utils/userUtils';
+import { parseJwt } from '../../utils/jwt';
 import type { BlogDetailResponse } from '../../models/res/blog.response';
 import {
   BiUpvote,
@@ -21,6 +22,18 @@ export default function ViewBlog() {
   const [error, setError] = useState<string | null>(null);
   const [votingLoading, setVotingLoading] = useState(false);
   const [userProfileLink, setUserProfileLink] = useState<string>('');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get current user ID from token
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = parseJwt(token);
+      if (decoded && decoded.sub) {
+        setCurrentUserId(decoded.sub);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -52,11 +65,9 @@ export default function ViewBlog() {
     setVotingLoading(true);
     try {
       const response = await voteBlog(slug, voteType);
-      setPost({
-        ...post,
-        upvotes: response.data.upvotes,
-        downvotes: response.data.downvotes,
-      });
+      // Re-fetch blog to get updated vote lists
+      const updatedBlog = await getBlogDetail(slug);
+      setPost(updatedBlog.data);
     } catch (err) {
       console.error('Failed to vote:', err);
       // You could add a toast notification here
@@ -64,6 +75,11 @@ export default function ViewBlog() {
       setVotingLoading(false);
     }
   };
+
+  const hasUserUpvoted =
+    post && currentUserId ? post.upvotedBy.includes(currentUserId) : false;
+  const hasUserDownvoted =
+    post && currentUserId ? post.downvotedBy.includes(currentUserId) : false;
 
   if (loading) {
     return (
@@ -126,18 +142,36 @@ export default function ViewBlog() {
           <button
             onClick={() => handleVote('upvote')}
             disabled={votingLoading}
-            className="flex items-center gap-1 text-[#6DFF8D] hover:text-[#5EE67E] transition-colors disabled:opacity-50"
+            className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+              hasUserUpvoted
+                ? 'text-[#6DFF8D]'
+                : 'text-gray-400 hover:text-[#6DFF8D]'
+            }`}
           >
-            <BiSolidUpvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">{post.upvotes}</span>
+            {hasUserUpvoted ? (
+              <BiSolidUpvote size={20} />
+            ) : (
+              <BiUpvote size={20} />
+            )}
+            <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
+              {post.upvotes}
+            </span>
           </button>
           <button
             onClick={() => handleVote('downvote')}
             disabled={votingLoading}
-            className="flex items-center gap-1 text-[#FF6D6D] hover:text-[#FF5A5A] transition-colors disabled:opacity-50"
+            className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+              hasUserDownvoted
+                ? 'text-[#FF6D6D]'
+                : 'text-gray-400 hover:text-[#FF6D6D]'
+            }`}
           >
-            <BiSolidDownvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">
+            {hasUserDownvoted ? (
+              <BiSolidDownvote size={20} />
+            ) : (
+              <BiDownvote size={20} />
+            )}
+            <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
               {post.downvotes}
             </span>
           </button>

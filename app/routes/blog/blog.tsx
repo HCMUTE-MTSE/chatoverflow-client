@@ -58,7 +58,7 @@ export default function BlogPage() {
       } else {
         setPosts((prevPosts) => [...prevPosts, ...data.data]);
       }
-      setHasMore(!!data.pagination.nextUrl);
+      setHasMore(!!data.pagination?.nextUrl);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
     } finally {
@@ -104,11 +104,11 @@ export default function BlogPage() {
           if (posts.length === index + 1) {
             return (
               <div ref={lastPostElementRef} key={post.id}>
-                <BlogCard {...post} />
+                <BlogCard {...post} showActions={false} />
               </div>
             );
           }
-          return <BlogCard key={post.id} {...post} />;
+          return <BlogCard key={post.id} {...post} showActions={false} />;
         })}
       </div>
       {loading && (

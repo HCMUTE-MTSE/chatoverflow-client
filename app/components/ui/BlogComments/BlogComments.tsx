@@ -37,7 +37,10 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
         setComments(response.data);
       }
 
-      setHasNextPage(response.pagination.nextUrl !== null);
+      setHasNextPage(
+        response.pagination?.nextUrl !== null &&
+          response.pagination?.nextUrl !== undefined
+      );
       setPage(pageNum);
       setError(null);
     } catch (err) {
@@ -55,11 +58,15 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
   const handleCommentUpdate = (
     commentId: string,
     upvotes: number,
-    downvotes: number
+    downvotes: number,
+    upvotedBy: string[],
+    downvotedBy: string[]
   ) => {
     setComments((prev) =>
       prev.map((comment) =>
-        comment.id === commentId ? { ...comment, upvotes, downvotes } : comment
+        comment.id === commentId
+          ? { ...comment, upvotes, downvotes, upvotedBy, downvotedBy }
+          : comment
       )
     );
   };

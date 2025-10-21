@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { voteComment } from '../../../services/api/blog/blog.service';
 import { getUserProfileLink } from '../../../utils/userUtils';
+import { parseJwt } from '../../../utils/jwt';
 import type { Comment } from '../../../models/res/blog.response';
 
 interface BlogCommentProps {
@@ -15,7 +16,9 @@ interface BlogCommentProps {
   onCommentUpdate: (
     commentId: string,
     upvotes: number,
-    downvotes: number
+    downvotes: number,
+    upvotedBy: string[],
+    downvotedBy: string[]
   ) => void;
 }
 
@@ -27,6 +30,18 @@ export default function BlogComment({
   const [userProfileLink, setUserProfileLink] = useState(
     `/user/${comment.author.userId}`
   );
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get current user ID from token
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = parseJwt(token);
+      if (decoded && decoded.sub) {
+        setCurrentUserId(decoded.sub);
+      }
+    }
+  }, []);
 
   // Load user profile link
   useEffect(() => {
@@ -43,10 +58,37 @@ export default function BlogComment({
     setVotingLoading(true);
     try {
       const response = await voteComment(comment.id, voteType);
+
+      // Update local state based on vote action
+      let newUpvotedBy = [...comment.upvotedBy];
+      let newDownvotedBy = [...comment.downvotedBy];
+
+      if (currentUserId) {
+        if (voteType === 'upvote') {
+          if (!newUpvotedBy.includes(currentUserId)) {
+            newUpvotedBy.push(currentUserId);
+          } else {
+            newUpvotedBy = newUpvotedBy.filter((id) => id !== currentUserId);
+          }
+          newDownvotedBy = newDownvotedBy.filter((id) => id !== currentUserId);
+        } else {
+          if (!newDownvotedBy.includes(currentUserId)) {
+            newDownvotedBy.push(currentUserId);
+          } else {
+            newDownvotedBy = newDownvotedBy.filter(
+              (id) => id !== currentUserId
+            );
+          }
+          newUpvotedBy = newUpvotedBy.filter((id) => id !== currentUserId);
+        }
+      }
+
       onCommentUpdate(
         comment.id,
         response.data.upvotes,
-        response.data.downvotes
+        response.data.downvotes,
+        newUpvotedBy,
+        newDownvotedBy
       );
     } catch (err) {
       console.error('Failed to vote on comment:', err);
@@ -55,6 +97,13 @@ export default function BlogComment({
       setVotingLoading(false);
     }
   };
+
+  const hasUserUpvoted = currentUserId
+    ? comment.upvotedBy.includes(currentUserId)
+    : false;
+  const hasUserDownvoted = currentUserId
+    ? comment.downvotedBy.includes(currentUserId)
+    : false;
 
   return (
     <div className="bg-[#1A1E2B] rounded-lg p-4 mb-4">
@@ -83,20 +132,36 @@ export default function BlogComment({
           <button
             onClick={() => handleVote('upvote')}
             disabled={votingLoading}
-            className="flex items-center gap-1 text-[#6DFF8D] hover:text-[#5EE67E] transition-colors disabled:opacity-50"
+            className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+              hasUserUpvoted
+                ? 'text-[#6DFF8D]'
+                : 'text-gray-400 hover:text-[#6DFF8D]'
+            }`}
           >
-            <BiSolidUpvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">
+            {hasUserUpvoted ? (
+              <BiSolidUpvote size={16} />
+            ) : (
+              <BiUpvote size={16} />
+            )}
+            <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
               {comment.upvotes}
             </span>
           </button>
           <button
             onClick={() => handleVote('downvote')}
             disabled={votingLoading}
-            className="flex items-center gap-1 text-[#FF6D6D] hover:text-[#FF5A5A] transition-colors disabled:opacity-50"
+            className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+              hasUserDownvoted
+                ? 'text-[#FF6D6D]'
+                : 'text-gray-400 hover:text-[#FF6D6D]'
+            }`}
           >
-            <BiSolidDownvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">
+            {hasUserDownvoted ? (
+              <BiSolidDownvote size={16} />
+            ) : (
+              <BiDownvote size={16} />
+            )}
+            <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
               {comment.downvotes}
             </span>
           </button>

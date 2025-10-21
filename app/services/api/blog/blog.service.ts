@@ -74,6 +74,20 @@ export const updateBlog = async (slug: string, formData: FormData) => {
   return response.data;
 };
 
+export const deleteBlog = async (slug: string) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.delete(`${API_URL}/${slug}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 export const getUserBlogs = async (userId: string) => {
   const response = await axios.get<BlogListResponse>(
     `${API_URL}/user/${userId}`

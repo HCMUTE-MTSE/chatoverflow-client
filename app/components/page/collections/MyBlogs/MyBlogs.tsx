@@ -25,9 +25,13 @@ function MyBlogs() {
           slug: blog.slug,
           summary: blog.summary,
           author: {
+            userId: blog.user?.userId || blog.user?._id,
             avatar: blog.user?.avatar,
             nickName: blog.user?.nickName,
           },
+          tags: blog.tags || [],
+          upvotes: blog.upvotes || 0,
+          downvotes: blog.downvotes || 0,
           createdAt: blog.createdAt,
         }));
 
