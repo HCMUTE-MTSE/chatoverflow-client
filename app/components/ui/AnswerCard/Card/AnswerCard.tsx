@@ -5,24 +5,34 @@ import AnswerContent from '../AnswerContent';
 import AnswerFooter from '../AnswerFooter';
 import { ReplyList } from '~/components/ui/Reply';
 import type { Answer } from '~/components/page/question-pages/questtion-detail/QuestionAnswer/QuestionAnswer';
-import { getAnswerVoteStatus } from '~/services/api/topic/answer.service';
+import {
+  getAnswerVoteStatus,
+  upvoteAnswer,
+  downvoteAnswer,
+} from '~/services/api/topic/answer.service';
 
 interface Props {
   answer: Answer;
-  onReply?: () => void;
+  isOwner?: boolean;
+  onAnswerUpdate?: (updatedAnswer: Answer) => void;
   onDelete?: () => void;
   onEdit?: () => void;
-  onUpvote: () => void;
-  onDownvote: () => void;
+  onClick?: () => void;
+  showReplyButton?: boolean;
+  showUpvoteButton?: boolean;
+  showDownvoteButton?: boolean;
 }
 
 const AnswerCard: React.FC<Props> = ({
   answer,
-  onReply,
+  isOwner = false,
+  onAnswerUpdate,
   onDelete,
   onEdit,
-  onUpvote,
-  onDownvote,
+  onClick = undefined,
+  showReplyButton = true,
+  showUpvoteButton = true,
+  showDownvoteButton = true,
 }) => {
   const [userUpvoted, setUserUpvoted] = useState(false);
   const [userDownvoted, setUserDownvoted] = useState(false);
@@ -31,49 +41,117 @@ const AnswerCard: React.FC<Props> = ({
   const [showReplies, setShowReplies] = useState(true);
   const navigate = useNavigate();
 
-  const handleLocalUpvote = () => {
+  // 🚀 Sync showReplies with showReplyButton prop
+  useEffect(() => {
+    if (!showReplyButton) {
+      setShowReplies(false);
+    }
+  }, [showReplyButton]);
+
+  // 🚀 Handle upvote with API call
+  const handleLocalUpvote = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
-    if (userUpvoted) {
-      setUserUpvoted(false);
-      setUpvoteCount((c) => c - 1);
-    } else {
-      setUserUpvoted(true);
-      setUpvoteCount((c) => c + 1);
-      if (userDownvoted) {
-        setUserDownvoted(false);
-        setDownvoteCount((c) => c - 1);
+
+    try {
+      const res = await upvoteAnswer(answer._id, token);
+      if (res.success && res.data) {
+        // Update local state
+        setUserUpvoted(res.data.userUpvoted);
+        setUserDownvoted(res.data.userDownvoted);
+
+        // Update counts based on response
+        const newUpvoteCount = res.data.userUpvoted
+          ? upvoteCount + 1
+          : upvoteCount - 1;
+        const newDownvoteCount = res.data.userDownvoted
+          ? downvoteCount
+          : userDownvoted
+            ? downvoteCount - 1
+            : downvoteCount;
+
+        setUpvoteCount(newUpvoteCount);
+        setDownvoteCount(newDownvoteCount);
+
+        // Notify parent component
+        onAnswerUpdate?.({
+          ...answer,
+          upvotedBy: res.data.userUpvoted
+            ? [...answer.upvotedBy, token]
+            : answer.upvotedBy.filter((u) => u !== token),
+          downvotedBy: res.data.userDownvoted
+            ? answer.downvotedBy.filter((u) => u !== token)
+            : answer.downvotedBy,
+        });
       }
+    } catch (err) {
+      console.error('Failed to upvote:', err);
     }
-    onUpvote?.();
   };
 
-  const handleLocalDownvote = () => {
+  // 🚀 Handle downvote with API call
+  const handleLocalDownvote = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
-    if (userDownvoted) {
-      setUserDownvoted(false);
-      setDownvoteCount((c) => c - 1);
-    } else {
-      setUserDownvoted(true);
-      setDownvoteCount((c) => c + 1);
-      if (userUpvoted) {
-        setUserUpvoted(false);
-        setUpvoteCount((c) => c - 1);
+
+    try {
+      const res = await downvoteAnswer(answer._id, token);
+      if (res.success && res.data) {
+        // Update local state
+        setUserUpvoted(res.data.userUpvoted);
+        setUserDownvoted(res.data.userDownvoted);
+
+        // Update counts based on response
+        const newDownvoteCount = res.data.userDownvoted
+          ? downvoteCount + 1
+          : downvoteCount - 1;
+        const newUpvoteCount = res.data.userUpvoted
+          ? upvoteCount
+          : userUpvoted
+            ? upvoteCount - 1
+            : upvoteCount;
+
+        setUpvoteCount(newUpvoteCount);
+        setDownvoteCount(newDownvoteCount);
+
+        // Notify parent component
+        onAnswerUpdate?.({
+          ...answer,
+          downvotedBy: res.data.userDownvoted
+            ? [...answer.downvotedBy, token]
+            : answer.downvotedBy.filter((u) => u !== token),
+          upvotedBy: res.data.userUpvoted
+            ? answer.upvotedBy.filter((u) => u !== token)
+            : answer.upvotedBy,
+        });
       }
+    } catch (err) {
+      console.error('Failed to downvote:', err);
     }
-    onDownvote?.();
   };
 
   const handleReplyClick = () => {
     setShowReplies((prev) => !prev);
-    onReply?.();
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Prevent click when clicking on buttons or interactive elements
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === 'BUTTON' ||
+      target.closest('button') ||
+      target.closest('a') ||
+      target.closest('[role="button"]')
+    ) {
+      return;
+    }
+    onClick?.();
   };
 
   useEffect(() => {
@@ -97,27 +175,29 @@ const AnswerCard: React.FC<Props> = ({
   }, [answer._id]);
 
   return (
-    <div className="mb-4 shadow flex flex-col w-full max-w-2xl mx-auto rounded-lg bg-[#1E1E2F]">
+    <div
+      onClick={handleClick}
+      className="hover:shadow cursor-pointer  mb-4 shadow flex flex-col w-full max-w-2xl mx-auto rounded-lg bg-[#1E1E2F]"
+    >
       <AnswerHeader
         user={{
           _id: answer.user._id,
           name: answer.user.name,
           avatarUrl: answer.user.avatarUrl,
-          onClick: () => {},
         }}
         askedTime={new Date(answer.createdAt).toLocaleString()}
         upvotes={upvoteCount}
         downvotes={downvoteCount}
-        onUpvote={handleLocalUpvote}
-        onDownvote={handleLocalDownvote}
+        onUpvote={showUpvoteButton ? handleLocalUpvote : undefined}
+        onDownvote={showDownvoteButton ? handleLocalDownvote : undefined}
         userUpvoted={userUpvoted}
         userDownvoted={userDownvoted}
       />
       <AnswerContent content={answer.content} />
       <AnswerFooter
-        onReply={handleReplyClick}
-        onDelete={onDelete}
-        onEdit={onEdit}
+        onReply={showReplyButton ? handleReplyClick : undefined}
+        onDelete={isOwner ? onDelete : undefined}
+        onEdit={isOwner ? onEdit : undefined}
       />
 
       {/* Replies Section */}

@@ -5,15 +5,17 @@ import {
   BiSolidDownvote,
 } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   upvoteQuestion,
   downvoteQuestion,
   voteStatus,
 } from '~/services/api/topic/question.service';
+import { getUserProfileLink } from '~/utils/userUtils';
 
 interface HeaderProps {
   questionId: string;
+  ownerId: string;
   ownerAvatar: string;
   ownerName: string;
   totalUpvote: number;
@@ -22,6 +24,7 @@ interface HeaderProps {
 
 export default function Header({
   questionId,
+  ownerId,
   ownerAvatar,
   ownerName,
   totalUpvote,
@@ -32,6 +35,7 @@ export default function Header({
   const [downvoted, setDownvoted] = useState(false);
   const [upvoteCount, setUpvoteCount] = useState(totalUpvote);
   const [downvoteCount, setDownvoteCount] = useState(totalDownvote);
+  const [userProfileLink, setUserProfileLink] = useState(`/user/${ownerId}`);
 
   const token = localStorage.getItem('token');
 
@@ -47,6 +51,15 @@ export default function Header({
       fetchVoteStatus();
     }
   }, [token]);
+
+  // Load user profile link
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      const link = await getUserProfileLink(ownerId);
+      setUserProfileLink(link);
+    };
+    loadProfileLink();
+  }, [ownerId]);
 
   const handleUpvote = async () => {
     if (!token) {
@@ -86,7 +99,13 @@ export default function Header({
           alt={ownerName}
           className="w-8 h-8 rounded-full object-cover"
         />
-        <span className="font-medium">{ownerName}</span>
+        <Link
+          to={userProfileLink}
+          className="font-medium text-white hover:text-orange-500 transition-colors header__owner-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {ownerName}
+        </Link>
       </div>
       <div className="flex items-center gap-4 text-sm">
         <button

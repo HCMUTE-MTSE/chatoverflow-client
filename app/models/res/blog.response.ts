@@ -9,9 +9,13 @@ export interface BlogListResponse {
     slug: string;
     summary: string;
     author: {
+      userId: string;
       avatar: string;
       nickName: string;
     };
+    tags: string[];
+    upvotes: number;
+    downvotes: number;
     createdAt: string;
   }>;
   pagination: {
@@ -31,6 +35,7 @@ export interface BlogDetailResponse {
     contentHtml: string;
     summary: string;
     author: {
+      userId: string;
       avatar: string;
       nickName: string;
     };
@@ -57,6 +62,7 @@ export interface BlogVoteResponse {
 
 // Comment interfaces
 export interface CommentAuthor {
+  userId: string;
   avatar: string;
   nickName: string;
 }

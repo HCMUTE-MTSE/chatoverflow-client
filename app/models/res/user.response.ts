@@ -1,6 +1,7 @@
 import type { Address } from '../constant/Address.dto';
 export interface UserResponse {
   userId: string;
+  avatar: string | null;
   name: string;
   nickName: string;
   email: string;

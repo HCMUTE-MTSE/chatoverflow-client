@@ -5,10 +5,12 @@ import QuestionStats from '../QuestionStats';
 import QuestionContent from '../QuestionContent';
 import QuestionTags from '../QuestionTags';
 import QuestionAnswer, { type Answer } from '../QuestionAnswer/QuestionAnswer';
+import { increaseQuestionView } from '~/services/api/topic/question.service';
 
 interface QuestionDetailProps {
   questionData: {
     questionId: string;
+    ownerId: string;
     ownerAvatar: string;
     ownerName: string;
     totalUpvote: number;
@@ -37,34 +39,54 @@ export default function QuestionDetail({
   setTotalAnswers: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [answers, setAnswers] = useState<Answer[]>(initialAnswers);
-
+  const [question, setQuestionData] = useState(questionData);
   useEffect(() => {
     setAnswers(initialAnswers);
   }, [initialAnswers]);
+  useEffect(() => {
+    if (!questionData?.questionId) return;
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        await increaseQuestionView(questionData.questionId);
+
+        setQuestionData((prev) => ({
+          ...prev,
+          totalView: prev.totalView + 1,
+        }));
+      } catch (error) {
+        console.error('Failed to increase view count:', error);
+      }
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
+  }, [questionData?.questionId]);
+
   return (
     <div className="max-w-3xl mx-auto bg-gray-950 p-6 rounded-xl shadow-md">
       <Header
-        questionId={questionData.questionId}
-        ownerAvatar={questionData.ownerAvatar || '/avatar.jpg'}
-        ownerName={questionData.ownerName}
-        totalUpvote={questionData.totalUpvote}
-        totalDownvote={questionData.totalDownvote}
+        questionId={question.questionId}
+        ownerId={question.ownerId}
+        ownerAvatar={question.ownerAvatar || '/assets/images/defaultavatar.png'}
+        ownerName={question.ownerName}
+        totalUpvote={question.totalUpvote}
+        totalDownvote={question.totalDownvote}
       />
 
-      <QuestionHeader header={questionData.header} />
+      <QuestionHeader header={question.header} />
 
       <QuestionStats
-        askedTime={questionData.askedTime}
-        totalAnswer={questionData.totalAnswer}
-        totalView={questionData.totalView}
+        askedTime={question.askedTime}
+        totalAnswer={question.totalAnswer}
+        totalView={question.totalView}
       />
 
-      <QuestionContent content={questionData.content} />
+      <QuestionContent content={question.content} />
 
-      <QuestionTags tags={questionData.tags} />
+      <QuestionTags tags={question.tags} />
 
       <QuestionAnswer
-        questionId={questionData.questionId}
+        questionId={question.questionId}
         answers={answers}
         setAnswers={setAnswers}
         loading={loadingAnswers}

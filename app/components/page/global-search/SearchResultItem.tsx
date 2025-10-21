@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { extractText } from './helpers';
 import type { SearchResult } from '../../../services/api/search/type';
 import {
   QuestionMarkCircleIcon,
@@ -74,7 +75,7 @@ export function SearchResultItem({ result, onClick }: SearchResultItemProps) {
           </h3>
 
           <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-            {result.description}
+            {extractText(result.description)}
           </p>
 
           <div className="flex items-center justify-between text-xs text-gray-500">

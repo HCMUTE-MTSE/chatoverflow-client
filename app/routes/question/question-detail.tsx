@@ -68,7 +68,8 @@ function QuestionDetailRoute() {
 
   const mappedQuestion = {
     questionId: questionData._id,
-    ownerAvatar: questionData.user.avatar || '/avatar.jpg',
+    ownerId: questionData.user._id,
+    ownerAvatar: questionData.user.avatar || '/assets/images/defaultavatar.png',
     ownerName: questionData.user.name,
     totalUpvote: questionData.upvotedBy?.length || 0,
     totalDownvote: questionData.downvotedBy?.length || 0,

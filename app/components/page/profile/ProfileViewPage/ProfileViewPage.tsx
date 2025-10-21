@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { getUser } from '~/services/api/user/user.service';
 import type { UserResponse } from '~/models/res/user.response';
 import profileViewLang from '~/lang/en/profileView';
 import EditQuestionCard from '~/components/ui/QuestionCard/EditQuestionCard/QuestionCard';
 import StatCard from '~/components/ui/StatCard';
+import AnswerCard from '~/components/ui/AnswerCard/Card';
+import QuestionEditor from '~/components/ui/AskEditQuestion/QuestionEditor';
+import type { Answer } from '../../question-pages/questtion-detail/QuestionAnswer/QuestionAnswer';
+import { type JSONContent } from '@tiptap/react';
+import { deleteAnswer, editAnswer } from '~/services/api/topic/answer.service';
 
 // Interface for API response
 interface ProfileApiResponse {
@@ -21,12 +26,15 @@ interface ProfileApiResponse {
       _id: string;
       name: string;
       nickName: string;
+      avatar: string | null;
     };
     askedTime: string;
     upvotes: number;
     downvotes: number;
     score: number;
+    answerCount?: number;
   }>;
+  answers: Array<Answer>;
   statistics: {
     totalPosts: number;
     totalAnswers: number;
@@ -53,11 +61,28 @@ const mockTopTags = [
 ];
 
 export default function ProfileViewPage() {
+  const navigate = useNavigate();
   const [profileData, setProfileData] = useState<ProfileApiResponse | null>(
     null
   );
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'posts' | 'answers'>('posts');
+
+  // 🚀 Edit/Delete states
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState<JSONContent>({
+    type: 'doc',
+    content: [],
+  });
+  const [modal, setModal] = useState<{
+    type: 'confirm' | 'success' | null;
+    open: boolean;
+    answerId?: string;
+    message?: string;
+  }>({ type: null, open: false });
+
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -76,6 +101,104 @@ export default function ProfileViewPage() {
     loadUserData();
   }, []);
 
+  // 🚀 Utility function
+  const isEditorEmpty = (content: JSONContent) =>
+    !content?.content?.some(
+      (node) =>
+        node.type === 'paragraph' &&
+        node.content?.some((t) => t.text?.trim() !== '')
+    );
+
+  // 🚀 Delete answer
+  const handleDelete = (answerId: string) =>
+    setModal({
+      open: true,
+      type: 'confirm',
+      answerId,
+      message: 'Are you sure you want to delete this answer?',
+    });
+
+  const confirmDelete = async () => {
+    if (!modal.answerId || !token) return;
+    try {
+      const res = await deleteAnswer(modal.answerId, token);
+      if (res.success) {
+        setProfileData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            answers: prev.answers.filter((ans) => ans._id !== modal.answerId),
+            statistics: {
+              ...prev.statistics,
+              totalAnswers: prev.statistics.totalAnswers - 1,
+            },
+          };
+        });
+        setModal({
+          open: true,
+          type: 'success',
+          message: 'Deleted answer successfully',
+        });
+      } else {
+        setModal({
+          open: true,
+          type: 'success',
+          message: res.message || 'Failed to delete answer',
+        });
+      }
+    } catch (err) {
+      setModal({
+        open: true,
+        type: 'success',
+        message: 'Failed to delete answer',
+      });
+    }
+  };
+
+  // 🚀 Edit answer
+  const handleEdit = (ans: Answer) => {
+    setEditingId(ans._id);
+    try {
+      setEditingContent(JSON.parse(ans.content));
+    } catch {
+      setEditingContent({ type: 'doc', content: [] });
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingId || !token) return;
+    if (isEditorEmpty(editingContent)) return alert('Content cannot be empty');
+    try {
+      const res = await editAnswer(
+        editingId,
+        JSON.stringify(editingContent),
+        token
+      );
+      if (res.success && res.data) {
+        setProfileData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            answers: prev.answers.map((ans) =>
+              ans._id === editingId
+                ? {
+                    ...ans,
+                    content: res.data.content,
+                    updatedAt: res.data.updatedAt,
+                  }
+                : ans
+            ),
+          };
+        });
+        setEditingId(null);
+        setEditingContent({ type: 'doc', content: [] });
+      } else alert(res.message);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update answer');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -88,6 +211,7 @@ export default function ProfileViewPage() {
   const displayHandle = profileData?.user?.nickName
     ? `@${profileData.user.nickName}`
     : '@javascriptpro';
+
   const location =
     profileData?.user?.address?.province && profileData?.user?.address?.ward
       ? `${profileData.user.address.ward}, ${profileData.user.address.province}`
@@ -115,9 +239,6 @@ export default function ProfileViewPage() {
                   <h1 className="text-white text-3xl font-bold">
                     {displayName}
                   </h1>
-                  <p className="text-gray-300 text-base mt-1">
-                    {displayHandle}
-                  </p>
 
                   <div className="flex items-center gap-4 mt-4 text-gray-400">
                     <a
@@ -137,7 +258,9 @@ export default function ProfileViewPage() {
                           d="M13.828 10.172a4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.102 1.101"
                         />
                       </svg>
-                      javascript.pro
+                      <p className="text-blue-300 text-base mt-1">
+                        {displayHandle}
+                      </p>
                     </a>
                     <span className="flex items-center gap-1">
                       <svg
@@ -263,38 +386,94 @@ export default function ProfileViewPage() {
                   Answers
                 </button>
               </div>
-
               {/* Posts List */}
-              <div className="space-y-4">
-                {profileData?.posts?.map((post) => (
-                  <EditQuestionCard
-                    key={post._id}
-                    title={post.title}
-                    tags={post.tags.map((tag) => tag.toUpperCase())}
-                    user={{
-                      name: post.user.name,
-                      avatar: '/assets/images/defaultavatar.png',
-                    }}
-                    time={new Date(post.askedTime).toLocaleDateString()}
-                    votes={post.upvotes}
-                    answers={0} // Sẽ cần API riêng để lấy số answers
-                    views={post.views}
-                    onEdit={() => console.log('Edit:', post._id)}
-                    onDelete={() => console.log('Delete:', post._id)}
-                    onClick={() => console.log('Click:', post._id)}
-                  />
-                )) || (
-                  <div className="text-gray-400 text-center py-8">
-                    No posts yet
-                  </div>
-                )}
+              {activeTab === 'posts' && (
+                <div className="space-y-4">
+                  {profileData?.posts && profileData.posts.length > 0 ? (
+                    profileData.posts.map((post) => (
+                      <EditQuestionCard
+                        key={post._id}
+                        title={post.title}
+                        tags={post.tags.map((tag) => tag.toUpperCase())}
+                        user={{
+                          name: post.user.name,
+                          avatar:
+                            post.user.avatar ||
+                            '/assets/images/defaultavatar.png',
+                        }}
+                        time={new Date(post.askedTime).toLocaleDateString()}
+                        votes={post.upvotes}
+                        answers={post.answerCount || 0}
+                        views={post.views}
+                        onEdit={() => navigate(`/question/${post._id}/edit`)}
+                        onDelete={() => console.log('Delete:', post._id)}
+                        onClick={() => navigate(`/question/${post._id}`)}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-gray-400 text-center py-8">
+                      No posts yet
+                    </div>
+                  )}
 
-                <div className="flex justify-center pt-6">
-                  <button className="px-6 py-3 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition-colors">
-                    Load More
-                  </button>
+                  <div className="flex justify-center pt-6">
+                    <button className="px-6 py-3 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition-colors">
+                      Load More
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
+              {/* Answers List */}
+              {activeTab === 'answers' && (
+                <div className="space-y-4">
+                  {profileData?.answers && profileData.answers.length > 0 ? (
+                    profileData.answers.map((answer) => (
+                      <div key={answer._id} className="mb-6">
+                        {editingId === answer._id ? (
+                          <div className="p-4 bg-[#23262F] rounded-lg">
+                            <QuestionEditor
+                              title="Edit Answer"
+                              content={editingContent}
+                              onChange={setEditingContent}
+                            />
+                            <div className="mt-2 flex gap-2">
+                              <button
+                                className="bg-[#FF9900] text-white px-4 py-2 rounded hover:bg-[#FFB800] transition"
+                                onClick={handleSaveEdit}
+                              >
+                                Save
+                              </button>
+                              <button
+                                className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+                                onClick={() => setEditingId(null)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <AnswerCard
+                            answer={answer}
+                            isOwner={true}
+                            onEdit={() => handleEdit(answer)}
+                            onDelete={() => handleDelete(answer._id)}
+                            showUpvoteButton={false}
+                            showDownvoteButton={false}
+                            showReplyButton={false}
+                            onClick={() =>
+                              navigate(`/question/${answer.question}`)
+                            }
+                          />
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-gray-400 text-center py-8">
+                      No answers yet
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Top Tags Sidebar */}
@@ -326,6 +505,41 @@ export default function ProfileViewPage() {
           </div>
         </div>
       </div>
+
+      {/* 🚀 Modal */}
+      {modal.open && modal.type && (
+        <>
+          <div className="fixed inset-0 z-40 backdrop-blur-sm" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="bg-[#181A20] rounded-lg shadow-2xl p-6 min-w-[320px] text-center text-white border border-[#23262F]">
+              <div className="text-lg font-semibold mb-4">{modal.message}</div>
+              {modal.type === 'confirm' ? (
+                <div className="flex justify-center gap-4">
+                  <button
+                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+                    onClick={() => setModal({ open: false, type: null })}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                  onClick={() => setModal({ open: false, type: null })}
+                >
+                  Close
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

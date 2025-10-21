@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import SafeHTML from '../../components/ui/SafeHTML/SafeHTML';
 import BlogComments from '../../components/ui/BlogComments';
 import { getBlogDetail, voteBlog } from '../../services/api/blog/blog.service';
+import { getUserProfileLink } from '../../utils/userUtils';
 import type { BlogDetailResponse } from '../../models/res/blog.response';
 import {
   BiUpvote,
@@ -19,6 +20,7 @@ export default function ViewBlog() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [votingLoading, setVotingLoading] = useState(false);
+  const [userProfileLink, setUserProfileLink] = useState<string>('');
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -26,6 +28,12 @@ export default function ViewBlog() {
         if (!slug) throw new Error('Blog post not found');
         const response = await getBlogDetail(slug);
         setPost(response.data);
+
+        // Load user profile link
+        if (response.data.author.userId) {
+          const link = await getUserProfileLink(response.data.author.userId);
+          setUserProfileLink(link);
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Failed to load blog post'
@@ -101,7 +109,13 @@ export default function ViewBlog() {
             className="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <p className="text-white font-medium">{post.author.nickName}</p>
+            <Link
+              to={userProfileLink}
+              className="text-white font-medium hover:text-orange-500 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {post.author.nickName}
+            </Link>
             <p className="text-gray-400 text-sm">
               {new Date(post.createdAt).toLocaleDateString()}
             </p>

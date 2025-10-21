@@ -3,12 +3,39 @@ import { Outlet, useLocation } from 'react-router';
 import Navbar from '~/components/Navbar/Navbar';
 import Header from '~/components/Header';
 import { useTokenRefresher } from '~/hooks/useTokenRefresher';
+import { useSocket, useNotificationSocket } from '~/hooks/chat';
+import { NotificationPopup } from '~/components/ui/NotificationPopup';
+import { parseJwt } from '~/utils/jwt';
 
 export default function Layout() {
   useTokenRefresher();
   const location = useLocation();
   const isTagsPage = location.pathname === '/tags';
   const isProfilePage = location.pathname === '/profile';
+
+  // Initialize socket for notifications
+  const socket = useSocket();
+  const [userId, setUserId] = React.useState<string | null>(null);
+  const [accessToken, setAccessToken] = React.useState<string | null>(null);
+
+  // Get user info from token
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = parseJwt(token);
+      if (decoded?.sub) {
+        setUserId(decoded.sub);
+        setAccessToken(token);
+      }
+    }
+  }, []);
+
+  // Use notification socket hook
+  const { newNotification, clearNotification } = useNotificationSocket({
+    socket,
+    userId,
+    accessToken,
+  });
 
   if (isTagsPage || isProfilePage) {
     // Layout đặc biệt cho trang Tags và Profile - full screen với sidebar
@@ -21,6 +48,11 @@ export default function Layout() {
             <Outlet />
           </div>
         </div>
+        {/* Notification popup */}
+        <NotificationPopup
+          notification={newNotification}
+          onClose={clearNotification}
+        />
       </div>
     );
   }
@@ -35,6 +67,11 @@ export default function Layout() {
           <Outlet />
         </div>
       </div>
+      {/* Notification popup */}
+      <NotificationPopup
+        notification={newNotification}
+        onClose={clearNotification}
+      />
     </div>
   );
 }
