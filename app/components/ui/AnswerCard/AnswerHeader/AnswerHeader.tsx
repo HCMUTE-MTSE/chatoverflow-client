@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 
 import { UpVoteIcon, DownVoteIcon } from '~/libs/icons';
 
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
+import { getUserProfileLink } from '~/utils/userUtils';
 
 interface AnswerHeaderProps {
   user: {
     _id: string;
     name: string;
     avatarUrl: string;
-    onClick: () => void;
   };
   askedTime: string;
   upvotes: number;
@@ -30,22 +31,33 @@ const AnswerHeader: React.FC<AnswerHeaderProps> = ({
   userUpvoted = false,
   userDownvoted = false,
 }) => {
+  const [profileLink, setProfileLink] = useState(`/user/${user._id}`);
+
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      const link = await getUserProfileLink(user._id);
+      setProfileLink(link);
+    };
+    loadProfileLink();
+  }, [user._id]);
+
   return (
     <div className="flex items-center justify-between px-5 pt-4 pb-2">
       <div className="flex items-center gap-3">
-        <button
-          onClick={user.onClick}
+        <Link
+          to={profileLink}
           className="flex items-center gap-2 hover:underline focus:outline-none cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
         >
           <img
-            src={user.avatarUrl || '/avatar.jpg'}
+            src={user.avatarUrl || '/assets/images/defaultavatar.png'}
             alt={user.name}
             className="w-8 h-8 rounded-full border border-gray-700 shadow"
           />
           <span className="text-base font-semibold text-white">
             {user.name}
           </span>
-        </button>
+        </Link>
         <span className="text-xs text-[#7B8EC8] ml-2">
           • answered {askedTime}
         </span>

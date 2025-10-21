@@ -16,24 +16,7 @@ import QuestionTags from '../../../ui/AskEditQuestion/QuestionTags';
 import SubmitButton from '../../../ui/AskEditQuestion/SubmitButton';
 import type { JSONContent } from '@tiptap/react';
 import axios from 'axios';
-
-const TAG_SUGGESTIONS = [
-  'javascript',
-  'react',
-  'nodejs',
-  'css',
-  'html',
-  'typescript',
-  'python',
-  'java',
-  'csharp',
-  'php',
-  'sql',
-  'docker',
-  'linux',
-  'git',
-  'api',
-];
+import { getTagList } from '~/services/api/tags/tag.service';
 
 interface EditQuestionContentProps {
   questionId: string | undefined;
@@ -81,6 +64,8 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+
   const [content, setContent] = useState<JSONContent>(EMPTY_CONTENT);
   const [editor, setEditor] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -88,6 +73,20 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
   const [question, setQuestion] = useState<Question | null>(null);
   const { showToast } = useToast();
 
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await getTagList(1, 100);
+        if (res.success && res.data) {
+          setTagSuggestions(res.data.map((tag) => tag.name));
+        }
+      } catch (err) {
+        console.error('Failed to fetch tag list', err);
+      }
+    };
+
+    fetchTags();
+  }, []);
   useEffect(() => {
     async function fetchData() {
       if (!questionId) {
@@ -183,7 +182,7 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
 
     try {
       // Extract plain text from JSONContent for API
-      const plainTextContent = extractTextFromJSONContent(content);
+      const plainTextContent = JSON.stringify(content);
 
       const updateData = {
         title: title.trim(),
@@ -245,7 +244,7 @@ const EditQuestionContent: React.FC<EditQuestionContentProps> = ({
         <QuestionTags
           tags={tags}
           onChange={setTags}
-          suggestions={TAG_SUGGESTIONS}
+          suggestions={tagSuggestions}
           maxTags={5}
         />
 

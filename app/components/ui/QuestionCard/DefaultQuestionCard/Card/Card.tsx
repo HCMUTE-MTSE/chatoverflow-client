@@ -10,9 +10,9 @@ export default function Card({ className, children, onClick }: CardProps) {
   return (
     <button
       onClick={onClick}
-      className={`bg-black rounded-xl p-6 my-0 w-full max-w-3xl cursor-pointer
+      className={`bg-[#151821] rounded-xl p-6 my-0 w-full max-w-3xl cursor-pointer
             transition-all duration-200
-            hover:-translate-y-0.5 hover:shadow-lg hover:bg-neutral-900
+            hover:-translate-y-0.5 hover:shadow-lg hover:bg-[#3F4354]
             active:translate-y-0 active:shadow-md
             ${className ?? ''}`}
     >

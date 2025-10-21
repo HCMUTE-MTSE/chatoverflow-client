@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import type { Reply, CreateReplyRequest } from '~/models/reply.types';
 import {
   upvoteReply,
@@ -14,6 +14,7 @@ import {
 import { ChevronUpIcon, ChevronDownIcon } from '~/libs/icons';
 import LoadMoreReplies from './LoadMoreReplies';
 import ReplyForm from './ReplyForm';
+import { getUserProfileLink } from '~/utils/userUtils';
 
 interface ReplyCardProps {
   reply: Reply;
@@ -47,6 +48,9 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [userProfileLink, setUserProfileLink] = useState(
+    `/user/${reply.user._id}`
+  );
 
   // Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -211,6 +215,17 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
     fetchOwnerStatus();
   }, [reply._id]);
 
+  // Load user profile link
+  useEffect(() => {
+    const loadProfileLink = async () => {
+      if (reply.user._id) {
+        const link = await getUserProfileLink(reply.user._id);
+        setUserProfileLink(link);
+      }
+    };
+    loadProfileLink();
+  }, [reply.user._id]);
+
   /** ----------------- Render ----------------- */
   return (
     <div className={`${indentClass} ${className}`}>
@@ -234,13 +249,17 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
               )}
 
               <img
-                src={reply.user.avatarUrl || '/avatar.jpg'}
+                src={reply.user.avatarUrl || '/assets/images/defaultavatar.png'}
                 alt={reply.user.name}
                 className="w-6 h-6 rounded-full object-cover"
               />
-              <span className="text-sm font-medium text-white">
+              <Link
+                to={userProfileLink}
+                className="text-sm font-medium text-white hover:text-orange-500 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {reply.user.name}
-              </span>
+              </Link>
               <span className="text-xs text-gray-400">
                 {new Date(reply.createdAt).toLocaleString()}
               </span>

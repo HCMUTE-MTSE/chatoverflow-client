@@ -20,6 +20,15 @@ export const getUser = async () => {
   return response.data;
 };
 
+export const getUserById = async (userId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/user/profile/${userId}`, {
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+  return response.data;
+};
+
 export const updateUser = async (payload: UserRequest) => {
   const response = await axios.put(`${API_BASE_URL}/user/edit`, payload, {
     headers: {

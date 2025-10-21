@@ -184,7 +184,6 @@ const AnswerCard: React.FC<Props> = ({
           _id: answer.user._id,
           name: answer.user.name,
           avatarUrl: answer.user.avatarUrl,
-          onClick: () => {},
         }}
         askedTime={new Date(answer.createdAt).toLocaleString()}
         upvotes={upvoteCount}

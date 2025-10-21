@@ -31,7 +31,7 @@ interface SuggestionItem {
   url: string;
 }
 
-interface PopularTag {
+export interface PopularTag {
   tag: string;
   count: number;
 }
@@ -145,7 +145,7 @@ export const getPopularTags = async (
   limit: number = 20
 ): Promise<PopularTag[]> => {
   try {
-    const url = `${API_BASE_URL}/search/popular-tags`;
+    const url = `${API_BASE_URL}/search/popular-tags?limit=${limit}`;
     const data = await makeApiRequest<PopularTag[]>(url);
     return data;
   } catch (error) {
