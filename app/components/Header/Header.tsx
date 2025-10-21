@@ -3,7 +3,7 @@ import header from '../../lang/en/header';
 import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
 import NotificationIcon from '../ui/NotificationIcon';
-import { IsOpenChatContext } from '~/root';
+import { IsOpenChatContext } from '~/routes/layout';
 
 import { SearchPage } from '../page/global-search/SearchPage';
 import { ChatIcon } from '~/libs/icons';
@@ -98,7 +98,6 @@ export default function Header() {
       </header>
     );
   }
-  console.log('resolve merge conflict');
   return (
     <header className="w-full sticky top-0 z-10 bg-gray-950/70 backdrop-blur border-b border-gray-800">
       <div className="px-6 py-4 flex items-center gap-4">
@@ -108,7 +107,9 @@ export default function Header() {
         {/* Open chat */}
         <button
           onClick={() => {
-            setIsOpenChat(!isOpenChat);
+            const nextIsOpenChat = !isOpenChat;
+            console.log(nextIsOpenChat);
+            setIsOpenChat(nextIsOpenChat);
           }}
         >
           <ChatIcon />

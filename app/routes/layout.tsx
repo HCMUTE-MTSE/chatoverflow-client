@@ -6,8 +6,20 @@ import { useTokenRefresher } from '~/hooks/useTokenRefresher';
 import { useSocket, useNotificationSocket } from '~/hooks/chat';
 import { NotificationPopup } from '~/components/ui/NotificationPopup';
 import { parseJwt } from '~/utils/jwt';
+import Inbox from '~/components/page/inbox/Inbox';
+import Portal from '~/components/ui/Portal';
+
+export const IsOpenChatContext = React.createContext<
+  [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+>([false, () => {}]);
 
 export default function Layout() {
+  const [isOpenChat, setIsOpenChat] = React.useState(false);
+  React.useEffect(() => {
+    console.log('Layout mounted/remounted');
+  }, []);
+  console.log('Layout rendering, isOpenChat:', isOpenChat);
+
   useTokenRefresher();
   const location = useLocation();
   const isTagsPage = location.pathname === '/tags';
@@ -59,19 +71,30 @@ export default function Layout() {
 
   // Layout mặc định cho các trang khác
   return (
-    <div className="grid grid-cols-[1fr_5fr] gap-4 h-screen">
-      <Navbar />
-      <div className="flex flex-col h-screen overflow-hidden">
-        <Header />
-        <div className="flex-1 overflow-auto px-6 py-4">
-          <Outlet />
+    <IsOpenChatContext.Provider value={[isOpenChat, setIsOpenChat]}>
+      <div
+        className="grid grid-cols-[1fr_5fr] gap-4 h-screen"
+        style={{ scrollbarGutter: 'stable' }}
+      >
+        <Navbar />
+        <div className="flex flex-col h-screen overflow-hidden">
+          <Header />
+          <div className="flex-1 overflow-auto px-6 py-4">
+            <Outlet />
+          </div>
         </div>
+        {/* Notification popup */}
+        <NotificationPopup
+          notification={newNotification}
+          onClose={clearNotification}
+        />
+        {/* Chat Inbox - fixed position, outside main layout */}
+        {isOpenChat && (
+          <Portal>
+            <Inbox />
+          </Portal>
+        )}
       </div>
-      {/* Notification popup */}
-      <NotificationPopup
-        notification={newNotification}
-        onClose={clearNotification}
-      />
-    </div>
+    </IsOpenChatContext.Provider>
   );
 }

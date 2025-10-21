@@ -88,7 +88,8 @@ function Inbox() {
   }
 
   if (loading) {
-    return <ConversationSkeleton />;
+    /* return <ConversationSkeleton />; */
+    <p>Loading...</p>;
   }
 
   if (error) {
@@ -101,7 +102,7 @@ function Inbox() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 h-120 grid grid-cols-[2fr_3fr] w-156 bg-red-500 rounded-lg shadow-lg border border-gray-300 my-2">
+    <div className="fixed bottom-4 right-4 h-120 grid grid-cols-[2fr_3fr] w-156 rounded-lg shadow-lg border border-gray-700 m-2 bg-gray-900">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}
