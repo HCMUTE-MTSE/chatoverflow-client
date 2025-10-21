@@ -32,7 +32,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       setToasts((prev) =>
         prev.map((t) => (t.id === id ? { ...t, removing: true } : t))
       );
-    }, 2700);
+    }, 1700);
 
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -42,7 +42,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <ToastContext.Provider value={{ toasts, showToast }}>
       {children}
-      <div className="fixed bottom-20 right-20 z-50 flex flex-col gap-2">
+      <div className="fixed top-6 right-6 z-50 flex flex-col gap-2">
         {toasts.map((toast) => (
           <div
             key={toast.id}

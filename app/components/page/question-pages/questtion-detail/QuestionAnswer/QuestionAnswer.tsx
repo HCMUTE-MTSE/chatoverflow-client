@@ -426,10 +426,10 @@ export default function QuestionAnswer({
           ))}
 
           {/* Load More Button */}
-          {hasMore && (
+          {hasMore && answers.length >= limit && (
             <LoadMoreButton
               onClick={handleLoadMore}
-              disabled={!hasMore}
+              disabled={loadMoreLoading}
               loading={loadMoreLoading}
             />
           )}

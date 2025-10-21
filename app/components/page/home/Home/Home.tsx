@@ -39,7 +39,6 @@ const Home: React.FC = () => {
 
   const filters = ['Newest', 'Trending', 'Unanswered'];
 
-  // 🧠 Fetch questions (lazy load)
   const fetchQuestions = useCallback(
     async (pageNumber = 1, isNewFilter = false) => {
       setLoading(true);

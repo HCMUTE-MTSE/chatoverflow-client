@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { ToastProvider, useToast } from '../../../ui/Toast';
 import QuestionTitle from '../../../ui/AskEditQuestion/QuestionTitle';
 import QuestionEditor from '../../../ui/AskEditQuestion/QuestionEditor';
@@ -17,6 +18,7 @@ const CreateQuestionContent: React.FC = () => {
   const [editor, setEditor] = useState<any>(null);
   const [token, setToken] = useState<string | null>(null);
   const [tagSuggestions, setTagSuggestions] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -73,14 +75,47 @@ const CreateQuestionContent: React.FC = () => {
         tags,
         content: JSON.stringify(content),
       };
-
+      const scrollToTop = () => {
+        const scrollable = document.querySelector(
+          '.flex-1.overflow-auto'
+        ) as HTMLElement | null;
+        if (scrollable) {
+          scrollable.scrollTo({ top: 0, behavior: 'auto' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      };
       const newQuestion = await createQuestion(payload, token);
+      // if (newQuestion) {
+      //   // showToast(
+      //   //   'Question created successfully (Redirecting to home in 3s...) ',
+      //   //   'success'
+      //   // );
+      //   ref.current?.scrollTo({ top: 0, behavior: 'smooth' });
+
+      //   setTimeout(() => {
+      //     navigate('/', { replace: true });
+      //   }, 3000);
+      //   // setTitle('');
+      //   // setTags([]);
+      //   // setContent(EMPTY_CONTENT);
+      //   // editor?.commands.setContent(EMPTY_CONTENT);
+      //   // setTimeout(() => {
+      //   //   navigate('/');
+      //   // }, 3000);
       if (newQuestion) {
-        showToast('Question created successfully', 'success');
+        showToast(
+          'Question created successfully (Redirecting to home in 3s...)',
+          'success'
+        );
+        scrollToTop();
         setTitle('');
         setTags([]);
         setContent(EMPTY_CONTENT);
         editor?.commands.setContent(EMPTY_CONTENT);
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 3000);
       } else {
         showToast('Failed to create question', 'error');
       }
