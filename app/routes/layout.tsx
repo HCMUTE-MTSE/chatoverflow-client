@@ -15,10 +15,11 @@ export const IsOpenChatContext = React.createContext<
 
 export default function Layout() {
   const [isOpenChat, setIsOpenChat] = React.useState(false);
-  React.useEffect(() => {
+
+  /*   React.useEffect(() => {
     console.log('Layout mounted/remounted');
   }, []);
-  console.log('Layout rendering, isOpenChat:', isOpenChat);
+  console.log('Layout rendering, isOpenChat:', isOpenChat); */
 
   useTokenRefresher();
   const location = useLocation();

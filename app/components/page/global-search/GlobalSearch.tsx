@@ -1,7 +1,9 @@
 import * as React from 'react';
+
 import { SearchInput } from './SearchInput';
 import { SearchFilters } from './SearchFilters';
 import { SearchResults } from './SearchResults';
+
 import type {
   SearchResult,
   SearchFilters as SearchFiltersType,
@@ -105,20 +107,19 @@ export function GlobalSearch({
             )}
           </button>
         </div>
+
+        {/* Filters */}
+        {showFilters && (
+          <SearchFilters filters={filters} onChange={setFilters} />
+        )}
       </div>
-
-      {/* Filters */}
-      {showFilters && <SearchFilters filters={filters} onChange={setFilters} />}
-
       {/* Results */}
       <SearchResults
         results={results}
         loading={loading}
         error={error}
         onResultClick={onResultClick}
-        emptyMessage={
-          query ? 'No results found for your search' : 'Start typing to search'
-        }
+        emptyMessage={query ? 'No results found for your search' : ''}
       />
     </div>
   );

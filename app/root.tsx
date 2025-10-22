@@ -46,12 +46,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const [isOpenChat, setIsOpenChat] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log('App mounted/remounted');
-  }, []);
-  console.log('__________App rendering, isOpenChat:', isOpenChat);
-
   return <Outlet />;
 }
 
