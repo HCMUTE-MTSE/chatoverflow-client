@@ -105,9 +105,9 @@ export function SearchResults({
   const showingPartial = totalResults && totalResults > results.length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 border-t border-b border-indigo-200 mt-4">
       {/* Results Header */}
-      <div className="flex items-center justify-between pb-2 border-b border-gray-700">
+      <div className="flex items-center justify-between py-2 border-b border-gray-700">
         <div className="text-sm text-gray-400">
           {showingPartial ? (
             <>
@@ -149,7 +149,7 @@ export function SearchResults({
       </div>
 
       {/* Results List */}
-      <div className="space-y-0">
+      <div className="space-y-0 overflow-y-auto no-scrollbar max-h-[40vh]">
         {results.map((result) => (
           <SearchResultItem
             key={result.id}

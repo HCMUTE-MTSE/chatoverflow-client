@@ -100,7 +100,7 @@ export default function Header() {
   }
   return (
     <header className="w-full sticky top-0 z-10 bg-gray-950/70 backdrop-blur border-b border-gray-800">
-      <div className="px-6 py-4 flex items-center gap-4">
+      <div className="px-6 py-4 flex items-start gap-4">
         {/* Search */}
         <SearchPage />
 

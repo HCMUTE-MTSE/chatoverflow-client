@@ -131,20 +131,20 @@ export function SearchPage() {
 
         {/* Load More Button */}
         {hasMore && !loading && results.length > 0 && (
-          <div className="mt-6 text-center">
+          <div className="text-center">
             <button
               onClick={loadMore}
               disabled={loading}
-              className="px-6 py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+              className="px-2 py-1 bg-transparent hover:bg-orange-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
             >
-              Load More Results
+              Load More &rarr;
             </button>
           </div>
         )}
 
         {/* Loading More Indicator */}
         {loading && results.length > 0 && (
-          <div className="mt-6 text-center">
+          <div className="text-center">
             <div className="inline-flex items-center gap-2 text-gray-400">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
               Loading more results...
