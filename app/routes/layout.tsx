@@ -16,22 +16,17 @@ export const IsOpenChatContext = React.createContext<
 export default function Layout() {
   const [isOpenChat, setIsOpenChat] = React.useState(false);
 
-  /*   React.useEffect(() => {
+  React.useEffect(() => {
     console.log('Layout mounted/remounted');
   }, []);
-  console.log('Layout rendering, isOpenChat:', isOpenChat); */
+  console.log('Layout rendering, isOpenChat:', isOpenChat);
 
   useTokenRefresher();
-  const location = useLocation();
-  const isTagsPage = location.pathname === '/tags';
-  const isProfilePage = location.pathname === '/profile';
 
-  // Initialize socket for notifications
   const socket = useSocket();
   const [userId, setUserId] = React.useState<string | null>(null);
   const [accessToken, setAccessToken] = React.useState<string | null>(null);
 
-  // Get user info from token
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -43,34 +38,12 @@ export default function Layout() {
     }
   }, []);
 
-  // Use notification socket hook
   const { newNotification, clearNotification } = useNotificationSocket({
     socket,
     userId,
     accessToken,
   });
 
-  if (isTagsPage || isProfilePage) {
-    // Layout đặc biệt cho trang Tags và Profile - full screen với sidebar
-    return (
-      <div className="grid grid-cols-[1fr_5fr] h-screen bg-black">
-        <Navbar />
-        <div className="flex flex-col h-screen overflow-hidden">
-          <Header />
-          <div className="flex-1 overflow-auto">
-            <Outlet />
-          </div>
-        </div>
-        {/* Notification popup */}
-        <NotificationPopup
-          notification={newNotification}
-          onClose={clearNotification}
-        />
-      </div>
-    );
-  }
-
-  // Layout mặc định cho các trang khác
   return (
     <IsOpenChatContext.Provider value={[isOpenChat, setIsOpenChat]}>
       <div

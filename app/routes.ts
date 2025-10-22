@@ -36,7 +36,6 @@ export default [
   ]),
 
   layout('routes/auth/layout.tsx', [
-    // Auth
     route('login', 'routes/auth/login.tsx'),
     route('register', 'routes/auth/register.tsx'),
     route('verify-register', 'routes/auth/verify-register.tsx'),
