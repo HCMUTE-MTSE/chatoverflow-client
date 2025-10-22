@@ -161,3 +161,38 @@ export const voteComment = async (
   );
   return response.data;
 };
+
+export const updateBlogComment = async (commentId: string, content: string) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.put<CreateCommentResponse>(
+    `${API_BASE_URL}/blog/comments/${commentId}`,
+    { content },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const deleteBlogComment = async (commentId: string) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('Authentication required');
+  }
+
+  const response = await axios.delete(
+    `${API_BASE_URL}/blog/comments/${commentId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};

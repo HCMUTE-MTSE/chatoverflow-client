@@ -6,15 +6,7 @@ import {
   getBlogDetail,
   updateBlog,
 } from '../../services/api/blog/blog.service';
-
-// Demo tags - replace with API call later
-const DEMO_TAGS = [
-  { id: '1', name: 'JavaScript' },
-  { id: '2', name: 'React' },
-  { id: '3', name: 'Node.js' },
-  { id: '4', name: 'TypeScript' },
-  { id: '5', name: 'Web Development' },
-];
+import TagSelector from '../../components/ui/TagSelector';
 
 interface ToastState {
   show: boolean;
@@ -118,13 +110,8 @@ export default function EditBlog() {
     }
   };
 
-  const handleTagChange = (tagName: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.includes(tagName)
-        ? prev.tags.filter((name) => name !== tagName)
-        : [...prev.tags, tagName],
-    }));
+  const handleTagsChange = (tags: string[]) => {
+    setFormData((prev) => ({ ...prev, tags }));
   };
 
   const validateForm = () => {
@@ -207,158 +194,158 @@ export default function EditBlog() {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold text-white mb-8">Edit Blog Post</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.title}
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            placeholder={blog.form.titlePlaceholder}
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.summary}
-          </label>
-          <textarea
-            name="summary"
-            value={formData.summary}
-            onChange={handleInputChange}
-            placeholder={blog.form.summaryPlaceholder}
-            rows={3}
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-          />
-          {errors.summary && (
-            <p className="text-red-500 text-sm mt-1">{errors.summary}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.coverImage}
-          </label>
-          <div className="flex items-center space-x-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600"
-            />
-            {imagePreview && (
-              <div className="flex flex-col items-start space-y-1">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="h-20 w-20 object-cover rounded"
-                />
-                {!coverImage && currentCoverImage && (
-                  <span className="text-xs text-gray-400">Current image</span>
-                )}
-                {coverImage && (
-                  <span className="text-xs text-green-400">
-                    New image selected
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.content}
-          </label>
-          <Editor
-            apiKey="sbay189tsx7gougpz6wk7vas0bdeqj4afwdiya8p9n4ap6mx"
-            value={formData.content_html}
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                'advlist',
-                'autolink',
-                'lists',
-                'link',
-                'image',
-                'charmap',
-                'preview',
-                'anchor',
-                'searchreplace',
-                'visualblocks',
-                'code',
-                'fullscreen',
-                'insertdatetime',
-                'media',
-                'table',
-                'code',
-                'help',
-                'wordcount',
-              ],
-              toolbar:
-                'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style:
-                'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
-              skin: 'oxide-dark',
-              content_css: 'dark',
-            }}
-            onEditorChange={handleEditorChange}
-          />
-          {errors.content_html && (
-            <p className="text-red-500 text-sm mt-1">{errors.content_html}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.tags}
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {DEMO_TAGS.map((tag) => (
-              <button
-                key={tag.name}
-                type="button"
-                onClick={() => handleTagChange(tag.name)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                  formData.tags.includes(tag.name)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                {tag.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex justify-end space-x-4">
+      {/* Header with Title and Update Button */}
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-white">Edit Blog Post</h1>
+        <div className="flex gap-3">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+            className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
           >
             Cancel
           </button>
           <button
-            type="submit"
+            onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSubmitting ? 'Updating...' : 'Update Blog'}
           </button>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-1 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.title}
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder={blog.form.titlePlaceholder}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.summary}
+              </label>
+              <textarea
+                name="summary"
+                value={formData.summary}
+                onChange={handleInputChange}
+                placeholder={blog.form.summaryPlaceholder}
+                rows={4}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 resize-none"
+              />
+              {errors.summary && (
+                <p className="text-red-500 text-sm mt-1">{errors.summary}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.coverImage}
+              </label>
+              <div className="space-y-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600"
+                />
+                {imagePreview && (
+                  <div className="space-y-2">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                    {!coverImage && currentCoverImage && (
+                      <span className="text-xs text-gray-400">
+                        Current image
+                      </span>
+                    )}
+                    {coverImage && (
+                      <span className="text-xs text-green-400">
+                        New image selected
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.tags}
+              </label>
+              <TagSelector
+                selectedTags={formData.tags}
+                onTagsChange={handleTagsChange}
+                placeholder="Search and select tags..."
+              />
+            </div>
+          </div>
+          <div className="lg:col-span-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.content}
+              </label>
+              <Editor
+                apiKey="sbay189tsx7gougpz6wk7vas0bdeqj4afwdiya8p9n4ap6mx"
+                value={formData.content_html}
+                init={{
+                  height: 700,
+                  menubar: false,
+                  plugins: [
+                    'advlist',
+                    'autolink',
+                    'lists',
+                    'link',
+                    'image',
+                    'charmap',
+                    'preview',
+                    'anchor',
+                    'searchreplace',
+                    'visualblocks',
+                    'code',
+                    'fullscreen',
+                    'insertdatetime',
+                    'media',
+                    'table',
+                    'code',
+                    'help',
+                    'wordcount',
+                  ],
+                  toolbar:
+                    'undo redo | blocks | ' +
+                    'bold italic forecolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help',
+                  content_style:
+                    'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
+                  skin: 'oxide-dark',
+                  content_css: 'dark',
+                }}
+                onEditorChange={handleEditorChange}
+              />
+              {errors.content_html && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.content_html}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </form>
     </div>

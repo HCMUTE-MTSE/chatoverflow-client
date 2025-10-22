@@ -71,6 +71,18 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
     );
   };
 
+  const handleCommentEdit = (commentId: string, newContent: string) => {
+    setComments((prev) =>
+      prev.map((comment) =>
+        comment.id === commentId ? { ...comment, content: newContent } : comment
+      )
+    );
+  };
+
+  const handleCommentDelete = (commentId: string) => {
+    setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+  };
+
   const loadMoreComments = () => {
     if (!loadingMore && hasNextPage) {
       fetchComments(page + 1, true);
@@ -122,6 +134,8 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
               key={comment.id}
               comment={comment}
               onCommentUpdate={handleCommentUpdate}
+              onCommentEdit={handleCommentEdit}
+              onCommentDelete={handleCommentDelete}
             />
           ))}
 
