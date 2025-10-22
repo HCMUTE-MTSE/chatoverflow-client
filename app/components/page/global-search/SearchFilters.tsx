@@ -42,10 +42,9 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
     (filters.minVotes && filters.minVotes > 0);
 
   return (
-    <div className="p-4 bg-gray-800/50 rounded-lg border border-gray-700 space-y-4">
+    <div className="py-2 px-4 bg-gray-800/50 rounded-lg border border-gray-700 space-y-4">
       {/* Header with Clear Button */}
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-semibold text-gray-200">Filter Results</h3>
         {hasActiveFilters && (
           <button
             onClick={clearFilters}

@@ -73,7 +73,7 @@ export function SearchPage() {
     <div className="container mx-auto">
       <div className="w-full max-w-4xl mx-auto">
         {/* Search Input */}
-        <div className="space-y-4 mb-6">
+        <div className="space-y-2">
           <SearchInput
             value={query}
             onChange={setQuery} // ensure SearchInput calls onChange(value: string)

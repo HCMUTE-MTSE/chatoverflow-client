@@ -22,11 +22,9 @@ export interface CreateConversationResponse {
 }
 
 export const getConversationsByUserId = async (userId: string) => {
-  console.log('==============Fetching conversations for user:', userId);
   const response = await axios.get<GetConversationsResponse>(
     `${API_URL}/conversations/${userId}`
   );
-  console.log('==============Fetched conversations:', response.data.data);
   return response.data.data;
 };
 

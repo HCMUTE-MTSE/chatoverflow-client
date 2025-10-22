@@ -113,7 +113,6 @@ export const search = async (
     const url = `${API_BASE_URL}/search?${params}`;
     console.log('____________________Search-URL', url);
     const data = await makeApiRequest<SearchApiResponse>(url);
-    console.log('____________________Search-Data', data);
     return data;
   } catch (error) {
     console.error('Search API error:', error);
@@ -140,6 +139,7 @@ export const getSearchSuggestions = async (
 
     const url = `${API_BASE_URL}/search/suggestions?${params}`;
     const data = await makeApiRequest<SuggestionItem[]>(url);
+    console.log('____________________Search-Response', data);
     return data;
   } catch (error) {
     console.error('Search suggestions API error:', error);

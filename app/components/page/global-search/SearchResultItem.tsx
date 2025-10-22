@@ -50,7 +50,7 @@ export function SearchResultItem({ result, onClick }: SearchResultItemProps) {
 
   return (
     <div
-      className="group p-4 mb-3 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gray-600 rounded-lg cursor-pointer transition-all duration-200"
+      className="group px-4 py-2 mb-2 bg-g  ray-800 hover:bg-gray-750 border border-gray-700 hover:border-gray-600 rounded-lg cursor-pointer transition-all duration-200"
       onClick={() => onClick?.(result)}
     >
       <div className="flex items-start gap-4">
