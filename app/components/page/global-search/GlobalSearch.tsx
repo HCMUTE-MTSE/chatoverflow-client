@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { ListFilterPlus } from 'lucide-react';
+
 import { SearchInput } from './SearchInput';
 import { SearchFilters } from './SearchFilters';
 import { SearchResults } from './SearchResults';
@@ -21,11 +23,12 @@ interface GlobalSearchProps {
 export function GlobalSearch({
   onSearch,
   onResultClick,
-  placeholder = 'Search questions, answers, users, and tags...',
+  placeholder = 'Search questions, blogs',
 }: GlobalSearchProps) {
   const [query, setQuery] = React.useState('');
   const [filters, setFilters] = React.useState<SearchFiltersType>({});
   const [results, setResults] = React.useState<SearchResult[]>([]);
+
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string>('');
   const [showFilters, setShowFilters] = React.useState(false);
@@ -43,7 +46,10 @@ export function GlobalSearch({
         setError('');
         try {
           const searchResults = await onSearch(query, filters);
+          console.log('____________________Search-Query: ', query);
+          console.log('____________________Search-Filters: ', filters);
           setResults(searchResults);
+          console.log('____________________Search-Results: ', searchResults);
         } catch (err) {
           setError('Failed to search. Please try again.');
           setResults([]);
@@ -51,7 +57,7 @@ export function GlobalSearch({
           setLoading(false);
         }
       }
-    }, 300);
+    }, 1000);
 
     return () => clearTimeout(timeoutId);
   }, [query, filters, onSearch]);
@@ -63,7 +69,7 @@ export function GlobalSearch({
   };
 
   const hasActiveFilters =
-    filters.type !== 'all' ||
+    filters.type !== 'question' ||
     filters.sortBy !== 'relevance' ||
     filters.dateRange !== 'all';
 
@@ -88,19 +94,7 @@ export function GlobalSearch({
                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
             }`}
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
-              />
-            </svg>
+            <ListFilterPlus />
             Filters
             {hasActiveFilters && (
               <span className="bg-orange-500 text-white text-xs rounded-full w-2 h-2"></span>

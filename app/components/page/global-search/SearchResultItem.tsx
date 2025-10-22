@@ -4,10 +4,12 @@ import type { SearchResult } from '../../../services/api/search/type';
 import {
   QuestionMarkCircleIcon,
   ChatBubbleLeftIcon,
-  UserIcon,
-  TagIcon,
   ArrowUpIcon,
+  EyeIcon,
+  ClockIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline';
+import { DocumentTextIcon } from '@heroicons/react/24/solid';
 
 interface SearchResultItemProps {
   result: SearchResult;
@@ -15,89 +17,151 @@ interface SearchResultItemProps {
 }
 
 export function SearchResultItem({ result, onClick }: SearchResultItemProps) {
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'question':
-        return <QuestionMarkCircleIcon className="h-5 w-5 text-blue-400" />;
-      case 'answer':
-        return <ChatBubbleLeftIcon className="h-5 w-5 text-green-400" />;
-      case 'user':
-        return <UserIcon className="h-5 w-5 text-purple-400" />;
-      case 'tag':
-        return <TagIcon className="h-5 w-5 text-orange-400" />;
-      default:
-        return null;
+  const isQuestion = result.type === 'question';
+  const isBlog = result.type === 'blog';
+
+  const getTypeIcon = () => {
+    if (isQuestion) {
+      return <QuestionMarkCircleIcon className="h-5 w-5 text-blue-400" />;
     }
+    if (isBlog) {
+      return <DocumentTextIcon className="h-5 w-5 text-purple-400" />;
+    }
+    return null;
   };
 
-  const getTypeBadgeColor = (type: string) => {
-    switch (type) {
-      case 'question':
-        return 'bg-blue-500/20 text-blue-300';
-      case 'answer':
-        return 'bg-green-500/20 text-green-300';
-      case 'user':
-        return 'bg-purple-500/20 text-purple-300';
-      case 'tag':
-        return 'bg-orange-500/20 text-orange-300';
-      default:
-        return 'bg-gray-500/20 text-gray-300';
+  const getTypeBadge = () => {
+    if (isQuestion) {
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
+          Question
+        </span>
+      );
     }
+    if (isBlog) {
+      return (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+          Blog
+        </span>
+      );
+    }
+    return null;
   };
 
   return (
     <div
-      className="p-2 mb-2 bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-lg cursor-pointer transition-all duration-200 hover:border-gray-600"
+      className="group p-4 mb-3 bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gray-600 rounded-lg cursor-pointer transition-all duration-200"
       onClick={() => onClick?.(result)}
     >
-      <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 mt-1">{getTypeIcon(result.type)}</div>
+      <div className="flex items-start gap-4">
+        {/* Type Icon */}
+        <div className="flex-shrink-0 mt-1">{getTypeIcon()}</div>
 
+        {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <span
-              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTypeBadgeColor(
-                result.type
-              )}`}
-            >
-              {result.type}
-            </span>
-            {result.metadata?.votes !== undefined && (
-              <div className="flex items-center gap-1 text-gray-400">
-                <ArrowUpIcon className="h-3 w-3" />
-                <span className="text-xs">{result.metadata.votes}</span>
-              </div>
-            )}
+          {/* Header: Badge + Stats */}
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
+            {getTypeBadge()}
+
+            {/* Stats */}
+            <div className="flex items-center gap-3 text-xs text-gray-400">
+              {/* Votes */}
+              {result.metadata?.votes !== undefined && (
+                <div
+                  className={`flex items-center gap-1 ${
+                    result.metadata.votes > 0
+                      ? 'text-green-400'
+                      : result.metadata.votes < 0
+                      ? 'text-red-400'
+                      : 'text-gray-400'
+                  }`}
+                >
+                  <ArrowUpIcon className="h-3.5 w-3.5" />
+                  <span className="font-medium">{result.metadata.votes}</span>
+                </div>
+              )}
+
+              {/* Views (Questions only) */}
+              {isQuestion && result.metadata?.views !== undefined && (
+                <div className="flex items-center gap-1">
+                  <EyeIcon className="h-3.5 w-3.5" />
+                  <span>{result.metadata.views}</span>
+                </div>
+              )}
+
+              {/* Answer Count (Questions only) */}
+              {isQuestion && result.metadata?.answers !== undefined && (
+                <div className="flex items-center gap-1">
+                  <ChatBubbleLeftIcon className="h-3.5 w-3.5" />
+                  <span>
+                    {result.metadata.answers}{' '}
+                    {result.metadata.answers === 1 ? 'answer' : 'answers'}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          <h3 className="text-lg font-medium text-gray-200 mb-2 line-clamp-2">
+          {/* Title */}
+          <h3 className="text-lg font-semibold text-gray-100 mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
             {result.title}
           </h3>
 
-          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+          {/* Description */}
+          <p className="text-gray-400 text-sm mb-3 line-clamp-2 leading-relaxed">
             {extractText(result.description)}
           </p>
 
-          <div className="flex items-center justify-between text-xs text-gray-500">
-            <div className="flex items-center gap-4">
+          {/* Footer: Author, Date, Tags */}
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Author & Date */}
+            <div className="flex items-center gap-3 text-xs text-gray-500">
               {result.metadata?.author && (
-                <span>by {result.metadata.author}</span>
+                <div className="flex items-center gap-1.5">
+                  {result.metadata.authorAvatar ? (
+                    <img
+                      src={result.metadata.authorAvatar}
+                      alt={result.metadata.author}
+                      className="w-5 h-5 rounded-full"
+                    />
+                  ) : (
+                    <UserCircleIcon className="w-5 h-5" />
+                  )}
+                  <span className="font-medium text-gray-400">
+                    {result.metadata.author}
+                  </span>
+                  {result.metadata.authorReputation !== undefined && (
+                    <span className="text-gray-600">
+                      ({result.metadata.authorReputation})
+                    </span>
+                  )}
+                </div>
               )}
-              {result.metadata?.createdAt && (
-                <span>{result.metadata.createdAt}</span>
+
+              {result.metadata?.formattedDate && (
+                <div className="flex items-center gap-1">
+                  <ClockIcon className="h-3.5 w-3.5" />
+                  <span>{result.metadata.formattedDate}</span>
+                </div>
               )}
             </div>
 
+            {/* Tags */}
             {result.metadata?.tags && result.metadata.tags.length > 0 && (
-              <div className="flex gap-1">
+              <div className="flex gap-1.5 flex-wrap">
                 {result.metadata.tags.slice(0, 3).map((tag, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-gray-700 rounded text-xs"
+                    className="px-2 py-1 bg-gray-700/70 hover:bg-gray-600 text-gray-300 rounded text-xs font-medium transition-colors"
                   >
                     {tag}
                   </span>
                 ))}
+                {result.metadata.tags.length > 3 && (
+                  <span className="px-2 py-1 text-gray-500 text-xs">
+                    +{result.metadata.tags.length - 3} more
+                  </span>
+                )}
               </div>
             )}
           </div>

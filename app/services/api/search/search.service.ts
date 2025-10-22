@@ -1,3 +1,4 @@
+import axios from 'axios';
 import type { SearchResult, SearchFilters } from './type';
 
 interface ApiResponse<T> {
@@ -6,7 +7,7 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-interface SearchApiResponse {
+export interface SearchApiResponse {
   results: SearchResult[];
   pagination: {
     currentPage: number;
@@ -15,8 +16,8 @@ interface SearchApiResponse {
     hasNext: boolean;
     hasPrev: boolean;
   };
-  searchQuery: string;
-  appliedFilters: {
+  query: string;
+  filters: {
     type: string;
     sortBy: string;
     dateRange: string;
@@ -38,7 +39,9 @@ export interface PopularTag {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-/* Helper function to build query parameters */
+/**
+ * Build query parameters for search request
+ */
 const buildSearchParams = (
   query: string,
   filters: SearchFilters = {},
@@ -51,72 +54,76 @@ const buildSearchParams = (
     limit: limit.toString(),
   });
 
-  // Add filters to params
-  if (filters.type && filters.type !== 'all') {
+  if (filters.type) {
     params.append('type', filters.type);
   }
 
-  if (filters.sortBy && filters.sortBy !== 'relevance') {
+  if (filters.sortBy) {
     params.append('sortBy', filters.sortBy);
   }
 
-  if (filters.dateRange && filters.dateRange !== 'all') {
+  if (filters.dateRange) {
     params.append('dateRange', filters.dateRange);
   }
 
-  /*   if (filters.tags && filters.tags.length > 0) {
+  if (filters.tags && filters.tags.length > 0) {
     params.append('tags', filters.tags.join(','));
   }
 
   if (filters.minVotes !== undefined && filters.minVotes > 0) {
     params.append('minVotes', filters.minVotes.toString());
-  } */
+  }
 
   return params;
 };
 
-/* Helper function for making API requests */
+/**
+ * Helper function for making API requests with axios
+ */
 const makeApiRequest = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const response = await axios.get<ApiResponse<T>>(url);
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.data.success) {
+      throw new Error(response.data.error || 'API request failed');
+    }
+
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.error || error.message || 'Network error'
+      );
+    }
+    throw error;
   }
-
-  const data: ApiResponse<T> = await response.json();
-
-  if (!data.success) {
-    throw new Error(data.error || 'API request failed');
-  }
-
-  return data.data;
 };
 
-/* Main search function */
-export const searchQuestions = async (
+/**
+ * Main search function - searches questions and/or blogs
+ */
+export const search = async (
   query: string,
   filters: SearchFilters = {},
   page: number = 1,
   limit: number = 20
-): Promise<SearchResult[]> => {
+): Promise<SearchApiResponse> => {
   try {
     const params = buildSearchParams(query, filters, page, limit);
     const url = `${API_BASE_URL}/search?${params}`;
-
+    console.log('____________________Search-URL', url);
     const data = await makeApiRequest<SearchApiResponse>(url);
-    return data.results;
+    console.log('____________________Search-Data', data);
+    return data;
   } catch (error) {
     console.error('Search API error:', error);
     throw error;
   }
 };
 
-/* Search suggestions function */
+/**
+ * Get search suggestions for autocomplete/typeahead
+ */
 export const getSearchSuggestions = async (
   query: string,
   limit: number = 5
@@ -136,11 +143,13 @@ export const getSearchSuggestions = async (
     return data;
   } catch (error) {
     console.error('Search suggestions API error:', error);
-    return []; // Return empty array on error for suggestions
+    return [];
   }
 };
 
-/* Popular tags function */
+/**
+ * Get popular tags from questions and blogs
+ */
 export const getPopularTags = async (
   limit: number = 20
 ): Promise<PopularTag[]> => {
@@ -154,8 +163,11 @@ export const getPopularTags = async (
   }
 };
 
+/**
+ * Exported search API object
+ */
 export const searchApi = {
-  searchQuestions,
+  search,
   getSearchSuggestions,
   getPopularTags,
 };
