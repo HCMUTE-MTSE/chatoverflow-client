@@ -149,128 +149,137 @@ export default function CreateBlog() {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold text-white mb-8">{blog.createBlog}</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.title}
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            placeholder={blog.form.titlePlaceholder}
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-          )}
-        </div>
+      {/* Header with Title and Publish Button */}
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold text-white">{blog.createBlog}</h1>
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isSubmitting ? 'Publishing...' : blog.form.submit}
+        </button>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.summary}
-          </label>
-          <textarea
-            name="summary"
-            value={formData.summary}
-            onChange={handleInputChange}
-            placeholder={blog.form.summaryPlaceholder}
-            rows={3}
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-          />
-          {errors.summary && (
-            <p className="text-red-500 text-sm mt-1">{errors.summary}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.coverImage}
-          </label>
-          <div className="flex items-center space-x-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600"
-            />
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="h-20 w-20 object-cover rounded"
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-1 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.title}
+              </label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder={blog.form.titlePlaceholder}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
               />
-            )}
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.summary}
+              </label>
+              <textarea
+                name="summary"
+                value={formData.summary}
+                onChange={handleInputChange}
+                placeholder={blog.form.summaryPlaceholder}
+                rows={4}
+                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 resize-none"
+              />
+              {errors.summary && (
+                <p className="text-red-500 text-sm mt-1">{errors.summary}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.coverImage}
+              </label>
+              <div className="space-y-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600"
+                />
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-40 object-cover rounded-lg"
+                  />
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.tags}
+              </label>
+              <TagSelector
+                selectedTags={formData.tags}
+                onTagsChange={handleTagsChange}
+                placeholder="Search and select tags..."
+              />
+            </div>
           </div>
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.content}
-          </label>
-          <Editor
-            apiKey="sbay189tsx7gougpz6wk7vas0bdeqj4afwdiya8p9n4ap6mx" // Replace with your TinyMCE API key
-            init={{
-              height: 500,
-              menubar: false,
-              plugins: [
-                'advlist',
-                'autolink',
-                'lists',
-                'link',
-                'image',
-                'charmap',
-                'preview',
-                'anchor',
-                'searchreplace',
-                'visualblocks',
-                'code',
-                'fullscreen',
-                'insertdatetime',
-                'media',
-                'table',
-                'code',
-                'help',
-                'wordcount',
-              ],
-              toolbar:
-                'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style:
-                'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
-              skin: 'oxide-dark',
-              content_css: 'dark',
-            }}
-            onEditorChange={handleEditorChange}
-          />
-          {errors.content_html && (
-            <p className="text-red-500 text-sm mt-1">{errors.content_html}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            {blog.form.tags}
-          </label>
-          <TagSelector
-            selectedTags={formData.tags}
-            onTagsChange={handleTagsChange}
-            placeholder="Search and select tags..."
-          />
-        </div>
-
-        <div className="flex justify-end space-x-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Publishing...' : blog.form.submit}
-          </button>
+          <div className="lg:col-span-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                {blog.form.content}
+              </label>
+              <Editor
+                apiKey="sbay189tsx7gougpz6wk7vas0bdeqj4afwdiya8p9n4ap6mx"
+                init={{
+                  height: 700,
+                  menubar: false,
+                  plugins: [
+                    'advlist',
+                    'autolink',
+                    'lists',
+                    'link',
+                    'image',
+                    'charmap',
+                    'preview',
+                    'anchor',
+                    'searchreplace',
+                    'visualblocks',
+                    'code',
+                    'fullscreen',
+                    'insertdatetime',
+                    'media',
+                    'table',
+                    'code',
+                    'help',
+                    'wordcount',
+                  ],
+                  toolbar:
+                    'undo redo | blocks | ' +
+                    'bold italic forecolor | alignleft aligncenter ' +
+                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                    'removeformat | help',
+                  content_style:
+                    'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
+                  skin: 'oxide-dark',
+                  content_css: 'dark',
+                }}
+                onEditorChange={handleEditorChange}
+              />
+              {errors.content_html && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.content_html}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </form>
     </div>

@@ -37,7 +37,10 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
         setComments(response.data);
       }
 
-      setHasNextPage(response.pagination.nextUrl !== null);
+      setHasNextPage(
+        response.pagination?.nextUrl !== null &&
+          response.pagination?.nextUrl !== undefined
+      );
       setPage(pageNum);
       setError(null);
     } catch (err) {
@@ -55,13 +58,29 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
   const handleCommentUpdate = (
     commentId: string,
     upvotes: number,
-    downvotes: number
+    downvotes: number,
+    upvotedBy: string[],
+    downvotedBy: string[]
   ) => {
     setComments((prev) =>
       prev.map((comment) =>
-        comment.id === commentId ? { ...comment, upvotes, downvotes } : comment
+        comment.id === commentId
+          ? { ...comment, upvotes, downvotes, upvotedBy, downvotedBy }
+          : comment
       )
     );
+  };
+
+  const handleCommentEdit = (commentId: string, newContent: string) => {
+    setComments((prev) =>
+      prev.map((comment) =>
+        comment.id === commentId ? { ...comment, content: newContent } : comment
+      )
+    );
+  };
+
+  const handleCommentDelete = (commentId: string) => {
+    setComments((prev) => prev.filter((comment) => comment.id !== commentId));
   };
 
   const loadMoreComments = () => {
@@ -115,6 +134,8 @@ export default function BlogComments({ blogSlug }: BlogCommentsProps) {
               key={comment.id}
               comment={comment}
               onCommentUpdate={handleCommentUpdate}
+              onCommentEdit={handleCommentEdit}
+              onCommentDelete={handleCommentDelete}
             />
           ))}
 
