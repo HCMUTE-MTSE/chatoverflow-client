@@ -17,6 +17,7 @@ import { createConversation } from '~/services/api/chat/conversation.service';
 import { getCurrentUserId } from '~/utils/userUtils';
 import { usePosts } from '~/hooks/profile/usePosts';
 import { useAnswer } from '~/hooks/profile/useAnswer';
+import { IsOpenChatContext } from '~/routes/layout';
 
 interface UserProfilePageProps {
   userId: string;
@@ -27,7 +28,8 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
   const [activeTab, setActiveTab] = useState<'posts' | 'answers' | 'blogs'>(
     'posts'
   );
-  const [sending, setSending] = useState(false); // 👈 trạng thái gửi tin nhắn
+  const [sending, setSending] = useState(false);
+  const [isOpenChat, setIsOpenChat] = React.useContext(IsOpenChatContext);
 
   const token =
     typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -70,14 +72,14 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
     hasMore: hasMorePosts,
   } = usePosts(profileData?.user?.userId);
 
-  // ✅ Logic gửi tin nhắn (từ code gốc)
-  const handleSendMessage = useCallback(async () => {
-    setSending(true);
+  const handleSendMessage = async () => {
+    const nextIsOpenChat = !isOpenChat;
+    setIsOpenChat(nextIsOpenChat);
+
     try {
       const currentUserId = await getCurrentUserId();
       if (!currentUserId || !profileData?.user?.userId) {
         alert('Cannot get user info. Please login.');
-        setSending(false);
         return;
       }
 
@@ -85,13 +87,12 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
         currentUserId,
         profileData.user.userId
       );
-      navigate('/chat', { state: { conversationId: conversation.id } });
     } catch (err) {
       alert('Failed to start conversation.');
     } finally {
       setSending(false);
     }
-  }, [profileData, navigate]);
+  };
 
   // 🚀 Loading & Error
   if (profileLoading)
@@ -121,7 +122,6 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
     <div className="min-h-screen bg-gray-900">
       <div className="w-full bg-gray-900">
         <div className="max-w-6xl mx-auto px-8 py-8">
-          {/* ✅ Profile Header + Send Message */}
           <ProfileHeader
             avatar={
               profileData?.user?.avatar || '/assets/images/defaultavatar.png'

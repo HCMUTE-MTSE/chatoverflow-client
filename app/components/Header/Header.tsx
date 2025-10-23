@@ -109,7 +109,6 @@ export default function Header() {
           <button
             onClick={() => {
               const nextIsOpenChat = !isOpenChat;
-              console.log(nextIsOpenChat);
               setIsOpenChat(nextIsOpenChat);
             }}
           >
