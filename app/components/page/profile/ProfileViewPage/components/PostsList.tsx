@@ -4,8 +4,8 @@ import type { ProfileApiResponse } from '../../../../../hooks/profile/useProfile
 
 interface PostsListProps {
   posts: ProfileApiResponse['posts'];
-  onEdit: (postId: string) => void;
-  onDelete: (postId: string) => void;
+  onEdit?: (postId: string) => void;
+  onDelete?: (postId: string) => void;
   onClick: (postId: string) => void;
 }
 
@@ -43,24 +43,27 @@ export function PostsList({
   return (
     <div className="space-y-4">
       {paginatedPosts && paginatedPosts.length > 0 ? (
-        paginatedPosts.map((post) => (
-          <EditQuestionCard
-            key={post._id}
-            title={post.title}
-            tags={post.tags.map((tag) => tag.toUpperCase())}
-            user={{
+        paginatedPosts.map((post) => {
+          const cardProps: any = {
+            key: post._id,
+            title: post.title,
+            tags: post.tags.map((tag) => tag.toUpperCase()),
+            user: {
               name: post.user.name,
               avatar: post.user.avatar || '/assets/images/defaultavatar.png',
-            }}
-            time={new Date(post.askedTime).toLocaleDateString()}
-            votes={post.upvotes}
-            answers={post.answerCount || 0}
-            views={post.views}
-            onEdit={() => onEdit(post._id)}
-            onDelete={() => onDelete(post._id)}
-            onClick={() => onClick(post._id)}
-          />
-        ))
+            },
+            time: new Date(post.askedTime).toLocaleDateString(),
+            votes: post.upvotes,
+            answers: post.answerCount || 0,
+            views: post.views,
+            onClick: () => onClick(post._id),
+          };
+
+          if (onEdit) cardProps.onEdit = () => onEdit(post._id);
+          if (onDelete) cardProps.onDelete = () => onDelete(post._id);
+
+          return <EditQuestionCard {...cardProps} />;
+        })
       ) : (
         <div className="text-gray-400 text-center py-8">No posts yet</div>
       )}

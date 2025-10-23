@@ -6,13 +6,13 @@ import { type JSONContent } from '@tiptap/react';
 
 interface AnswersListProps {
   answers: Answer[];
-  editingId: string | null;
-  editingContent: JSONContent;
-  onEdit: (answer: Answer) => void;
-  onDelete: (answerId: string) => void;
-  onSave: () => void;
-  onCancel: () => void;
-  onContentChange: (content: JSONContent) => void;
+  editingId?: string | null;
+  editingContent?: JSONContent;
+  onEdit?: (answer: Answer) => void;
+  onDelete?: (answerId: string) => void;
+  onSave?: () => void;
+  onCancel?: () => void;
+  onContentChange?: (content: JSONContent) => void;
   onClick: (questionId: string) => void;
 }
 
@@ -61,8 +61,8 @@ export function AnswersList({
               <div className="p-4 bg-[#23262F] rounded-lg">
                 <QuestionEditor
                   title="Edit Answer"
-                  content={editingContent}
-                  onChange={onContentChange}
+                  content={editingContent || { type: 'doc', content: [] }}
+                  onChange={onContentChange || (() => {})}
                 />
                 <div className="mt-2 flex gap-2">
                   <button
@@ -83,8 +83,8 @@ export function AnswersList({
               <AnswerCard
                 answer={answer}
                 isOwner={true}
-                onEdit={() => onEdit(answer)}
-                onDelete={() => onDelete(answer._id)}
+                onEdit={() => onEdit && onEdit(answer)}
+                onDelete={() => onDelete && onDelete(answer._id)}
                 showUpvoteButton={false}
                 showDownvoteButton={false}
                 showReplyButton={false}
