@@ -95,6 +95,13 @@ export const getUserBlogs = async (userId: string) => {
   return response.data;
 };
 
+export const getUserVotedBlogs = async (userId: string) => {
+  const response = await axios.get<BlogListResponse>(
+    `${API_BASE_URL}/blog/voted/${userId}`
+  );
+  return response.data;
+};
+
 export const voteBlog = async (
   blogSlug: string,
   voteType: 'upvote' | 'downvote'

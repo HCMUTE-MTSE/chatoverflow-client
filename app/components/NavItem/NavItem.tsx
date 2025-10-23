@@ -22,12 +22,13 @@ export default function NavItem({
   return (
     <li className="relative">
       <Link
+        onClick={() => console.log('____________________Navigating-To: ', to)}
         to={to}
         className={`
                flex items-center gap-4 px-4 py-4 mx-4 rounded-lg transition-all duration-300 text-lg font-medium
                ${
                  isActive
-                   ? 'text-white font-bold bg-gradient-to-r from-orange-500 to-orange-400' // All active states get gradient
+                   ? 'text-white font-bold bg-gradient-to-r from-orange-500 to-orange-400'
                    : 'text-white hover:text-white hover:bg-gray-800/50'
                }
                ${className || ''}
