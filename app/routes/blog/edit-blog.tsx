@@ -7,6 +7,7 @@ import {
   updateBlog,
 } from '../../services/api/blog/blog.service';
 import TagSelector from '../../components/ui/TagSelector';
+import { parseJwt } from '../../utils/jwt';
 
 interface ToastState {
   show: boolean;
@@ -49,6 +50,25 @@ export default function EditBlog() {
 
         if (response.success) {
           const blogData = response.data;
+
+          // Check if current user is the owner of the blog
+          const token = localStorage.getItem('token');
+          if (token) {
+            const decoded = parseJwt(token);
+            const currentUserId = decoded?.sub;
+
+            if (currentUserId !== blogData.author.userId) {
+              showToast(
+                'error',
+                'You do not have permission to edit this blog'
+              );
+              setTimeout(() => {
+                navigate(`/blog/${slug}`);
+              }, 2000);
+              return;
+            }
+          }
+
           setFormData({
             title: blogData.title,
             summary: blogData.summary,
