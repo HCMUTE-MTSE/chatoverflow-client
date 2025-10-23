@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 interface NavItemProps {
   to: string;
@@ -21,8 +21,8 @@ export default function NavItem({
 
   return (
     <li className="relative">
-      <a
-        href={to}
+      <Link
+        to={to}
         className={`
                flex items-center gap-4 px-4 py-4 mx-4 rounded-lg transition-all duration-300 text-lg font-medium
                ${
@@ -38,7 +38,7 @@ export default function NavItem({
           {icon}
         </div>
         <span className={isActive ? 'font-bold' : ''}>{text}</span>
-      </a>
+      </Link>
     </li>
   );
 }

@@ -23,22 +23,14 @@ export function useNotificationSocket({
   // Authenticate socket when user logs in
   useEffect(() => {
     if (!socket || !userId || !accessToken) {
-      console.log('⚠️ Socket auth skipped:', {
-        hasSocket: !!socket,
-        hasUserId: !!userId,
-        hasToken: !!accessToken,
-      });
       setIsAuthenticated(false);
       return;
     }
-
-    console.log('🔐 Attempting socket authentication for user:', userId);
     // Emit user_login to authenticate and join notification room
     socket.emit('user_login', { token: accessToken });
 
     // Listen for authentication success
     const handleAuthSuccess = (data: { message: string; userId: string }) => {
-      console.log('✅ Socket authenticated for notifications:', data);
       setIsAuthenticated(true);
     };
 

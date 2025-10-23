@@ -207,6 +207,7 @@ export async function voteStatus(
     return null;
   }
 }
+
 export const increaseQuestionView = async (
   questionId: string
 ): Promise<void> => {
@@ -220,5 +221,22 @@ export const increaseQuestionView = async (
       error
     );
     throw error; // Re-throw để component có thể handle error
+  }
+};
+
+export const getUserVotedQuestions = async (
+  userId: string
+): Promise<Question[]> => {
+  try {
+    const response = await axios.get<ApiResponse<Question[]>>(
+      `${API_BASE_URL}/question/voted/${userId}`
+    );
+    return response.data.data || [];
+  } catch (error) {
+    console.error(
+      `Failed to fetch voted questions for user (${userId}):`,
+      error
+    );
+    return [];
   }
 };

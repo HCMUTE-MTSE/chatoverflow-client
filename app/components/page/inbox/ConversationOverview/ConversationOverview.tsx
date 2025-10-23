@@ -15,12 +15,12 @@ const ConversationOverview: React.FC<ConversationOverviewProps> = ({
 }) => {
   return (
     <button
-      className="flex items-center justify-between p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+      className="flex items-center justify-between p-3 hover:bg-gray-700 cursor-pointer border-b border-gray-700"
       onClick={() => handleSelectConversation(conversation)}
     >
       {/* Avatar and name */}
       <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+        <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
           {conversation.targetAvatar ? (
             <img
               src={conversation.targetAvatar}
@@ -33,13 +33,13 @@ const ConversationOverview: React.FC<ConversationOverviewProps> = ({
             </span>
           )}
         </div>
-        <span className="text-gray-900 font-medium">
+        <span className="text-gray-100 font-medium">
           {conversation.targetName}
         </span>
       </div>
 
       {/* Open conversation icon */}
-      <HiOutlineChevronRight size={16} className="text-gray-400" />
+      <HiOutlineChevronRight size={16} className="text-sky-400" />
     </button>
   );
 };

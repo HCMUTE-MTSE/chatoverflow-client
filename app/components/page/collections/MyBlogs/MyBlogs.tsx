@@ -1,7 +1,10 @@
 import * as React from 'react';
 
 import blog from '~/lang/en/blog';
-import { getUserBlogs } from '~/services/api/blog/blog.service';
+import {
+  getUserBlogs,
+  getUserVotedBlogs,
+} from '~/services/api/blog/blog.service';
 import type { BlogListResponse } from '~/models/res/blog.response';
 import { getUser } from '~/services/api/user/user.service';
 
@@ -16,8 +19,9 @@ function MyBlogs() {
     async function fetchBlog() {
       try {
         const userData = await getUser();
-        const blogData = await getUserBlogs(userData.data.user.userId);
+        const blogData = await getUserVotedBlogs(userData.data.user.userId);
 
+        console.log('==========Blog-Data', blogData);
         const mappedBlogs = blogData.data.map((blog: any) => ({
           id: blog._id,
           coverImage: blog.coverImage,

@@ -17,13 +17,9 @@ export function useSocket() {
 
     const socket = socketRef.current;
 
-    socket.on('connect', () => {
-      console.log('=============Socket connected:', socket.id);
-    });
+    socket.on('connect', () => {});
 
-    socket.on('disconnect', () => {
-      console.log('=============Socket disconnected');
-    });
+    socket.on('disconnect', () => {});
 
     socket.on('connect_error', (error) => {
       console.error('=============Socket connection error:', error);

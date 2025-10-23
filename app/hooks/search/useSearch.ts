@@ -3,7 +3,7 @@ import type {
   SearchResult,
   SearchFilters,
 } from '../../services/api/search/type';
-import { searchQuestions } from '../../services/api/search/search.service';
+import { search } from '../../services/api/search/search.service';
 
 interface UseSearchReturn {
   results: SearchResult[];
@@ -11,6 +11,7 @@ interface UseSearchReturn {
   error: string | null;
   hasMore: boolean;
   currentPage: number;
+  totalPages: number;
   totalResults: number;
   search: (query: string, filters?: SearchFilters) => Promise<void>;
   loadMore: () => Promise<void>;
@@ -23,16 +24,18 @@ export function useSearch(): UseSearchReturn {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
   const [currentQuery, setCurrentQuery] = useState('');
   const [currentFilters, setCurrentFilters] = useState<SearchFilters>({});
 
-  const search = useCallback(
+  const performSearch = useCallback(
     async (query: string, filters: SearchFilters = {}) => {
       if (!query.trim()) {
         setResults([]);
         setError(null);
         setHasMore(false);
+        setTotalPages(0);
         setTotalResults(0);
         return;
       }
@@ -44,16 +47,20 @@ export function useSearch(): UseSearchReturn {
       setCurrentFilters(filters);
 
       try {
-        const searchResults = await searchQuestions(query, filters, 1);
-        setResults(searchResults);
-        setHasMore(searchResults.length === 20); // Assuming 20 is page size
-        setTotalResults(searchResults.length);
+        console.log('____________________Start-Search...');
+        const response = await search(query, filters, 1);
+        console.log('____________________Search-Response', response);
+        setResults(response.results);
+        setHasMore(response.pagination.hasNext);
+        setTotalResults(response.pagination.totalResults);
+        setTotalPages(response.pagination.totalPages);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Search failed';
         setError(errorMessage);
         setResults([]);
         setHasMore(false);
+        setTotalPages(0);
         setTotalResults(0);
       } finally {
         setLoading(false);
@@ -69,16 +76,13 @@ export function useSearch(): UseSearchReturn {
     const nextPage = currentPage + 1;
 
     try {
-      const moreResults = await searchQuestions(
-        currentQuery,
-        currentFilters,
-        nextPage
-      );
+      const response = await search(currentQuery, currentFilters, nextPage);
 
-      if (moreResults.length > 0) {
-        setResults((prev) => [...prev, ...moreResults]);
+      if (response.results.length > 0) {
+        setResults((prev) => [...prev, ...response.results]);
         setCurrentPage(nextPage);
-        setHasMore(moreResults.length === 20);
+        setHasMore(response.pagination.hasNext);
+        setTotalPages(response.pagination.totalPages);
       } else {
         setHasMore(false);
       }
@@ -97,10 +101,10 @@ export function useSearch(): UseSearchReturn {
     setError(null);
     setHasMore(false);
     setCurrentPage(1);
+    setTotalPages(0);
     setTotalResults(0);
     setCurrentQuery('');
     setCurrentFilters({});
-    console.log('Cleared search results');
   }, []);
 
   return {
@@ -109,8 +113,9 @@ export function useSearch(): UseSearchReturn {
     error,
     hasMore,
     currentPage,
+    totalPages,
     totalResults,
-    search,
+    search: performSearch,
     loadMore,
     clearResults,
   };
