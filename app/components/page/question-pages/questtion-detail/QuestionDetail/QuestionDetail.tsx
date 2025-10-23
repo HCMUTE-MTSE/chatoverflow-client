@@ -77,7 +77,7 @@ export default function QuestionDetail({
 
       <QuestionStats
         askedTime={question.askedTime}
-        totalAnswer={question.totalAnswer}
+        totalAnswer={totalAnswers}
         totalView={question.totalView}
       />
 

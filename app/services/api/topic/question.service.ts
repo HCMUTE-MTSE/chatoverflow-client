@@ -62,7 +62,6 @@ export async function getQuestionsByType(
     const response = await axios.get<ApiResponse<Question[]>>(
       `${API_BASE_URL}/question/${type}?page=${page}&limit=${limit}`
     );
-
     return response.data;
   } catch (error) {
     console.error(` Failed to fetch questions (${type}):`, error);
