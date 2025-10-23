@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getUserBlogs } from '~/services/api/blog/blog.service';
 import type { BlogListResponse } from '~/models/res/blog.response';
+import tags from '~/lang/en/tags';
 
 export type BlogPost = BlogListResponse['data'][0];
 
@@ -29,6 +30,12 @@ export function useBlogs(userId: string | undefined) {
         if (isMounted) {
           const mappedBlogs = blogData.data.map((blog: any) => ({
             id: blog._id,
+
+            upvotes: blog.upvotedBy.length,
+            downvotes: blog.downvotedBy.length,
+
+            tags: blog.tags,
+
             coverImage: blog.coverImage,
             title: blog.title,
             slug: blog.slug,
