@@ -57,8 +57,8 @@ http://localhost:5173/reset-password
 
 Credential for lived app at: [chatoverflow](https://chatoverflow-client.vercel.app/)
 
--  Login &rarr; {admin@example.com, 12345678}
+- Login &rarr; {admin@example.com, 12345678}
 
--  Forget password &rarr; {nvhoai1020@gmail.com}
+- Forget password &rarr; {nvhoai1020@gmail.com}
 
--  Register &rarr; {your valid mail and info}
+- Register &rarr; {your valid mail and info}

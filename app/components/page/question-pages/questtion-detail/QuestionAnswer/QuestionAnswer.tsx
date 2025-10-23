@@ -47,7 +47,7 @@ export interface Answer {
   user: {
     _id: string;
     name: string;
-    avatarUrl: string;
+    avatar: string;
   };
   upvotedBy: string[];
   downvotedBy: string[];
@@ -426,10 +426,10 @@ export default function QuestionAnswer({
           ))}
 
           {/* Load More Button */}
-          {hasMore && (
+          {hasMore && answers.length >= limit && (
             <LoadMoreButton
               onClick={handleLoadMore}
-              disabled={!hasMore}
+              disabled={loadMoreLoading}
               loading={loadMoreLoading}
             />
           )}

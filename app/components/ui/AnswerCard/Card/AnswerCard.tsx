@@ -34,13 +34,13 @@ const AnswerCard: React.FC<Props> = ({
   showUpvoteButton = true,
   showDownvoteButton = true,
 }) => {
+  const [userInfo, setUserInfo] = useState(answer.user);
   const [userUpvoted, setUserUpvoted] = useState(false);
   const [userDownvoted, setUserDownvoted] = useState(false);
   const [upvoteCount, setUpvoteCount] = useState(answer.upvotedBy.length);
   const [downvoteCount, setDownvoteCount] = useState(answer.downvotedBy.length);
   const [showReplies, setShowReplies] = useState(true);
   const navigate = useNavigate();
-
   // 🚀 Sync showReplies with showReplyButton prop
   useEffect(() => {
     if (!showReplyButton) {
@@ -70,8 +70,8 @@ const AnswerCard: React.FC<Props> = ({
         const newDownvoteCount = res.data.userDownvoted
           ? downvoteCount
           : userDownvoted
-            ? downvoteCount - 1
-            : downvoteCount;
+          ? downvoteCount - 1
+          : downvoteCount;
 
         setUpvoteCount(newUpvoteCount);
         setDownvoteCount(newDownvoteCount);
@@ -114,8 +114,8 @@ const AnswerCard: React.FC<Props> = ({
         const newUpvoteCount = res.data.userUpvoted
           ? upvoteCount
           : userUpvoted
-            ? upvoteCount - 1
-            : upvoteCount;
+          ? upvoteCount - 1
+          : upvoteCount;
 
         setUpvoteCount(newUpvoteCount);
         setDownvoteCount(newDownvoteCount);
@@ -183,7 +183,7 @@ const AnswerCard: React.FC<Props> = ({
         user={{
           _id: answer.user._id,
           name: answer.user.name,
-          avatarUrl: answer.user.avatarUrl,
+          avatarUrl: answer.user.avatar,
         }}
         askedTime={new Date(answer.createdAt).toLocaleString()}
         upvotes={upvoteCount}

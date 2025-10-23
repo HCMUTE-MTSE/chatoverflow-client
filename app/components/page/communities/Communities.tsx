@@ -78,10 +78,6 @@ const CommunitiesLayout: React.FC = () => {
     return () => container.removeEventListener('scroll', handleScroll);
   }, [fetchUsers, hasMore, loading]);
 
-  const handleUserClick = (userId: string) => {
-    alert(`User ID: ${userId}`);
-  };
-
   return (
     <div
       ref={containerRef}

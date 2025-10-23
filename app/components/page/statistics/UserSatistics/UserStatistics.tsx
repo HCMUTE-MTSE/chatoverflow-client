@@ -58,8 +58,6 @@ export default function UserStatistics({
           count={data.totalQuestions}
           icon={<QuestionIconStatic />}
           description="Questions you've asked"
-          clickable={true}
-          navigateTo="/collections"
           bgColor="bg-gradient-to-br from-amber-900/30 to-orange-900/30"
           iconColor="text-amber-500"
         />
@@ -69,8 +67,6 @@ export default function UserStatistics({
           count={data.totalBlogs}
           icon={<BlogIconStatic />}
           description="Blog posts you've written"
-          clickable={true}
-          navigateTo="/collections"
           bgColor="bg-gradient-to-br from-blue-900/30 to-indigo-900/30"
           iconColor="text-blue-500"
         />
@@ -80,7 +76,6 @@ export default function UserStatistics({
           count={data.totalAnswers}
           icon={<AnswerIconStatic />}
           description="Answers you've provided"
-          clickable={false}
           bgColor="bg-gradient-to-br from-green-900/30 to-emerald-900/30"
           iconColor="text-green-500"
         />

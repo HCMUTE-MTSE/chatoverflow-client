@@ -20,15 +20,9 @@ export default [
       route('ask', 'routes/ask.tsx'),
       route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
       route('statistics', 'routes/statistics/statistics.tsx'),
-      /* route('/question/:id/edit', 'routes/question/editQuestion.tsx'), */
     ]),
 
     route('user/:userId', 'routes/user/user-profile.tsx'),
-
-    /* route('tags', 'routes/tags.tsx'),
-
-    route('ask', 'routes/ask.tsx'),
-    route('/question/:id/edit', 'routes/question/editQuestion.tsx'), */
 
     route('/question/:id', 'routes/question/question-detail.tsx'),
 
@@ -42,7 +36,6 @@ export default [
   ]),
 
   layout('routes/auth/layout.tsx', [
-    // Auth
     route('login', 'routes/auth/login.tsx'),
     route('register', 'routes/auth/register.tsx'),
     route('verify-register', 'routes/auth/verify-register.tsx'),
