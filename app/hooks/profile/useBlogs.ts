@@ -28,11 +28,6 @@ export function useBlogs(userId: string | undefined) {
           const mappedBlogs = blogData.data.map((blog: any) => ({
             id: blog._id,
 
-            upvotes: blog.upvotedBy.length,
-            downvotes: blog.downvotedBy.length,
-
-            tags: blog.tags,
-
             coverImage: blog.coverImage,
             upvotes: blog.upvotes,
             downvotes: blog.downvotes,
