@@ -14,22 +14,22 @@ export function useBlogs(userId: string | undefined) {
 
     const fetchBlogs = async () => {
       if (!userId) {
-        console.log('User ID not available yet');
         return;
       }
 
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching blog posts for user:', userId);
 
         const blogData = await getUserBlogs(userId);
-        console.log('Fetched blog data:', blogData);
 
         if (isMounted) {
           const mappedBlogs = blogData.data.map((blog: any) => ({
             id: blog._id,
             coverImage: blog.coverImage,
+            upvotes: blog.upvotes,
+            downvotes: blog.downvotes,
+            tags: blog.tags,
             title: blog.title,
             slug: blog.slug,
             summary: blog.summary,
@@ -42,7 +42,6 @@ export function useBlogs(userId: string | undefined) {
           }));
 
           setBlogs(mappedBlogs);
-          console.log('Mapped Blog Data:', mappedBlogs);
         }
       } catch (err) {
         if (isMounted) {

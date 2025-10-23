@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { deleteAnswer } from '~/services/api/topic/answer.service';
 import type { ProfileApiResponse } from './useProfileData';
+import type { AnswerApiResponse } from './useAnswer';
 
 interface ModalState {
   type: 'confirm' | 'success' | null;
@@ -13,6 +14,9 @@ export function useDeleteAnswer(
   token: string | null,
   setProfileData: React.Dispatch<
     React.SetStateAction<ProfileApiResponse | null>
+  >,
+  setAnswersData: React.Dispatch<
+    React.SetStateAction<AnswerApiResponse['data']>
   >,
   setModal: React.Dispatch<React.SetStateAction<ModalState>>
 ) {
@@ -39,13 +43,13 @@ export function useDeleteAnswer(
             if (!prev) return prev;
             return {
               ...prev,
-              answers: prev.answers.filter((ans) => ans._id !== answerId),
               statistics: {
                 ...prev.statistics,
                 totalAnswers: prev.statistics.totalAnswers - 1,
               },
             };
           });
+          setAnswersData((prev) => prev.filter((ans) => ans._id !== answerId));
           setModal({
             open: true,
             type: 'success',

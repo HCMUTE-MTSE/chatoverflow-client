@@ -19,6 +19,25 @@ export const getUser = async () => {
   });
   return response.data;
 };
+export const getUserPosts = async (userId: string, page: number = 1) => {
+  const response = await axios.get(`${API_BASE_URL}/user/${userId}/posts`, {
+    params: { page },
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+  return response.data;
+};
+
+export const getUserAnswers = async (userId: string, page: number = 1) => {
+  const response = await axios.get(`${API_BASE_URL}/user/${userId}/answers`, {
+    params: { page },
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+  return response.data;
+};
 
 export const getUserById = async (userId: string) => {
   const response = await axios.get(`${API_BASE_URL}/user/profile/${userId}`, {
