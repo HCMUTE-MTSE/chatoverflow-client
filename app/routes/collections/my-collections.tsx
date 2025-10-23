@@ -6,8 +6,8 @@ import MyBlogs from '~/components/page/collections/MyBlogs';
 function MyCollections() {
   return (
     <div>
-      <h1>Collections</h1>
       <MyQuestions />
+      <br />
       <MyBlogs />
     </div>
   );

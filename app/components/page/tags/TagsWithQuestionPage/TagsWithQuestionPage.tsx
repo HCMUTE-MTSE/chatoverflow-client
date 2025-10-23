@@ -106,7 +106,10 @@ export default function TagsWithQuestionPage({
           {/* Questions List */}
           <div className="mt-12">
             {questions.map((question) => (
-              <div key={question._id} className="mb-4">
+              <div
+                key={question._id}
+                className="mb-4 flex flex-row justify-center"
+              >
                 <DefaultQuestionCard
                   title={question.title}
                   key={question._id}

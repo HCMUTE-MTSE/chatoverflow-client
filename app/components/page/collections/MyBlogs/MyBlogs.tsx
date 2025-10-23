@@ -34,8 +34,8 @@ function MyBlogs() {
             nickName: blog.user?.nickName,
           },
           tags: blog.tags || [],
-          upvotes: blog.upvotes || 0,
-          downvotes: blog.downvotes || 0,
+          upvotes: blog.upvotedBy.length,
+          downvotes: blog.downvotedBy.length,
           createdAt: blog.createdAt,
         }));
 
@@ -51,7 +51,7 @@ function MyBlogs() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-white mb-2">My Blogs</h1>
+      <h1 className="text-3xl font-bold text-white mb-2">Voted Blogs</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {blogs.map((blog) => (
           <BlogCard key={blog.id} {...blog} />

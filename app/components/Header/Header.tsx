@@ -104,20 +104,21 @@ export default function Header() {
         {/* Search */}
         <SearchPage />
 
-        {/* Open chat */}
-        <button
-          onClick={() => {
-            const nextIsOpenChat = !isOpenChat;
-            console.log(nextIsOpenChat);
-            setIsOpenChat(nextIsOpenChat);
-          }}
-        >
-          <ChatIcon />
-        </button>
+        <div className="flex justify-center items-center gap-4">
+          {/* Open chat */}
+          <button
+            onClick={() => {
+              const nextIsOpenChat = !isOpenChat;
+              console.log(nextIsOpenChat);
+              setIsOpenChat(nextIsOpenChat);
+            }}
+          >
+            <ChatIcon />
+          </button>
 
-        {/* Notifications */}
-        <NotificationIcon />
-
+          {/* Notifications */}
+          <NotificationIcon />
+        </div>
         {/* Avatar + Dropdown */}
         <div className="relative" ref={ref}>
           <button

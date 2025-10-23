@@ -20,6 +20,7 @@ export default [
       route('ask', 'routes/ask.tsx'),
       route('/question/:id/edit', 'routes/question/editQuestion.tsx'),
       route('statistics', 'routes/statistics/statistics.tsx'),
+      route('collections', 'routes/collections/my-collections.tsx'),
     ]),
 
     route('user/:userId', 'routes/user/user-profile.tsx'),
@@ -31,7 +32,6 @@ export default [
     route('blog', 'routes/blog/blog.tsx'),
     route('blog/:slug', 'routes/blog/view-blog.tsx'),
 
-    route('collections', 'routes/collections/my-collections.tsx'),
     route('chat', 'routes/chat/chat.tsx'),
   ]),
 
