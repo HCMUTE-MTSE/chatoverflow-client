@@ -5,39 +5,10 @@ import type { Answer } from '../../components/page/question-pages/questtion-deta
 
 export interface ProfileApiResponse {
   user: UserResponse;
-  posts: Array<{
-    _id: string;
-    title: string;
-    content: string;
-    tags: string[];
-    views: number;
-    upvotedBy: string[];
-    downvotedBy: string[];
-    user: {
-      _id: string;
-      name: string;
-      nickName: string;
-      avatar: string | null;
-    };
-    askedTime: string;
-    upvotes: number;
-    downvotes: number;
-    score: number;
-    answerCount?: number;
-  }>;
-  answers: Array<Answer>;
   statistics: {
     totalPosts: number;
     totalAnswers: number;
     totalContributions: number;
-  };
-  pagination: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
   };
 }
 export function useProfileDataById(userId: string) {

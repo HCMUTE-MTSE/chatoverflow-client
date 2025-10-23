@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 import { deleteQuestion } from '~/services/api/topic/question.service';
 import type { ProfileApiResponse } from './useProfileData';
+import type { PostsResponse } from './usePosts';
 
 export function useDeletePost(
   token: string | null,
   setProfileData: React.Dispatch<
     React.SetStateAction<ProfileApiResponse | null>
   >,
+  setPostsData: React.Dispatch<React.SetStateAction<PostsResponse['posts']>>,
   setModal: (modal: {
     type: 'confirm' | 'success' | null;
     open: boolean;
@@ -37,13 +39,13 @@ export function useDeletePost(
             if (!prev) return prev;
             return {
               ...prev,
-              posts: prev.posts.filter((post) => post._id !== postId),
               statistics: {
                 ...prev.statistics,
                 totalPosts: prev.statistics.totalPosts - 1,
               },
             };
           });
+          setPostsData((prev) => prev.filter((post) => post._id !== postId));
           setModal({
             open: true,
             type: 'success',

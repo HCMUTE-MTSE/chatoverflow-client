@@ -13,6 +13,8 @@ import { BlogsList } from './components/BlogsList';
 import { ConfirmModal } from './components/ConfirmModal';
 import PopularTags from '../../home/PopularTags';
 import { usePopularTags } from '~/hooks/usePopularTags';
+import { useAnswer } from '~/hooks/profile/useAnswer';
+import { usePosts } from '~/hooks/profile/usePosts';
 
 export default function ProfileViewPage() {
   const navigate = useNavigate();
@@ -45,6 +47,28 @@ export default function ProfileViewPage() {
   } = useBlogs(profileData?.user?.userId);
 
   const {
+    answers,
+    pagination: answersPagination,
+    loading: answersLoading,
+    loadingMore: answersLoadingMore,
+    error: answersError,
+    setAnswers,
+    loadMore: loadMoreAnswers,
+    hasMore: hasMoreAnswers,
+  } = useAnswer(profileData?.user?.userId);
+
+  const {
+    posts,
+    pagination: postsPagination,
+    loading: postsLoading,
+    loadingMore: postsLoadingMore,
+    error: postsError,
+    setPosts,
+    loadMore: loadMorePosts,
+    hasMore: hasMorePosts,
+  } = usePosts(profileData?.user?.userId);
+
+  const {
     tags: popularTags,
     loading: tagsLoading,
     error: tagsError,
@@ -64,30 +88,27 @@ export default function ProfileViewPage() {
   const {
     handleDelete: handleDeleteAnswer,
     confirmDelete: confirmDeleteAnswer,
-  } = useDeleteAnswer(token, setProfileData, setModal);
+  } = useDeleteAnswer(token, setProfileData, setAnswers, setModal);
 
   const { handleDelete: handleDeletePost, confirmDelete: confirmDeletePost } =
-    useDeletePost(token, setProfileData, setModal);
+    useDeletePost(token, setProfileData, setPosts, setModal);
 
   const updateAnswer = useCallback(
     (updatedData: { _id: string; content: string; updatedAt: string }) => {
-      setProfileData((prev) => {
+      setAnswers((prev) => {
         if (!prev) return prev;
-        return {
-          ...prev,
-          answers: prev.answers.map((ans) =>
-            ans._id === updatedData._id
-              ? {
-                  ...ans,
-                  content: updatedData.content,
-                  updatedAt: updatedData.updatedAt,
-                }
-              : ans
-          ),
-        };
+        return prev.map((ans) =>
+          ans._id === updatedData._id
+            ? {
+                ...ans,
+                content: updatedData.content,
+                updatedAt: updatedData.updatedAt,
+              }
+            : ans
+        );
       });
     },
-    [setProfileData]
+    [setAnswers]
   );
 
   const handleConfirm = useCallback(() => {
@@ -175,17 +196,26 @@ export default function ProfileViewPage() {
               {/* Posts List */}
               {activeTab === 'posts' && (
                 <PostsList
-                  posts={profileData?.posts || []}
+                  posts={posts || []}
+                  pagination={postsPagination}
+                  loading={postsLoading}
+                  loadingMore={postsLoadingMore}
+                  hasMore={hasMorePosts}
                   onEdit={(postId) => navigate(`/question/${postId}/edit`)}
                   onDelete={handleDeletePost}
                   onClick={(postId) => navigate(`/question/${postId}`)}
+                  onLoadMore={loadMorePosts}
                 />
               )}
 
               {/* Answers List */}
               {activeTab === 'answers' && (
                 <AnswersList
-                  answers={profileData?.answers || []}
+                  answers={answers || []}
+                  pagination={answersPagination}
+                  loading={answersLoading}
+                  loadingMore={answersLoadingMore}
+                  hasMore={hasMoreAnswers}
                   editingId={editingId}
                   editingContent={editingContent}
                   onEdit={handleEdit}
@@ -194,6 +224,7 @@ export default function ProfileViewPage() {
                   onCancel={handleCancelEdit}
                   onContentChange={setEditingContent}
                   onClick={(questionId) => navigate(`/question/${questionId}`)}
+                  onLoadMore={loadMoreAnswers}
                 />
               )}
 

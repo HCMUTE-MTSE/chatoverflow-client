@@ -15,6 +15,8 @@ import PopularTags from '../../home/PopularTags';
 import { usePopularTags } from '~/hooks/usePopularTags';
 import { createConversation } from '~/services/api/chat/conversation.service';
 import { getCurrentUserId } from '~/utils/userUtils';
+import { usePosts } from '~/hooks/profile/usePosts';
+import { useAnswer } from '~/hooks/profile/useAnswer';
 
 interface UserProfilePageProps {
   userId: string;
@@ -46,6 +48,27 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
     loading: tagsLoading,
     error: tagsError,
   } = usePopularTags(20);
+
+  const {
+    answers,
+    pagination: answersPagination,
+    loading: answersLoading,
+    loadingMore: answersLoadingMore,
+    error: answersError,
+    setAnswers,
+    loadMore: loadMoreAnswers,
+    hasMore: hasMoreAnswers,
+  } = useAnswer(profileData?.user?.userId);
+  const {
+    posts,
+    pagination: postsPagination,
+    loading: postsLoading,
+    loadingMore: postsLoadingMore,
+    error: postsError,
+    setPosts,
+    loadMore: loadMorePosts,
+    hasMore: hasMorePosts,
+  } = usePosts(profileData?.user?.userId);
 
   // ✅ Logic gửi tin nhắn (từ code gốc)
   const handleSendMessage = useCallback(async () => {
@@ -143,15 +166,25 @@ export default function ProfileViewPage({ userId }: UserProfilePageProps) {
             <div className="lg:col-span-3">
               {activeTab === 'posts' && (
                 <PostsList
-                  posts={profileData?.posts || []}
+                  posts={posts || []}
+                  pagination={postsPagination}
+                  loading={postsLoading}
+                  loadingMore={postsLoadingMore}
+                  hasMore={hasMorePosts}
+                  onLoadMore={loadMorePosts}
                   onClick={(postId) => navigate(`/question/${postId}`)}
                 />
               )}
 
               {activeTab === 'answers' && (
                 <AnswersList
-                  answers={profileData?.answers || []}
+                  answers={answers || []}
+                  pagination={answersPagination}
+                  loading={answersLoading}
+                  loadingMore={answersLoadingMore}
+                  hasMore={hasMoreAnswers}
                   onClick={(questionId) => navigate(`/question/${questionId}`)}
+                  onLoadMore={loadMoreAnswers}
                 />
               )}
 
