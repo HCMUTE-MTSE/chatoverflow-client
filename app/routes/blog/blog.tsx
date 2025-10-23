@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BlogCard from '../../components/ui/BlogCard/BlogCard';
 import BlogFilter from '../../components/ui/BlogFilter';
 import blog from '../../lang/en/blog';
@@ -8,10 +9,12 @@ import {
   DEFAULT_BLOG_SORT,
   type BlogSortOption,
 } from '../../models/constant/blog-filters';
+import { FiPlus } from 'react-icons/fi';
 
 type BlogPost = BlogListResponse['data'][0];
 
 export default function BlogPage() {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -58,7 +61,7 @@ export default function BlogPage() {
       } else {
         setPosts((prevPosts) => [...prevPosts, ...data.data]);
       }
-      setHasMore(!!data.pagination.nextUrl);
+      setHasMore(!!data.pagination?.nextUrl);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
     } finally {
@@ -90,25 +93,37 @@ export default function BlogPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Filter Component */}
-      <BlogFilter
-        currentSort={sortBy}
-        selectedTags={selectedTags}
-        onSortChange={setSortBy}
-        onTagsChange={setSelectedTags}
-        onApplyFilter={handleApplyFilter}
-      />
+      {/* Filter and Create Button Row */}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex-1">
+          <BlogFilter
+            currentSort={sortBy}
+            selectedTags={selectedTags}
+            onSortChange={setSortBy}
+            onTagsChange={setSelectedTags}
+            onApplyFilter={handleApplyFilter}
+          />
+        </div>
+        <button
+          onClick={() => navigate('/create-blog')}
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors whitespace-nowrap"
+        >
+          <FiPlus size={20} />
+          Create Blog
+        </button>
+      </div>
+
       <h1 className="text-3xl font-bold text-white mb-8">{blog.list.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {posts.map((post, index) => {
           if (posts.length === index + 1) {
             return (
               <div ref={lastPostElementRef} key={post.id}>
-                <BlogCard {...post} />
+                <BlogCard {...post} showActions={false} />
               </div>
             );
           }
-          return <BlogCard key={post.id} {...post} />;
+          return <BlogCard key={post.id} {...post} showActions={false} />;
         })}
       </div>
       {loading && (

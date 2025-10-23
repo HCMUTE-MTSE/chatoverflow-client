@@ -14,7 +14,7 @@ const SidebarMain: React.FC<SidebarMainProps> = ({
   handleSelectConversation,
 }) => {
   return (
-    <div className="flex flex-col flex-1 overflow-y-auto">
+    <div className="flex flex-col flex-1 overflow-y-auto bg-gray-800">
       {conversations.map((conversation) => (
         <ConversationOverview
           key={conversation.id}

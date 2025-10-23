@@ -5,7 +5,6 @@ import { getUser } from '~/services/api/user/user.service';
 import { getConversationsByUserId } from '~/services/api/chat/conversation.service';
 import { createConversation } from '~/services/api/chat/conversation.service';
 
-import type { ConversationResponse } from '~/services/api/chat/conversation.service';
 import type { Conversation } from '../type';
 
 import Sidebar from '../Sidebar';
@@ -49,7 +48,6 @@ function Inbox() {
     fetchConversations();
   }, []);
 
-  // Effect để chọn conversation khi có conversationId từ state
   React.useEffect(() => {
     if (initialConversationId && conversations.length > 0) {
       const conversation = conversations.find(
@@ -64,6 +62,11 @@ function Inbox() {
   function handleSelectConversation(conversation: Conversation) {
     setCurrentConversation(conversation);
   }
+
+  function handleUnselectAllConversations() {
+    setCurrentConversation(null);
+  }
+
   async function handleStartNewConversation(targetUserId: string) {
     console.log('Target user ID: ', targetUserId);
     if (!currentUserId) {
@@ -85,7 +88,8 @@ function Inbox() {
   }
 
   if (loading) {
-    return <ConversationSkeleton />;
+    /* return <ConversationSkeleton />; */
+    <p>Loading...</p>;
   }
 
   if (error) {
@@ -98,10 +102,11 @@ function Inbox() {
   }
 
   return (
-    <div className="h-120 grid grid-cols-[2fr_3fr] w-196 bg-red-500 rounded-lg">
+    <div className="fixed bottom-4 right-4 h-120 grid grid-cols-[2fr_3fr] w-156 rounded-lg shadow-lg border border-gray-700 m-2 bg-gray-900">
       <Sidebar
         conversations={conversations}
         handleSelectConversation={handleSelectConversation}
+        handleUnselectAllConversations={handleUnselectAllConversations}
       />
       <Chatbox
         conversation={currentConversation}

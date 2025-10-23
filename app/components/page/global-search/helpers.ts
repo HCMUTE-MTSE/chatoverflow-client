@@ -11,20 +11,29 @@ interface ContentNode {
 }
 
 export const extractText = (jsonData: string | TextNode): string => {
-  let parsedData: TextNode;
+  let parsedData: TextNode | null = null;
 
   if (typeof jsonData === 'string') {
-    parsedData = JSON.parse(jsonData);
+    const trimmed = jsonData.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        parsedData = JSON.parse(trimmed);
+      } catch (err) {
+        return stripHtmlTags(jsonData);
+      }
+    } else {
+      return stripHtmlTags(jsonData);
+    }
   } else {
     parsedData = jsonData;
   }
 
+  if (!parsedData) return '';
+
   let text = '';
 
   const traverse = (node: ContentNode): void => {
-    if (node.text) {
-      text += node.text;
-    }
+    if (node.text) text += node.text;
     if (node.content && Array.isArray(node.content)) {
       node.content.forEach(traverse);
     }
@@ -32,4 +41,8 @@ export const extractText = (jsonData: string | TextNode): string => {
 
   traverse(parsedData);
   return text;
+};
+
+const stripHtmlTags = (html: string): string => {
+  return html.replace(/<[^>]*>/g, '').trim();
 };

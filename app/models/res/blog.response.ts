@@ -1,64 +1,60 @@
+import type { ApiResponse } from './api.response';
+
 // Blog response interfaces
-export interface BlogListResponse {
-  success: boolean;
-  message: string;
-  data: Array<{
-    id: string;
-    coverImage: string;
-    title: string;
-    slug: string;
-    summary: string;
-    author: {
-      userId: string;
-      avatar: string;
-      nickName: string;
-    };
-    tags: string[];
-    upvotes: number;
-    downvotes: number;
-    createdAt: string;
-  }>;
-  pagination: {
-    page: number;
-    limit: number;
-    nextUrl: string | null;
+export interface BlogItem {
+  id: string;
+  coverImage: string;
+  title: string;
+  slug: string;
+  summary: string;
+  author: {
+    userId: string;
+    avatar: string;
+    nickName: string;
   };
+  tags: string[];
+  upvotes: number;
+  downvotes: number;
+  createdAt: string;
 }
 
-export interface BlogDetailResponse {
-  success: boolean;
-  message: string;
-  data: {
-    id: string;
-    coverImage: string;
-    title: string;
-    contentHtml: string;
-    summary: string;
-    author: {
-      userId: string;
-      avatar: string;
-      nickName: string;
-    };
-    createdAt: string;
-    tags: string[];
-    upvotes: number;
-    downvotes: number;
+export type BlogListResponse = ApiResponse<BlogItem[]>;
+
+export interface BlogDetail {
+  id: string;
+  coverImage: string;
+  title: string;
+  contentHtml: string;
+  summary: string;
+  author: {
+    userId: string;
+    avatar: string;
+    nickName: string;
   };
+  createdAt: string;
+  tags: string[];
+  upvotes: number;
+  downvotes: number;
+  upvotedBy: string[];
+  downvotedBy: string[];
 }
+
+export type BlogDetailResponse = ApiResponse<BlogDetail>;
 
 // Blog voting interfaces
 export interface BlogVoteRequest {
   voteType: 'upvote' | 'downvote';
 }
 
-export interface BlogVoteResponse {
-  success: boolean;
-  message: string;
-  data: {
-    upvotes: number;
-    downvotes: number;
-  };
+export interface BlogVoteData {
+  upvotes: number;
+  downvotes: number;
 }
+
+export type BlogVoteResponse = ApiResponse<BlogVoteData>;
+
+// Blog delete response
+export type BlogDeleteResponse = ApiResponse<null>;
 
 // Comment interfaces
 export interface CommentAuthor {
@@ -73,40 +69,27 @@ export interface Comment {
   author: CommentAuthor;
   upvotes: number;
   downvotes: number;
+  upvotedBy: string[];
+  downvotedBy: string[];
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CommentListResponse {
-  success: boolean;
-  message: string;
-  data: Comment[];
-  pagination: {
-    page: number;
-    limit: number;
-    nextUrl: string | null;
-  };
-}
+export type CommentListResponse = ApiResponse<Comment[]>;
 
 export interface CreateCommentRequest {
   content: string;
 }
 
-export interface CreateCommentResponse {
-  success: boolean;
-  message: string;
-  data: Comment;
-}
+export type CreateCommentResponse = ApiResponse<Comment>;
 
 export interface CommentVoteRequest {
   voteType: 'upvote' | 'downvote';
 }
 
-export interface CommentVoteResponse {
-  success: boolean;
-  message: string;
-  data: {
-    upvotes: number;
-    downvotes: number;
-  };
+export interface CommentVoteData {
+  upvotes: number;
+  downvotes: number;
 }
+
+export type CommentVoteResponse = ApiResponse<CommentVoteData>;

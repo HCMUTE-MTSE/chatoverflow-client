@@ -3,8 +3,10 @@ import header from '../../lang/en/header';
 import { useNavigate } from 'react-router';
 import { logout as logoutService } from '~/services/api/auth/logout.service';
 import NotificationIcon from '../ui/NotificationIcon';
+import { IsOpenChatContext } from '~/routes/layout';
 
 import { SearchPage } from '../page/global-search/SearchPage';
+import { ChatIcon } from '~/libs/icons';
 
 export default function Header() {
   const [open, setOpen] = React.useState(false);
@@ -13,6 +15,7 @@ export default function Header() {
   const [nickName, setNickName] = React.useState(header.defaultNickName);
   const [avatar, setAvatar] = React.useState(header.defaultAvatar);
   const [mounted, setMounted] = React.useState(false);
+  const [isOpenChat, setIsOpenChat] = React.useContext(IsOpenChatContext);
 
   const navigate = useNavigate();
 
@@ -95,13 +98,22 @@ export default function Header() {
       </header>
     );
   }
-  console.log('resolve merge conflict');
   return (
     <header className="w-full sticky top-0 z-10 bg-gray-950/70 backdrop-blur border-b border-gray-800">
-      <div className="px-6 py-4 flex items-center gap-4">
+      <div className="px-6 py-4 flex items-start gap-4">
         {/* Search */}
+        <SearchPage />
 
-        <SearchPage></SearchPage>
+        {/* Open chat */}
+        <button
+          onClick={() => {
+            const nextIsOpenChat = !isOpenChat;
+            console.log(nextIsOpenChat);
+            setIsOpenChat(nextIsOpenChat);
+          }}
+        >
+          <ChatIcon />
+        </button>
 
         {/* Notifications */}
         <NotificationIcon />
@@ -137,15 +149,6 @@ export default function Header() {
                 className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
               >
                 {header.profile}
-              </button>
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  navigate('/create-blog');
-                }}
-                className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-800"
-              >
-                {header.createBlog}
               </button>
               <button
                 onClick={goStatistics}

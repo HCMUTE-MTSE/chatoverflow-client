@@ -4,6 +4,7 @@ import SafeHTML from '../../components/ui/SafeHTML/SafeHTML';
 import BlogComments from '../../components/ui/BlogComments';
 import { getBlogDetail, voteBlog } from '../../services/api/blog/blog.service';
 import { getUserProfileLink } from '../../utils/userUtils';
+import { parseJwt } from '../../utils/jwt';
 import type { BlogDetailResponse } from '../../models/res/blog.response';
 import {
   BiUpvote,
@@ -21,6 +22,18 @@ export default function ViewBlog() {
   const [error, setError] = useState<string | null>(null);
   const [votingLoading, setVotingLoading] = useState(false);
   const [userProfileLink, setUserProfileLink] = useState<string>('');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Get current user ID from token
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = parseJwt(token);
+      if (decoded && decoded.sub) {
+        setCurrentUserId(decoded.sub);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBlogPost = async () => {
@@ -52,18 +65,19 @@ export default function ViewBlog() {
     setVotingLoading(true);
     try {
       const response = await voteBlog(slug, voteType);
-      setPost({
-        ...post,
-        upvotes: response.data.upvotes,
-        downvotes: response.data.downvotes,
-      });
+      const updatedBlog = await getBlogDetail(slug);
+      setPost(updatedBlog.data);
     } catch (err) {
       console.error('Failed to vote:', err);
-      // You could add a toast notification here
     } finally {
       setVotingLoading(false);
     }
   };
+
+  const hasUserUpvoted =
+    post && currentUserId ? post.upvotedBy.includes(currentUserId) : false;
+  const hasUserDownvoted =
+    post && currentUserId ? post.downvotedBy.includes(currentUserId) : false;
 
   if (loading) {
     return (
@@ -99,69 +113,95 @@ export default function ViewBlog() {
         </div>
       )}
 
-      <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
 
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <img
-            src={post.author.avatar || '/assets/images/defaultavatar.png'}
-            alt={post.author.nickName}
-            className="w-12 h-12 rounded-full mr-4"
-          />
-          <div>
-            <Link
-              to={userProfileLink}
-              className="text-white font-medium hover:text-orange-500 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {post.author.nickName}
-            </Link>
-            <p className="text-gray-400 text-sm">
-              {new Date(post.createdAt).toLocaleDateString()}
-            </p>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <img
+                src={post.author.avatar || '/assets/images/defaultavatar.png'}
+                alt={post.author.nickName}
+                className="w-12 h-12 rounded-full mr-4"
+              />
+              <div>
+                <Link
+                  to={userProfileLink}
+                  className="text-white font-medium hover:text-orange-500 transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {post.author.nickName}
+                </Link>
+                <p className="text-gray-400 text-sm">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 text-sm">
+              <button
+                onClick={() => handleVote('upvote')}
+                disabled={votingLoading}
+                className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+                  hasUserUpvoted
+                    ? 'text-[#6DFF8D]'
+                    : 'text-gray-400 hover:text-[#6DFF8D]'
+                }`}
+              >
+                {hasUserUpvoted ? (
+                  <BiSolidUpvote size={20} />
+                ) : (
+                  <BiUpvote size={20} />
+                )}
+                <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
+                  {post.upvotes}
+                </span>
+              </button>
+              <button
+                onClick={() => handleVote('downvote')}
+                disabled={votingLoading}
+                className={`flex items-center gap-1 transition-colors disabled:opacity-50 ${
+                  hasUserDownvoted
+                    ? 'text-[#FF6D6D]'
+                    : 'text-gray-400 hover:text-[#FF6D6D]'
+                }`}
+              >
+                {hasUserDownvoted ? (
+                  <BiSolidDownvote size={20} />
+                ) : (
+                  <BiDownvote size={20} />
+                )}
+                <span className="px-2 py-1 bg-[#212734] rounded-sm font-medium">
+                  {post.downvotes}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {post.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="prose prose-invert max-w-none">
+            <SafeHTML html={post.contentHtml} className="blog-content" />
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-sm">
-          <button
-            onClick={() => handleVote('upvote')}
-            disabled={votingLoading}
-            className="flex items-center gap-1 text-[#6DFF8D] hover:text-[#5EE67E] transition-colors disabled:opacity-50"
-          >
-            <BiSolidUpvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">{post.upvotes}</span>
-          </button>
-          <button
-            onClick={() => handleVote('downvote')}
-            disabled={votingLoading}
-            className="flex items-center gap-1 text-[#FF6D6D] hover:text-[#FF5A5A] transition-colors disabled:opacity-50"
-          >
-            <BiSolidDownvote size={16} />
-            <span className="px-1 bg-[#212734] rounded-sm">
-              {post.downvotes}
-            </span>
-          </button>
+        <div className="lg:col-span-1">
+          <div className="lg:sticky lg:top-24">
+            {slug && <BlogComments blogSlug={slug} />}
+          </div>
         </div>
       </div>
-
-      {post.tags && post.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          {post.tags.map((tag, index) => (
-            <span
-              key={index}
-              className="px-3 py-1 bg-gray-700 text-gray-300 rounded-full text-sm"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="prose prose-invert max-w-none">
-        <SafeHTML html={post.contentHtml} className="blog-content" />
-      </div>
-
-      {slug && <BlogComments blogSlug={slug} />}
     </div>
   );
 }

@@ -38,6 +38,20 @@ export async function createQuestion(
   });
   return response.data.data;
 }
+export async function deleteQuestion(questionId: string, token: string) {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/question/${questionId}/delete`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to delete question (id=${questionId}):`, error);
+    return false;
+  }
+}
 
 export async function getQuestionsByType(
   type: string,
@@ -193,6 +207,7 @@ export async function voteStatus(
     return null;
   }
 }
+
 export const increaseQuestionView = async (
   questionId: string
 ): Promise<void> => {
@@ -206,5 +221,22 @@ export const increaseQuestionView = async (
       error
     );
     throw error; // Re-throw để component có thể handle error
+  }
+};
+
+export const getUserVotedQuestions = async (
+  userId: string
+): Promise<Question[]> => {
+  try {
+    const response = await axios.get<ApiResponse<Question[]>>(
+      `${API_BASE_URL}/question/voted/${userId}`
+    );
+    return response.data.data || [];
+  } catch (error) {
+    console.error(
+      `Failed to fetch voted questions for user (${userId}):`,
+      error
+    );
+    return [];
   }
 };

@@ -33,7 +33,7 @@ const ChatboxMain: React.FC<ChatboxMainProps> = ({
   return (
     <div className="flex flex-col flex-1">
       {conversation ? (
-        <div className="h-96 flex flex-col flex-1">
+        <div className="flex flex-col flex-1">
           <MessageContainer
             conversation={conversation}
             newMessage={newMessage}

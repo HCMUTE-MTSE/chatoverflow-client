@@ -23,7 +23,6 @@ const navItemsData = [
     icon: <CollectionsIcon />,
     text: navbar.collections,
   },
-  { id: 'jobs', to: '/jobs', icon: <JobsIcon />, text: navbar.jobs },
   { id: 'tags', to: '/tags', icon: <TagsIcon />, text: navbar.tags },
   {
     id: 'communities',
@@ -36,7 +35,7 @@ const navItemsData = [
 
   { id: 'ask', to: '/ask', icon: <AskIcon />, text: navbar.ask },
 
-  { id: 'chat', to: '/chat', icon: <ChatIcon />, text: navbar.chat },
+  /*   { id: 'chat', to: '/chat', icon: <ChatIcon />, text: navbar.chat }, */
 ];
 export default function Navbar() {
   return (

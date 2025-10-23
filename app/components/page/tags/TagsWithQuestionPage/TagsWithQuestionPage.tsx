@@ -106,17 +106,21 @@ export default function TagsWithQuestionPage({
           {/* Questions List */}
           <div className="mt-12">
             {questions.map((question) => (
-              <DefaultQuestionCard
-                title={question.title}
-                key={question._id}
-                tags={question.tags}
-                user={question.user}
-                time={new Date(question.askedTime).toLocaleString()}
-                votes={question.upvotedBy.length + question.downvotedBy.length}
-                answers={question.answerCount || 0}
-                views={question.views}
-                onClick={() => navigate(`/question/${question._id}`)}
-              />
+              <div key={question._id} className="mb-4">
+                <DefaultQuestionCard
+                  title={question.title}
+                  key={question._id}
+                  tags={question.tags}
+                  user={question.user}
+                  time={new Date(question.askedTime).toLocaleString()}
+                  votes={
+                    question.upvotedBy.length + question.downvotedBy.length
+                  }
+                  answers={question.answerCount || 0}
+                  views={question.views}
+                  onClick={() => navigate(`/question/${question._id}`)}
+                />
+              </div>
             ))}
           </div>
 
