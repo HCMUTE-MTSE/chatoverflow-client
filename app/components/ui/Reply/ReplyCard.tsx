@@ -51,8 +51,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
   const [userProfileLink, setUserProfileLink] = useState(
     `/user/${reply.user._id}`
   );
-
-  // Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const indentClass = level > 0 ? `ml-${Math.min(level * 6, 24)}` : '';
@@ -153,7 +151,7 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
     }
   };
 
-  /** ----------------- Delete Reply with Modal ----------------- */
+  /** ----------------- Delete Reply ----------------- */
   const handleDelete = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -161,24 +159,25 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
       const res = await deleteReply(reply._id, token);
       if (res.success) {
         setShowDeleteModal(false);
-        if (onDelete) onDelete(reply._id);
-        setChildren((prev) => prev.filter((c) => c._id !== reply._id));
+        if (onDelete) onDelete(reply._id); // Báo cho cha
       }
     } catch (err) {
       console.error('Failed to delete reply:', err);
     }
   };
 
+  /** ----------------- Handle Child Delete ----------------- */
+  const handleChildDelete = (childId: string) => {
+    setChildren((prev) => prev.filter((c) => c._id !== childId));
+  };
+
   /** ----------------- Reply Button ----------------- */
   const handleReplyClick = () => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // Nếu chưa login, redirect sang login page
       navigate('/login');
       return;
     }
-
-    // Nếu đã login, toggle form
     setShowReplyForm(!showReplyForm);
     if (onReply) onReply(reply._id);
   };
@@ -215,7 +214,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
     fetchOwnerStatus();
   }, [reply._id]);
 
-  // Load user profile link
   useEffect(() => {
     const loadProfileLink = async () => {
       if (reply.user._id) {
@@ -238,7 +236,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
                 <button
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="p-1 rounded hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
-                  title={isCollapsed ? 'Expand replies' : 'Collapse replies'}
                 >
                   <ChevronDownIcon
                     className={`w-3 h-3 transform transition-transform ${
@@ -247,7 +244,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
                   />
                 </button>
               )}
-
               <img
                 src={reply.user.avatarUrl || '/assets/images/defaultavatar.png'}
                 alt={reply.user.name}
@@ -263,13 +259,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
               <span className="text-xs text-gray-400">
                 {new Date(reply.createdAt).toLocaleString()}
               </span>
-
-              {children.length > 0 && (
-                <span className="text-xs text-gray-500 bg-gray-700 px-2 py-0.5 rounded-full">
-                  {children.length}
-                  {hasMore && `+`} {children.length === 1 ? 'reply' : 'replies'}
-                </span>
-              )}
             </div>
 
             {/* Vote */}
@@ -369,7 +358,7 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
                 answerId={answerId}
                 onReply={onReply}
                 onEdit={onEdit}
-                onDelete={onDelete}
+                onDelete={handleChildDelete} // ✅ xử lý xóa con tại chỗ
               />
             ))}
           </div>
@@ -388,20 +377,6 @@ const ReplyCard: React.FC<ReplyCardProps> = ({
         {/* Loading */}
         {isLoading && !isCollapsed && (
           <div className="ml-6 text-xs text-gray-400">Loading...</div>
-        )}
-
-        {/* Collapsed indicator */}
-        {children.length > 0 && isCollapsed && (
-          <div className="mt-2 ml-6 text-xs text-gray-500 italic border-l-2 border-gray-700 pl-3">
-            {children.length} {children.length === 1 ? 'reply' : 'replies'}{' '}
-            hidden.
-            <button
-              onClick={() => setIsCollapsed(false)}
-              className="ml-1 text-blue-400 hover:text-blue-300 underline"
-            >
-              Show replies
-            </button>
-          </div>
         )}
       </div>
 
