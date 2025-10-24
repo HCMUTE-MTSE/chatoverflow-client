@@ -1,12 +1,12 @@
-import { signup } from "~/services/api/auth/signup.service";
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { signup } from '~/services/api/auth/signup.service';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
-    name: "",
-    nickName: "",
-    email: "",
-    password: "",
+    name: '',
+    nickName: '',
+    email: '',
+    password: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,27 +19,39 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setError(null);
+    setSuccess(null);
+
     try {
       setLoading(true);
+
       const response = await signup(formData);
+
       if (response.success) {
         // Handle successful signup
         setSuccess(
           response.message ||
-            "Registration successful! Please check your email for the OTP code."
+            'Registration successful! Please check your email for the OTP code.'
         );
         setTimeout(() => {
-          navigate("/verify-register", {
+          navigate('/verify-register', {
             state: {
               email: response.data.email,
             },
           });
         }, 2000);
       } else {
-        setError(response.message || "An error occurred");
+        setError(response.message || 'An error occurred');
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        'An error occurred';
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -48,7 +60,7 @@ export default function RegisterForm() {
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {error && <p className="text-red-400 text-sm">{error}</p>}
-      {success && <p className="text-green-400 text-sm">{success}</p>}{" "}
+      {success && <p className="text-green-400 text-sm">{success}</p>}{' '}
       <label htmlFor="username" className="block text-sm text-gray-400 mb-1">
         Username
       </label>
@@ -99,7 +111,7 @@ export default function RegisterForm() {
         className="w-full py-2 mt-4 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition font-semibold"
       >
         <p className="text-center text-sm">
-          {loading ? "Loading..." : "Continue"}
+          {loading ? 'Loading...' : 'Continue'}
         </p>
       </button>
     </form>
