@@ -76,8 +76,8 @@ export function AnswersList({
                 <AnswerCard
                   answer={answer}
                   isOwner={true}
-                  onEdit={() => onEdit && onEdit(answer)}
-                  onDelete={() => onDelete && onDelete(answer._id)}
+                  {...(onEdit && { onEdit: () => onEdit(answer) })}
+                  {...(onDelete && { onDelete: () => onDelete(answer._id) })}
                   showUpvoteButton={false}
                   showDownvoteButton={false}
                   showReplyButton={false}
